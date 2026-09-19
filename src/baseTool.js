@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { MiscUtils } from './miscUtils.js';
@@ -103,7 +105,8 @@ var save = function(saveData) {
 
 
 var load = function(saveData) {
-  BaseTool.autoBulldoze = saveData.autoBulldoze;
+  if (saveData.autoBulldoze !== undefined)
+    BaseToolConstructor.autoBulldoze = saveData.autoBulldoze;
 };
 
 

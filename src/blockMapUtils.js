@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { BlockMap } from './blockMap.ts';
@@ -333,8 +335,10 @@ var crimeScan = function(census, blockMaps) {
   var crimeZoneCount = 0;
 
   // Scan the map, looking for developed land, as it can attract crime.
-  for (var x = 0, width = crimeRateMap.mapWidth, blockSize = crimeRateMap.blockSize; x < width; x += blockSize) {
-    for (var y = 0, height = crimeRateMap.mapHeight, b; y < height; y += blockSize) {
+  // Nation Builder fix: upstream read crimeRateMap.mapWidth/mapHeight, which BlockMap doesn't have, so this loop
+  // never ran and crime was always zero.
+  for (var x = 0, width = crimeRateMap.gameMapWidth, blockSize = crimeRateMap.blockSize; x < width; x += blockSize) {
+    for (var y = 0, height = crimeRateMap.gameMapHeight, b; y < height; y += blockSize) {
       // Remember: landValueMap values are in the range 0-250
       var value = landValueMap.worldGet(x, y);
 
@@ -352,7 +356,9 @@ var crimeScan = function(census, blockMaps) {
         value = Math.min(value, 300);
 
         // If the police are nearby, there's no point committing the crime of the century
-        value -= policeStationMap.worldGet(x, y);
+        // Nation Builder fix: the third smoothing pass lands in policeStationEffectMap, which is what the original
+        // subtracts here.
+        value -= policeStationEffectMap.worldGet(x, y);
 
         // Force in to range 0-250
         value = MiscUtils.clamp(value, 0, 250);

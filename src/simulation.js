@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { BlockMap } from './blockMap.ts';
@@ -340,10 +342,10 @@ var simulate = function(simData) {
 
     case 9:
       if (this._cityTime % CENSUS_FREQUENCY_10 === 0)
-        this._census.take10Census(budget);
+        this._census.take10Census(this.budget);
 
       if (this._cityTime % CENSUS_FREQUENCY_120 === 0)
-        this._census.take120Census(budget);
+        this._census.take120Census(this.budget);
 
       if (this._cityTime % TAX_FREQUENCY === 0)  {
         this.budget.collectTax(this._gameLevel, this._census);
@@ -518,12 +520,12 @@ Simulation.prototype._sendMessages = function() {
       break;
 
     case 57:
-      if (this.budget.fireEffect < Math.floor(7 * this.budget.MAX_FIRE_STATION_EFFECT / 10) && this._census.totalPop > 20)
+      if (this.budget.fireEffect < Math.floor(7 * this.budget.MAX_FIRESTATION_EFFECT / 10) && this._census.totalPop > 20)
         this._emitEvent(Messages.FRONT_END_MESSAGE, {subject: Messages.FIRE_STATION_NEEDS_FUNDING});
       break;
 
     case 60:
-      if (this.budget.policeEffect < Math.floor(7 * this.budget.MAX_POLICE_STATION_EFFECT / 10) && this._census.totalPop > 20)
+      if (this.budget.policeEffect < Math.floor(7 * this.budget.MAX_POLICESTATION_EFFECT / 10) && this._census.totalPop > 20)
         this._emitEvent(Messages.FRONT_END_MESSAGE, {subject: Messages.POLICE_NEEDS_FUNDING});
       break;
 
@@ -621,7 +623,7 @@ Simulation.prototype._updateTime = function() {
   var cityMonth = Math.floor(this._cityTime % 48) >> 2;
 
   if (cityYear >= megalinium) {
-    this.setYear(startingYear);
+    this._setYear(this._startingYear);
     return;
   }
 

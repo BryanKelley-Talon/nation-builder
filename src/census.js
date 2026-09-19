@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { MiscUtils } from './miscUtils.js';
@@ -121,11 +123,11 @@ Census.prototype.take10Census = function(budget) {
 
   var resPopScaled = this.resPop >> 8;
 
-  if (this.hospitalPop < this.resPopScaled)
+  if (this.hospitalPop < resPopScaled)
     this.needHospital = 1;
-  else if (this.hospitalPop > this.resPopScaled)
+  else if (this.hospitalPop > resPopScaled)
     this.needHospital = -1;
-  else if (this.hospitalPop === this.resPopScaled)
+  else if (this.hospitalPop === resPopScaled)
     this.needHospital = 0;
 
   this.changed = true;

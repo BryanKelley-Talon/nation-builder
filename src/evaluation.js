@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { EventEmitter } from './eventEmitter.js';
@@ -36,7 +38,7 @@ Evaluation.prototype.cityEvaluation = function(simData) {
 
   if (census.totalPop > 0) {
     for (var i = 0; i < NUMPROBLEMS; i++)
-      problemData.push(0);
+      problemData[i] = 0;
 
     this.getAssessedValue(census);
     this.getPopulation(census);
@@ -261,11 +263,11 @@ Evaluation.prototype.getScore = function(simData) {
     score -= budget.MAX_ROAD_EFFECT - budget.roadEffect;
 
   // Penalize player by up to 10% for underfunded police and fire services
-  if (budget.policeEffect < budget.MAX_POLICE_STATION_EFFECT)
-    score = Math.round(score * (0.9 + (budget.policeEffect / (10 * budget.MAX_POLICE_STATION_EFFECT))));
+  if (budget.policeEffect < budget.MAX_POLICESTATION_EFFECT)
+    score = Math.round(score * (0.9 + (budget.policeEffect / (10 * budget.MAX_POLICESTATION_EFFECT))));
 
-  if (budget.fireEffect < budget.MAX_FIRE_STATION_EFFECT)
-    score = Math.round(score * (0.9 + (budget.fireEffect / (10 * budget.MAX_FIRE_STATION_EFFECT))));
+  if (budget.fireEffect < budget.MAX_FIRESTATION_EFFECT)
+    score = Math.round(score * (0.9 + (budget.fireEffect / (10 * budget.MAX_FIRESTATION_EFFECT))));
 
   // Penalise the player by 15% if demand for any type of zone has collapsed due
   // to overprovision
@@ -288,7 +290,8 @@ Evaluation.prototype.getScore = function(simData) {
     scale = (this.cityPopDelta / this.cityPop) + 1.0;
   } else if (this.cityPopDelta < 0) {
     // If the city is shrinking, scale down by up to 5% based on level of outward migration
-    scale = 0.95 + Math.floor(this.cityPopDelta / (this.cityPop - this.cityPopDelta));
+    // Nation Builder fix: upstream floored this fraction to -1, collapsing the score of any shrinking city.
+    scale = 0.95 + (this.cityPopDelta / (this.cityPop - this.cityPopDelta));
   }
 
   score = Math.round(score * scale);
