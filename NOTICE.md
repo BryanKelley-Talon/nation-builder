@@ -27,14 +27,21 @@ repository's git log.
 ## Modifications
 
 - **Build:** webpack/jest replaced with Vite/Vitest.
-- **Chrome:** product name changed to Nation Builder; Twitter widget removed;
-  Flashpoint palette and type applied to the page chrome; about page rewritten.
+- **Chrome:** product name changed to Nation Builder; Twitter widget and the
+  half-hour donation nag removed; about page and footer credits rewritten;
+  upstream splash screen replaced by the teaching layer's opening screens.
 - **Port bug fixes** (bugs in micropolisJS, not in the 1989 original):
   crime scan never ran; police/fire underfunding constants misnamed; census
   money history read an undeclared `budget`; hospital demand read an undefined
   field; shrinking-city score scale floored to -1; `_updateTime` rollover called
-  an undefined function.
+  an undefined function; auto-bulldoze setting did not load; evaluation's
+  problem list grew every year; heavy-traffic message shared another message's
+  name.
+- **Performance:** the sim tick no longer queries layout on every tick.
 - **Engine seams for the teaching layer:** configurable start year and funds
   (saved with the city), a year-end event, an exported tuning object for
-  governance modifiers, tool availability gating by year.
-- **Teaching layer:** scenario loader, governance choice, save code and save file.
+  governance modifiers, hooks in `Game` for tool refusal, tool feedback, saving
+  and teaching-layer dialogs.
+- **Teaching layer (new code, `src/nb/`):** scenario loader, terrain loader,
+  era tool gating, governance choice, save code, city file, session wiring and
+  screens.
