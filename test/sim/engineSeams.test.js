@@ -61,8 +61,21 @@ describe('year-end event', () => {
     for (const y of years) {
       expect(Number.isFinite(y.score)).toBe(true);
       expect(Number.isFinite(y.approval)).toBe(true);
-      expect(Array.isArray(y.problems)).toBe(true);
+      expect(y.problems.every(p => Number.isInteger(p) && p >= 0 && p < 7)).toBe(true);
     }
+  });
+});
+
+describe('year-end event before anyone lives here', () => {
+  it('lists no problems rather than the engine’s placeholder', () => {
+    const { sim } = makeSim();
+    const years = [];
+    sim.addEventListener(Messages.YEAR_ENDED, e => years.push(e));
+
+    runYears(sim, 1);
+    runTicks(sim, 1);
+
+    expect(years[0].problems).toEqual([]);
   });
 });
 

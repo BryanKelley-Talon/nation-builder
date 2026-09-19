@@ -432,8 +432,9 @@ Simulation.prototype._emitYearEnded = function() {
   var evaluation = this.evaluation;
   var problems = [];
   for (var i = 0; i < 4; i++) {
+    // Before the first residents arrive, every slot holds the "no problem" sentinel (the problem count).
     var p = evaluation.getProblemNumber(i);
-    if (p !== null)
+    if (p !== null && p < evaluation.problemVotes.length)
       problems.push(p);
   }
 

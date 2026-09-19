@@ -78,6 +78,14 @@ function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name, simO
   this.dialogOpen = false;
   this._openWindow = null;
   this.mouse = null;
+
+  // Nation Builder hooks, set by the teaching layer (src/nb/session.js) after construction:
+  //   toolGuard(toolName) -> message or null: a non-null message refuses the tool before it is applied.
+  //   onToolResult(toolName, result, tileCoords) -> message or null: shown in place of the default tool text.
+  //   onSaveRequested(): replaces the upstream localStorage save.
+  this.toolGuard = null;
+  this.onToolResult = null;
+  this.onSaveRequested = null;
   this.lastCoord = null;
   this.simNeededBudget = false;
   this.isPaused = false;
@@ -250,12 +258,33 @@ function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name, simO
 }
 
 
-Game.prototype.save = function() {
+// Nation Builder: the engine's save data, without writing it anywhere.
+Game.prototype.saveData = function() {
   var saveData = {name: this.name, everClicked: this.everClicked};
   BaseTool.save(saveData);
   this.simulation.save(saveData);
+  return saveData;
+};
 
-  Storage.saveGame(saveData);
+
+Game.prototype.save = function() {
+  Storage.saveGame(this.saveData());
+};
+
+
+// Nation Builder: pause the game behind a teaching-layer dialog. Escape calls close(), as for upstream windows.
+Game.prototype.openExternalDialog = function(close) {
+  this.dialogOpen = true;
+  this._openWindow = 'externalDialog';
+  this.externalDialog = {close: close};
+};
+
+
+Game.prototype.closeExternalDialog = function() {
+  if (this._openWindow === 'externalDialog') {
+    this.dialogOpen = false;
+    this._openWindow = null;
+  }
 };
 
 
@@ -460,6 +489,15 @@ Game.prototype.handleTool = function(data) {
     return;
 
   var tool = this.inputStatus.currentTool;
+  var toolName = this.inputStatus.toolName;
+
+  if (this.toolGuard) {
+    var refusal = this.toolGuard(toolName);
+    if (refusal) {
+      $('#toolOutput').text(refusal);
+      return;
+    }
+  }
 
   var budget = this.simulation.budget;
   var evaluation = this.simulation.evaluation;
@@ -468,6 +506,13 @@ Game.prototype.handleTool = function(data) {
   tool.doTool(tileCoords.x, tileCoords.y, this.simulation.blockMaps);
 
   tool.modifyIfEnoughFunding(budget);
+
+  var feedback = this.onToolResult ? this.onToolResult(toolName, tool.result, tileCoords) : null;
+  if (feedback) {
+    $('#toolOutput').text(feedback);
+    return;
+  }
+
   switch (tool.result) {
     case tool.TOOLRESULT_NEEDS_BULLDOZE:
       $('#toolOutput').text(Text.toolMessages.needsDoze);
@@ -484,6 +529,11 @@ Game.prototype.handleTool = function(data) {
 
 
 Game.prototype.handleSave = function() {
+  if (this.onSaveRequested) {
+    this.onSaveRequested();
+    return;
+  }
+
   this.save();
   this.dialogOpen = true;
   this._openWindow = 'saveWindow';

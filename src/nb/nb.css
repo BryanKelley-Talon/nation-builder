@@ -1,0 +1,391 @@
+/* Nation Builder (Flashpoint History), 2026. GNU GPL v3 with additional terms — see LICENSE and NOTICE.md. */
+
+/* ============================================================
+   CRITICAL — Vite centering bug fix (CONVENTIONS.md → Design constants).
+   This block MUST stay first and MUST keep the !important flags.
+   ============================================================ */
+#root, #nb-root {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+/* Design tokens (CONVENTIONS.md → Design constants). Dark mode only. */
+:root {
+  --amber: #c17700;
+  --amber-bright: #e89923;
+  --ink: #16120e;
+  --parchment: #ede3d2;
+  --parchment-dim: #c9bda8;
+  --ink-raised: #221b15;
+  --line: #3a2f25;
+  --danger: #f0a08a;
+  --ok: #b9d99a;
+
+  --font-label: "Cinzel", Georgia, serif;
+  --font-title: "Playfair Display", Georgia, serif;
+  --font-body: "Libre Baskerville", Georgia, serif;
+  --font-code: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --max-content: 1040px;
+  --reading-col: 640px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-overlay *, .nb-overlay *::before, .nb-overlay *::after {
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* The overlay sits above the game and its upstream modals (z 20) but below the too-small screen (z 200). */
+.nb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow-y: auto;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  padding: 48px 16px;
+}
+
+.nb-overlay-dialog {
+  background: rgba(22, 18, 14, 0.88);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.nb-panel {
+  max-width: var(--reading-col);
+  margin: 0 auto;
+}
+
+/* Upstream style.css zeroes every margin; give the overlay's text back its rhythm. */
+.nb-overlay p, .nb-overlay dl {
+  margin: 0 0 12px;
+}
+
+.nb-panel-narrow {
+  width: 100%;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--amber);
+  padding: 28px 32px;
+}
+
+.nb-kicker {
+  font-family: var(--font-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.nb-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.1;
+  margin: 0 0 24px;
+  color: var(--parchment);
+}
+
+.nb-heading {
+  font-family: var(--font-title);
+  font-size: 32px;
+  margin: 8px 0 16px;
+}
+
+.nb-disclaimer {
+  font-style: italic;
+  border-left: 3px solid var(--amber);
+  padding-left: 16px;
+  color: var(--parchment);
+}
+
+.nb-hint, .nb-quiet, .nb-note, .nb-scenario {
+  color: var(--parchment-dim);
+}
+
+.nb-note {
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+}
+
+.nb-field {
+  border: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+
+.nb-field legend, .nb-label, .nb-field summary {
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--parchment);
+}
+
+.nb-field summary {
+  cursor: pointer;
+}
+
+.nb-label {
+  display: block;
+}
+
+.nb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+/* Upstream style.css sizes every button 140×19px; the overlay's buttons opt out. */
+.nb-overlay button, .nb-header-badge button {
+  width: auto;
+  height: auto;
+  font-family: var(--font-label);
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.nb-primary, .nb-secondary {
+  padding: 12px 22px;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.nb-primary {
+  background: var(--amber);
+  color: var(--ink);
+  border: 1px solid var(--amber);
+}
+
+.nb-primary:hover:not(:disabled) {
+  background: var(--amber-bright);
+}
+
+.nb-secondary {
+  background: transparent;
+  color: var(--parchment);
+  border: 1px solid var(--parchment-dim);
+}
+
+.nb-secondary:hover:not(:disabled) {
+  border-color: var(--amber-bright);
+  color: var(--amber-bright);
+}
+
+.nb-overlay button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nb-overlay button:focus-visible, .nb-input:focus-visible, .nb-field summary:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+.nb-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--amber-bright);
+  text-decoration: underline;
+  font-family: var(--font-body) !important;
+}
+
+.nb-back {
+  font-size: 15px !important;
+}
+
+.nb-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.nb-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--ink-raised);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.nb-card:hover:not(:disabled) {
+  border-color: var(--amber);
+}
+
+.nb-card-selected {
+  border-color: var(--amber-bright);
+  box-shadow: inset 0 0 0 1px var(--amber-bright);
+}
+
+.nb-card-title {
+  font-family: var(--font-label);
+  font-weight: 600;
+}
+
+.nb-card-detail {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--parchment-dim);
+}
+
+.nb-badge, .nb-skill {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.nb-badge {
+  border: 1px dashed var(--danger);
+  color: var(--danger);
+}
+
+.nb-skill {
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.nb-input {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  color: var(--parchment);
+  background: var(--ink-raised);
+  border: 1px solid var(--parchment-dim);
+  border-radius: 3px;
+}
+
+.nb-input::placeholder {
+  color: #8f8474;
+}
+
+.nb-code-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.nb-code-input {
+  font-family: var(--font-code);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  max-width: 260px;
+}
+
+.nb-code {
+  font-family: var(--font-code);
+  font-size: 32px;
+  letter-spacing: 0.08em;
+  color: var(--amber-bright);
+  margin: 8px 0 0;
+  user-select: all;
+}
+
+.nb-drop {
+  margin-top: 16px;
+  padding: 24px;
+  border: 2px dashed var(--line);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.nb-drop-active {
+  border-color: var(--amber-bright);
+}
+
+.nb-steps {
+  padding-left: 22px;
+}
+
+.nb-steps li {
+  margin-bottom: 20px;
+}
+
+.nb-stats {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  margin-top: 20px;
+}
+
+.nb-stats dt {
+  font-family: var(--font-label);
+  color: var(--parchment-dim);
+}
+
+.nb-stats dd {
+  margin: 0;
+}
+
+.nb-error {
+  color: var(--danger);
+}
+
+.nb-ok {
+  color: var(--ok);
+}
+
+.nb-error, .nb-ok {
+  margin-top: 12px;
+}
+
+.nb-overlay code {
+  font-family: var(--font-code);
+  color: var(--parchment);
+}
+
+/* In game: the chosen government, in the header bar. */
+.nb-header-badge {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  color: #fff;
+  font-family: var(--font-label);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+/* Era-locked tools in the upstream palette. */
+.toolButton.nbLocked {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .nb-title {
+    font-size: 40px;
+  }
+
+  .nb-panel-narrow {
+    padding: 20px 16px;
+  }
+}

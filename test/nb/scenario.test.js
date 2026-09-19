@@ -6,7 +6,7 @@ import { Simulation } from '../../src/simulation.js';
 import { eraRules, toolLockedUntil, universalPowerIn } from '../../src/nb/era.js';
 import { applyStartingPressures, governanceChoices, simOptionsFor, skillLabel, validateScenario }
   from '../../src/nb/scenario.js';
-import { buildMap, MAP_HEIGHT, MAP_WIDTH, parseTerrain } from '../../src/nb/terrain.js';
+import { buildMap, footprintTouchesWater, MAP_HEIGHT, MAP_WIDTH, parseTerrain } from '../../src/nb/terrain.js';
 import { DIRT, RIVER, WOODS_HIGH, WOODS_LOW, WATER_HIGH, WATER_LOW } from '../../src/tileValues.ts';
 import { runYears } from '../sim/harness.js';
 
@@ -117,6 +117,13 @@ describe('terrain-driven placement', () => {
     tools.residential.doTool(80, 50, sim.blockMaps);
     expect(tools.residential.modifyIfEnoughFunding(sim.budget)).toBe(false);
     expect(sim.budget.totalFunds).toBe(10000);
+  });
+
+  it('spots water anywhere under a building’s footprint', () => {
+    const { map } = world();
+    expect(footprintTouchesWater(map, 56, 50, 3)).toBe(false);
+    expect(footprintTouchesWater(map, 58, 50, 3)).toBe(true);
+    expect(footprintTouchesWater(map, 118, 98, 6)).toBe(true);
   });
 
   it('charges extra to clear forest before zoning', () => {

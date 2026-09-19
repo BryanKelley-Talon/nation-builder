@@ -9,12 +9,14 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import $ from "jquery";
 
 import { Config } from './config.js';
-import { SplashScreen } from './splashScreen.js';
+import { startNationBuilder } from './nb/main.jsx';
 import { TileSet } from './tileSet.js';
 import { TileSetURI } from './tileSetURI.ts';
 import { TileSetSnowURI } from './tileSetSnowURI.ts';
@@ -41,7 +43,8 @@ var onAllTilesLoaded = function() {
   var sprites = $('#sprites')[0];
   if (sprites.complete) {
     $('#loadingBanner').css('display', 'none');
-    var s = new SplashScreen(tileSet, snowTileSet, sprites);
+    // Nation Builder: the teaching layer's opening screens replace the upstream splash screen.
+    startNationBuilder({tileSet: tileSet, snowTileSet: snowTileSet, spriteSheet: sprites});
   } else {
      window.setTimeout(onAllTilesLoaded, 0);
   }

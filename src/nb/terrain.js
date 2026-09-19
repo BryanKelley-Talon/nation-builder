@@ -11,7 +11,7 @@
 import { GameMap } from '../gameMap.js';
 import { MapGenerator, smoothRiver, smoothTrees } from '../mapGenerator.js';
 import { BLBNBIT } from '../tileFlags.ts';
-import { DIRT, REDGE, RIVER, WOODS } from '../tileValues.ts';
+import { DIRT, REDGE, RIVER, WATER_HIGH, WATER_LOW, WOODS } from '../tileValues.ts';
 
 export const MAP_WIDTH = 120;
 export const MAP_HEIGHT = 100;
@@ -80,4 +80,19 @@ export function buildMap(terrain) {
   smoothTrees(map);
 
   return map;
+}
+
+
+// Building tools anchor one tile up and left of the clicked tile (BuildingTool.buildBuilding).
+export function footprintTouchesWater(map, left, top, size) {
+  for (let y = top; y < top + size; y++) {
+    for (let x = left; x < left + size; x++) {
+      if (!map.testBounds(x, y))
+        continue;
+      const value = map.getTileValue(x, y);
+      if (value >= WATER_LOW && value <= WATER_HIGH)
+        return true;
+    }
+  }
+  return false;
 }
