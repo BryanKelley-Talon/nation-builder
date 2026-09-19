@@ -45,3 +45,20 @@ JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF OR LIMITATIONS ON IMPLIED
 WARRANTIES OR THE LIMITATIONS ON THE APPLICABLE STATUTORY RIGHTS OF A
 CONSUMER, SO SOME OR ALL OF THE ABOVE EXCLUSIONS AND LIMITATIONS MAY
 NOT APPLY TO YOU.
+
+------------------------------------------------------------------------
+
+NATION BUILDER — MODIFIED VERSION NOTICE
+
+Nation Builder is a MODIFIED VERSION of micropolisJS. It is not the
+original program and must not be identified as the original program.
+Modifications Copyright (C) Flashpoint History, 2026, released under the
+same GNU General Public License V3 and the same ADDITIONAL TERMS above,
+which travel with this code unchanged. See NOTICE.md for what was changed.
+
+Nation Builder does not use the SimCity trademark and claims no
+affiliation or association with Electronic Arts Inc. or its employees.
+
+Scenario and curriculum content under content/ is a separate work,
+licensed separately (see content/LICENSE.md). It is data loaded at
+runtime, not part of this program.
