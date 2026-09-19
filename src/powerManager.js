@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { BlockMap } from './blockMap.ts';
@@ -36,7 +38,7 @@ PowerManager.prototype.setTilePower = function(x, y) {
   var tileValue = tile.getValue();
 
   if (tileValue === NUCLEAR || tileValue === POWERPLANT ||
-      this.powerGridMap.worldGet(x, y) > 0) {
+      this.powerGridMap.worldGet(x, y) > 0 || (this.tuning && this.tuning.universalPower)) {
     tile.addFlags(POWERBIT);
     return;
   }

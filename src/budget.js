@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { EventEmitter } from './eventEmitter.js';
@@ -229,7 +231,8 @@ Budget.prototype.updateFundEffects = function() {
 };
 
 
-Budget.prototype.collectTax = function(gameLevel, census) {
+Budget.prototype.collectTax = function(gameLevel, census, tuning) {
+  var taxYield = tuning ? tuning.taxYield : 1;
   this.cashFlow = 0;
 
   // How much would it cost to fully fund every service?
@@ -240,7 +243,7 @@ Budget.prototype.collectTax = function(gameLevel, census) {
   var railCost = census.railTotal * railMaintenanceCost;
   this.roadMaintenanceBudget = Math.floor((roadCost + railCost) * RLevels[gameLevel]);
 
-  this.taxFund = Math.floor(Math.floor(census.totalPop * census.landValueAverage / 120) * this.cityTax * FLevels[gameLevel]);
+  this.taxFund = Math.floor(Math.floor(census.totalPop * census.landValueAverage / 120) * this.cityTax * FLevels[gameLevel] * taxYield);
 
   if (census.totalPop > 0) {
     this.cashFlow = this.taxFund - (this.policeMaintenanceBudget + this.fireMaintenanceBudget + this.roadMaintenanceBudget);

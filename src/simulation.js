@@ -36,8 +36,11 @@ import { Stadia } from './stadia.js';
 import { Traffic } from './traffic.js';
 import { Transport } from './transport.js';
 import { Valves } from './valves.js';
+import { makeTuning } from './tuning.js';
 
-var Simulation = EventEmitter(function (gameMap, gameLevel, speed, savedGame) {
+// Nation Builder: options may carry {startingYear, funds, tuning}. A saved game's own values win over options.
+var Simulation = EventEmitter(function (gameMap, gameLevel, speed, savedGame, options) {
+  options = options || {};
   this._map = gameMap;
   this.setLevel(gameLevel);
   this.setSpeed(speed);
@@ -47,7 +50,8 @@ var Simulation = EventEmitter(function (gameMap, gameLevel, speed, savedGame) {
   this._cityTime = 0;
   this._cityPopLast = 0;
   this._messageLast = undefined;
-  this._startingYear = 1900;
+  this._startingYear = options.startingYear !== undefined ? options.startingYear : 1900;
+  this.tuning = makeTuning(options.tuning);
 
   // Last date sent to front end
   this._cityYearLast = -1;
@@ -62,6 +66,7 @@ var Simulation = EventEmitter(function (gameMap, gameLevel, speed, savedGame) {
   this.budget = new Budget();
   this._census = new Census();
   this._powerManager = new PowerManager(this._map);
+  this._powerManager.tuning = this.tuning;
   this.spriteManager = new SpriteManager(this._map);
   this._mapScanner = new MapScanner(this._map);
   this._repairManager = new RepairManager(this._map);
@@ -116,7 +121,7 @@ var Simulation = EventEmitter(function (gameMap, gameLevel, speed, savedGame) {
   if (savedGame) {
     this.load(savedGame);
   } else {
-    this.budget.setFunds(20000);
+    this.budget.setFunds(options.funds !== undefined ? options.funds : 20000);
     this._census.totalPop = 1;
   }
 
@@ -150,11 +155,13 @@ Simulation.prototype.isPaused = function() {
 };
 
 
-var saveProps = ['_cityTime', '_speed', '_gameLevel'];
+var saveProps = ['_cityTime', '_speed', '_gameLevel', '_startingYear'];
 
 Simulation.prototype.save = function(saveData) {
   for (var i = 0, l = saveProps.length; i < l; i++)
     saveData[saveProps[i]] = this[saveProps[i]];
+
+  saveData.tuning = Object.assign({}, this.tuning);
 
   this._map.save(saveData);
   this.evaluation.save(saveData);
@@ -165,14 +172,27 @@ Simulation.prototype.save = function(saveData) {
 
 
 Simulation.prototype.load = function(saveData) {
-  for (var i = 0, l = saveProps.length; i < l; i++)
-    this[saveProps[i]] = saveData[saveProps[i]];
+  for (var i = 0, l = saveProps.length; i < l; i++) {
+    // Saves from before Nation Builder have no _startingYear; they began in 1900.
+    if (saveData[saveProps[i]] !== undefined)
+      this[saveProps[i]] = saveData[saveProps[i]];
+  }
+
+  if (saveData.tuning)
+    this.setTuning(saveData.tuning);
 
   this._map.load(saveData);
   this.evaluation.load(saveData);
   this._valves.load(saveData);
   this.budget.load(saveData);
   this._census.load(saveData);
+};
+
+
+// Replace the tuning knobs named in overrides; every other knob returns to its default.
+Simulation.prototype.setTuning = function(overrides) {
+  this.tuning = makeTuning(overrides);
+  this._powerManager.tuning = this.tuning;
 };
 
 
@@ -241,6 +261,7 @@ Simulation.prototype._constructSimData = function() {
     simulator: this,
     spriteManager: this.spriteManager,
     trafficManager: this._traffic,
+    tuning: this.tuning,
     valves: this._valves
   };
 };
@@ -295,7 +316,7 @@ Simulation.prototype.init = function() {
   this._mapScanner.mapScan(0, this._map.width, simData);
   this._powerManager.doPowerScan(this._census);
   BlockMapUtils.pollutionTerrainLandValueScan(this._map, this._census, this.blockMaps);
-  BlockMapUtils.crimeScan(this._census, this.blockMaps);
+  BlockMapUtils.crimeScan(this._census, this.blockMaps, this.tuning);
   BlockMapUtils.populationDensityScan(this._map, this.blockMaps);
   BlockMapUtils.fireAnalysis(this.blockMaps);
 };
@@ -323,7 +344,7 @@ var simulate = function(simData) {
       this._cityTime++;
 
       if ((this._simCycle & 1) === 0)
-        this._valves.setValves(this._gameLevel, this._census, this.budget);
+        this._valves.setValves(this._gameLevel, this._census, this.budget, this.tuning);
 
       this._clearCensus();
       break;
@@ -348,8 +369,9 @@ var simulate = function(simData) {
         this._census.take120Census(this.budget);
 
       if (this._cityTime % TAX_FREQUENCY === 0)  {
-        this.budget.collectTax(this._gameLevel, this._census);
+        this.budget.collectTax(this._gameLevel, this._census, this.tuning);
         this.evaluation.cityEvaluation(simData);
+        this._emitYearEnded();
       }
 
       break;
@@ -374,7 +396,7 @@ var simulate = function(simData) {
 
     case 13:
       if ((this._simCycle % speedCrimeScan[speedIndex]) === 0)
-        BlockMapUtils.crimeScan(this._census, this.blockMaps);
+        BlockMapUtils.crimeScan(this._census, this.blockMaps, this.tuning);
       break;
 
     case 14:
@@ -402,6 +424,30 @@ Simulation.prototype._simulate = function(simData) {
   this.evaluation.cityEvaluation(simData);
   this._simulate = simulate;
   this._simulate(simData);
+};
+
+
+// Nation Builder: a snapshot of the year just evaluated, for the teaching layer's checkpoints and session panels.
+Simulation.prototype._emitYearEnded = function() {
+  var evaluation = this.evaluation;
+  var problems = [];
+  for (var i = 0; i < 4; i++) {
+    var p = evaluation.getProblemNumber(i);
+    if (p !== null)
+      problems.push(p);
+  }
+
+  this._emitEvent(Messages.YEAR_ENDED, {
+    year: this.getDate().year - 1,
+    population: evaluation.cityPop,
+    score: evaluation.cityScore,
+    approval: evaluation.cityYes,
+    problems: problems,
+    funds: this.budget.totalFunds,
+    taxRate: this.budget.cityTax,
+    crimeAverage: this._census.crimeAverage,
+    pollutionAverage: this._census.pollutionAverage
+  });
 };
 
 
@@ -444,7 +490,7 @@ Simulation.prototype._sendMessages = function() {
       break;
 
     case 22:
-      if (totalZonePop > 10 && powerPop === 0)
+      if (totalZonePop > 10 && powerPop === 0 && !this.tuning.universalPower)
         this._emitEvent(Messages.FRONT_END_MESSAGE, {subject: Messages.NEED_ELECTRICITY});
       break;
 

@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 export const AUTOBUDGET_CHANGED = "Autobudget changed";
@@ -34,7 +36,7 @@ export const FIRE_STATION_NEEDS_FUNDING = "Fire station needs funding";
 export const FLOODING_REPORTED = "Flooding reported";
 export const FRONT_END_MESSAGE = "Front-end Message";
 export const FUNDS_CHANGED = "Total funds has changed";
-export const HEAVY_TRAFFIC = "Total funds has changed";
+export const HEAVY_TRAFFIC = "Heavy traffic";
 export const HELICOPTER_CRASHED = "Helicopter crashed";
 export const HIGH_CRIME = "High crime";
 export const HIGH_POLLUTION = "High pollution";
@@ -90,6 +92,8 @@ export const TOUCH_WINDOW_CLOSED = "Touch Window closed";
 export const TRAFFIC_JAMS = "Traffic jams reported";
 export const TRAIN_CRASHED = "Train crashed";
 export const VALVES_UPDATED = "Valves updated";
+// Nation Builder: emitted after each January evaluation, with a snapshot of the year just ended.
+export const YEAR_ENDED = "Year ended";
 export const WELCOME = "Welcome to micropolisJS";
 
 export const DISASTER_MESSAGES = [

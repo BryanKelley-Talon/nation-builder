@@ -14,7 +14,8 @@ export function flatMap() {
 }
 
 export function makeSim(map = flatMap(), options = {}) {
-  const sim = new Simulation(map, options.level ?? Simulation.LEVEL_EASY, Simulation.SPEED_FAST, options.savedGame);
+  const sim = new Simulation(map, options.level ?? Simulation.LEVEL_EASY, Simulation.SPEED_FAST, options.savedGame,
+                           options.simOptions);
   return { map, sim, tools: GameTools(map) };
 }
 
@@ -42,7 +43,7 @@ export function runYears(sim, years) {
 
 // A small working town: a block of residential, commercial and industrial zones on a road grid, powered by a coal
 // plant. Enough to grow population, land value and crime within a few simulated years.
-export function starterTown(world, { police = false } = {}) {
+export function starterTown(world, { police = false, power = true } = {}) {
   const zones = [
     ['residential', 20, 20], ['residential', 24, 20], ['residential', 28, 20],
     ['residential', 20, 24], ['residential', 24, 24], ['residential', 28, 24],
@@ -62,6 +63,12 @@ export function starterTown(world, { police = false } = {}) {
     build(world, 'road', 34, y);
   }
 
+  if (police)
+    build(world, 'police', 32, 20);
+
+  if (!power)
+    return;
+
   // Power lines run in the gaps between zone rows, so every zone touches one.
   build(world, 'coal', 40, 22);
   for (let x = 19; x <= 38; x++)
@@ -71,6 +78,4 @@ export function starterTown(world, { police = false } = {}) {
   for (let x = 19; x <= 33; x++)
     build(world, 'wire', x, 26);
 
-  if (police)
-    build(world, 'police', 32, 20);
 }

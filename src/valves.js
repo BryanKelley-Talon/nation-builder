@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { EventEmitter } from './eventEmitter.js';
@@ -51,7 +53,8 @@ Valves.prototype.load = function(saveData) {
 };
 
 
-Valves.prototype.setValves = function(gameLevel, census, budget) {
+Valves.prototype.setValves = function(gameLevel, census, budget, tuning) {
+  var taxGrowthDrag = tuning ? tuning.taxGrowthDrag : 1;
   var resPopDenom = 8;
   var birthRate = 0.02;
   var labourBaseMax = 1.3;
@@ -122,9 +125,15 @@ Valves.prototype.setValves = function(gameLevel, census, budget) {
 
   // Constrain growth according to the tax level.
   var z = Math.min((budget.cityTax + gameLevel), taxMax);
-  resRatio = (resRatio - 1) * taxTableScale + taxTable[z];
-  comRatio = (comRatio - 1) * taxTableScale + taxTable[z];
-  indRatio = (indRatio - 1) * taxTableScale + taxTable[z];
+  resRatio = (resRatio - 1) * taxTableScale + taxTable[z] * taxGrowthDrag;
+  comRatio = (comRatio - 1) * taxTableScale + taxTable[z] * taxGrowthDrag;
+  indRatio = (indRatio - 1) * taxTableScale + taxTable[z] * taxGrowthDrag;
+
+  if (tuning) {
+    resRatio += tuning.resDemand;
+    comRatio += tuning.comDemand;
+    indRatio += tuning.indDemand;
+  }
 
   this.resValve = MiscUtils.clamp(this.resValve + Math.round(resRatio), -RES_VALVE_RANGE, RES_VALVE_RANGE);
   this.comValve = MiscUtils.clamp(this.comValve + Math.round(comRatio), -COM_VALVE_RANGE, COM_VALVE_RANGE);

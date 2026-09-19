@@ -320,7 +320,9 @@ var pollutionTerrainLandValueScan = function(map, census, blockMaps) {
 //    * The zone has a low value
 //    * The zone is a slum
 //    * The zone is far away from those pesky police
-var crimeScan = function(census, blockMaps) {
+var crimeScan = function(census, blockMaps, tuning) {
+  var policeEffectiveness = tuning ? tuning.policeEffectiveness : 1;
+  var crimePressure = tuning ? tuning.crimePressure : 0;
   var policeStationMap = blockMaps.policeStationMap;
   var policeStationEffectMap = blockMaps.policeStationEffectMap;
   var crimeRateMap = blockMaps.crimeRateMap;
@@ -358,7 +360,8 @@ var crimeScan = function(census, blockMaps) {
         // If the police are nearby, there's no point committing the crime of the century
         // Nation Builder fix: the third smoothing pass lands in policeStationEffectMap, which is what the original
         // subtracts here.
-        value -= policeStationEffectMap.worldGet(x, y);
+        value -= Math.round(policeStationEffectMap.worldGet(x, y) * policeEffectiveness);
+        value += crimePressure;
 
         // Force in to range 0-250
         value = MiscUtils.clamp(value, 0, 250);

@@ -44,7 +44,8 @@ import { TouchWarnWindow } from './touchWarnWindow.js';
 var disasterTimeout = 20 * 1000;
 
 
-function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name) {
+// Nation Builder: simOptions ({startingYear, funds, tuning}) pass through to the Simulation for new cities.
+function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name, simOptions) {
   difficulty = difficulty || 0;
   var savedGame;
 
@@ -59,7 +60,7 @@ function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name) {
   this.tileSet = tileSet;
   this.snowTileSet = snowTileSet;
   this.defaultSpeed = Simulation.SPEED_MED;
-  this.simulation = new Simulation(this.gameMap, difficulty, this.defaultSpeed, savedGame);
+  this.simulation = new Simulation(this.gameMap, difficulty, this.defaultSpeed, savedGame, simOptions);
 
   this.name = name || 'MyTown';
   this.everClicked = false;
