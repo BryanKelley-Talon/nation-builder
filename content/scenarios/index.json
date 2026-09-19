@@ -1,0 +1,10 @@
+{
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "holder": "Flashpoint History",
+    "sellable": false
+  },
+  "_note": "Scenario registry. A scenario's position in this list is its number inside save codes: append only, never reorder or delete (retire a scenario by leaving its id in place).",
+  "scenarios": ["dev-fixture-us11r"]
+}

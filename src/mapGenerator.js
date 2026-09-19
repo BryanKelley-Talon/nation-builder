@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { forEachCardinalDirection, getRandomCardinalDirection, getRandomDirection } from './direction.ts';
@@ -508,4 +510,5 @@ var smoothWater = function(map) {
 };
 
 
-export { MapGenerator };
+// Nation Builder: the edge smoothers are shared with the scenario terrain loader (src/nb/terrain.js).
+export { MapGenerator, smoothRiver, smoothTrees };
