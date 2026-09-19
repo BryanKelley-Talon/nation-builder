@@ -2,7 +2,7 @@
  *
  * The teaching layer's screens, drawn over the game: the opening disclaimer, founding a town (scenario and
  * government), continuing one (city file, this computer's copy, or a code), a teacher's code check, and the in-game
- * save dialog. The game canvas and its tools stay the original's.
+ * year in review and save dialog. The game canvas and its tools stay the original's.
  */
 
 import { useEffect, useRef, useState } from 'react';
@@ -15,18 +15,30 @@ import { readAutosave } from './session.js';
 const TOWN_NAME_MAX = 15;
 
 
-export function App({ content, onFound, onContinue, bindSaveDialog }) {
+export function App({ content, onFound, onContinue, bindDialogs }) {
   const [screen, setScreen] = useState({ name: 'title' });
   const [session, setSession] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [review, setReview] = useState(null);
+
+  // Each dialog pauses the game; Escape closes it through the close function handed to openExternalDialog.
+  const openSave = s => {
+    setSession(s);
+    setReview(null);
+    setSaving(true);
+    s.game.openExternalDialog(() => setSaving(false));
+  };
 
   useEffect(() => {
-    bindSaveDialog(s => {
-      setSession(s);
-      setSaving(true);
-      s.game.openExternalDialog(() => setSaving(false));
+    bindDialogs({
+      save: openSave,
+      yearReview: (s, r) => {
+        setSession(s);
+        setReview(r);
+        s.game.openExternalDialog(() => setReview(null));
+      },
     });
-  }, [bindSaveDialog]);
+  }, [bindDialogs]);
 
   const found = async choice => {
     setScreen({ name: 'playing' });
@@ -41,6 +53,11 @@ export function App({ content, onFound, onContinue, bindSaveDialog }) {
     return (
       <>
         {session && <HeaderBadge session={session} />}
+        {review && session && (
+          <YearReview review={review} strings={content.strings.year_review}
+                      onClose={() => { setReview(null); session.game.closeExternalDialog(); }}
+                      onSave={() => openSave(session)} />
+        )}
         {saving && session && (
           <SaveDialog session={session} onClose={() => { setSaving(false); session.game.closeExternalDialog(); }} />
         )}
@@ -307,6 +324,66 @@ function SaveDialog({ session, onClose }) {
       </div>
     </div>
   );
+}
+
+
+function YearReview({ review, strings, onClose, onSave }) {
+  return (
+    <div className="nb-overlay nb-overlay-dialog" role="dialog" aria-modal="true" aria-labelledby="nb-review-title">
+      <div className="nb-panel nb-panel-narrow">
+        <h2 id="nb-review-title" className="nb-heading">{review.title}</h2>
+
+        <dl className="nb-review-stats">
+          {review.stats.map(s => (
+            <div key={s.key} className="nb-review-stat">
+              <dt>{s.label}</dt>
+              <dd>
+                <span className="nb-review-value">{formatStat(s.key, s.value)}</span>
+                {s.change !== null && <span className="nb-review-change">{formatChange(s.key, s.change)}</span>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <h3 className="nb-subheading">{strings.problems_heading}</h3>
+        {review.problems.length > 0
+          ? <ol className="nb-review-problems">{review.problems.map(p => <li key={p}>{p}</li>)}</ol>
+          : <p className="nb-hint">{strings.no_problems}</p>}
+
+        {review.poleLine && (
+          <>
+            <h3 className="nb-subheading">{strings.pole_heading} <SkillChip label={review.skillLabel} /></h3>
+            <p>{review.poleLine}</p>
+          </>
+        )}
+
+        <p className="nb-hint">{strings.checkpoint}</p>
+        <div className="nb-actions">
+          <button className="nb-primary" onClick={onClose} autoFocus>{strings.keep_building}</button>
+          <button className="nb-secondary" onClick={onSave}>{strings.save}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+function formatStat(key, value) {
+  if (key === 'funds')
+    return '$' + value.toLocaleString('en-US');
+  if (key === 'approval')
+    return `${value}%`;
+  if (key === 'score')
+    return `${value} of 1000`;
+  return value.toLocaleString('en-US');
+}
+
+
+function formatChange(key, change) {
+  if (change === 0)
+    return '±0';
+  const magnitude = key === 'funds' ? '$' + Math.abs(change).toLocaleString('en-US') : Math.abs(change).toLocaleString('en-US');
+  return (change > 0 ? '+' : '−') + magnitude + (key === 'approval' ? ' pts' : '');
 }
 
 

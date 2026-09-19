@@ -446,6 +446,7 @@ Simulation.prototype._emitYearEnded = function() {
     problems: problems,
     funds: this.budget.totalFunds,
     taxRate: this.budget.cityTax,
+    taxesCollected: this.budget.taxFund,
     crimeAverage: this._census.crimeAverage,
     pollutionAverage: this._census.pollutionAverage
   });

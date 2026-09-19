@@ -7,5 +7,51 @@
   },
   "_note": "Student-facing words the game shows. The disclaimer is the final text confirmed 2026-09-19 (buildconcept v1 section 5).",
   "disclaimer": "This is a history and civics simulation, not a real government. The choices here are simplified so you can see how the pieces connect — real governing is harder and slower than this. Nothing you do here is graded on outcome; it's graded on the thinking behind it.",
-  "terrain_water_refused": "Water here. Zones and buildings need dry land."
+  "terrain_water_refused": "Water here. Zones and buildings need dry land.",
+  "year_review": {
+    "_note": "Shown when a game year ends. Working wording from the build session for the content desks to revise; {braces} are filled in by the game. Each pole_lines key is a tuning knob and whether the government turns it up or down from a standard town.",
+    "title": "{year} in review",
+    "stats": {
+      "population": "Population",
+      "score": "City score",
+      "approval": "Approval",
+      "funds": "Funds"
+    },
+    "problems_heading": "What residents complain about most",
+    "no_problems": "Nobody is complaining much this year.",
+    "problems": {
+      "crime": "Crime",
+      "pollution": "Pollution",
+      "housing": "Housing costs",
+      "taxes": "Taxes",
+      "traffic": "Traffic",
+      "unemployment": "Not enough jobs",
+      "fire": "Fire danger"
+    },
+    "pole_heading": "Your government at work",
+    "trend": {
+      "up": "rose",
+      "down": "fell",
+      "steady": "held steady"
+    },
+    "pole_lines": {
+      "taxYield_up": "Under {pole}, the town collects more tax than a standard town: {collected} this year, where a standard town would have collected about {standard}.",
+      "taxYield_down": "Under {pole}, the town collects less tax than a standard town: {collected} this year, where a standard town would have collected about {standard}.",
+      "taxGrowthDrag_up": "Under {pole}, taxes hold growth back more than in a standard town. Population {trend} this year.",
+      "taxGrowthDrag_down": "Under {pole}, taxes hold growth back less than in a standard town. Population {trend} this year.",
+      "resDemand_up": "Under {pole}, more people want to build homes here than in a standard town. Population {trend} this year.",
+      "resDemand_down": "Under {pole}, fewer people want to build homes here than in a standard town. Population {trend} this year.",
+      "comDemand_up": "Under {pole}, more people want to open shops and offices here than in a standard town. Population {trend} this year.",
+      "comDemand_down": "Under {pole}, fewer people want to open shops and offices here than in a standard town. Population {trend} this year.",
+      "indDemand_up": "Under {pole}, more people want to build factories here than in a standard town. Population {trend} this year.",
+      "indDemand_down": "Under {pole}, fewer people want to build factories here than in a standard town. Population {trend} this year.",
+      "policeEffectiveness_up": "Under {pole}, each police station stops more crime than in a standard town. Crime {trend} this year.",
+      "policeEffectiveness_down": "Under {pole}, each police station stops less crime than in a standard town. Crime {trend} this year.",
+      "crimePressure_up": "Under {pole}, neighborhoods face more pressure toward crime than in a standard town. Crime {trend} this year.",
+      "crimePressure_down": "Under {pole}, neighborhoods face less pressure toward crime than in a standard town. Crime {trend} this year."
+    },
+    "checkpoint": "Checkpoint saved on this computer. Save your city file too if class is ending.",
+    "keep_building": "Keep building",
+    "save": "Save my town"
+  }
 }

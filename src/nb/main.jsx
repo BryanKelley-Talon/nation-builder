@@ -29,9 +29,15 @@ export async function startNationBuilder(assets) {
     return;
   }
 
-  let openSaveDialog = () => {};
-  const bindSaveDialog = open => { openSaveDialog = open; };
-  const common = { assets, strings: content.strings, onSaveRequested: session => openSaveDialog(session) };
+  // The in-game dialogs live in App; it binds their openers once it mounts.
+  const dialogs = { save: () => {}, yearReview: () => {} };
+  const bindDialogs = openers => Object.assign(dialogs, openers);
+  const common = {
+    assets,
+    strings: content.strings,
+    onSaveRequested: session => dialogs.save(session),
+    onYearReview: (session, review) => dialogs.yearReview(session, review),
+  };
 
   const onFound = ({ scenarioIndex, poleId, townName }) => {
     const scenario = content.scenarios[scenarioIndex];
@@ -50,5 +56,5 @@ export async function startNationBuilder(assets) {
     });
   };
 
-  root.render(<App content={content} onFound={onFound} onContinue={onContinue} bindSaveDialog={bindSaveDialog} />);
+  root.render(<App content={content} onFound={onFound} onContinue={onContinue} bindDialogs={bindDialogs} />);
 }
