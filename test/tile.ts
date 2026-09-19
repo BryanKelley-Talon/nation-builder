@@ -1,3 +1,4 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import { Tile } from "../src/tile";
 import * as TileFlags from "../src/tileFlags";
 import { DIRT, FLOOD, LIGHTNINGBOLT, TILE_COUNT, TILE_INVALID } from "../src/tileValues";

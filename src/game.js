@@ -9,6 +9,7 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
  */
 
 import $ from "jquery";
@@ -82,7 +83,8 @@ function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name) {
   this.lastBadMessageTime = null;
 
   var self = this;
-  if (!this.everClicked) {
+  // Nation Builder: the upstream half-hour donation nag is disabled; this is a classroom game.
+  if (false) {
     this.nagger = window.setTimeout(function() {
       self.dialogOpen = true;
       self._openWindow = 'nagWindow';

@@ -1,3 +1,4 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import { BlockMap } from "../src/blockMap";
 
 function threeByThreeBlockMap(): BlockMap {
@@ -88,7 +89,7 @@ describe("when getting and setting values", () => {
 describe("when copying from one block map to another", () => {
 
     it("should warn if copying from a map with a greater width", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = new BlockMap(4, 3, 4);
 
@@ -98,7 +99,7 @@ describe("when copying from one block map to another", () => {
     });
 
     it("should warn if copying from a map with a smaller width", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = new BlockMap(2, 3, 4);
 
@@ -108,7 +109,7 @@ describe("when copying from one block map to another", () => {
     });
 
     it("should warn if copying from a map with a smaller height", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = new BlockMap(3, 2, 4);
 
@@ -118,7 +119,7 @@ describe("when copying from one block map to another", () => {
     });
 
     it("should warn if copying from a map with a greater block size", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = new BlockMap(3, 3, 5);
 
@@ -128,7 +129,7 @@ describe("when copying from one block map to another", () => {
     });
 
     it("should warn if copying from a map with a smaller block size", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = new BlockMap(3, 3, 2);
 
@@ -138,7 +139,7 @@ describe("when copying from one block map to another", () => {
     });
 
     it("should not warn if map dimensions are compatible", () => {
-        console.warn = jest.fn();
+        console.warn = vi.fn();
         const dest = threeByThreeBlockMap();
         const source = threeByThreeBlockMap();
 

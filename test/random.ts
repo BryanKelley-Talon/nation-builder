@@ -1,7 +1,8 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import { Random } from "../src/random";
 
 function makeMathGlobal() {
-    const math = {floor: jest.fn(), random: jest.fn()};
+    const math = {floor: vi.fn(), random: vi.fn()};
     math.floor.mockImplementationOnce((n) => Math.floor(n));
     return math;
 }
@@ -80,7 +81,7 @@ describe("the getRandom function", () => {
 describe("the getRandom16 function", () => {
 
     it("should limit itself to 16-bit values", () => {
-        const rng = jest.fn();
+        const rng = vi.fn();
 
         Random.getRandom16(rng);
 
@@ -93,7 +94,7 @@ describe("the getRandom16Signed function", () => {
     it("should return positive values below 2^15", () => {
         const valueBelowThreshold = 32767;
 
-        const rng = jest.fn().mockReturnValueOnce(valueBelowThreshold);
+        const rng = vi.fn().mockReturnValueOnce(valueBelowThreshold);
 
         expect(Random.getRandom16Signed(rng)).toBe(valueBelowThreshold);
     });
@@ -101,7 +102,7 @@ describe("the getRandom16Signed function", () => {
     it("should return negative values in the interval [-(2^15)..-1]", () => {
         const threshold = 32768;
         const limit = 2 ** 16 - 1;
-        const rng = jest.fn().mockReturnValueOnce(threshold).mockReturnValueOnce(limit);
+        const rng = vi.fn().mockReturnValueOnce(threshold).mockReturnValueOnce(limit);
 
         expect(Random.getRandom16Signed(rng)).toBeLessThan(0);
         expect(Random.getRandom16Signed(rng)).toBeLessThan(0);
@@ -112,7 +113,7 @@ describe("the getERandom function", () => {
 
     it("getERandom should respect the given maximum", () => {
         const threshold = 1000;
-        const rng = jest.fn().mockReturnValue(1);
+        const rng = vi.fn().mockReturnValue(1);
 
         Random.getERandom(threshold, rng);
 
@@ -123,7 +124,7 @@ describe("the getERandom function", () => {
         const threshold = 1000;
         const lower = 1;
         const upper = 2;
-        const rng = jest.fn().mockReturnValueOnce(lower).mockReturnValueOnce(upper);
+        const rng = vi.fn().mockReturnValueOnce(lower).mockReturnValueOnce(upper);
 
         expect(Random.getERandom(threshold, rng)).toBe(lower);
     });
@@ -133,21 +134,21 @@ describe("the getChance function", () => {
 
     it("getChance should return false if the least significant bits match exactly", () => {
         const chanceValue = 0b101;
-        const rng = jest.fn().mockReturnValueOnce(0b1101);
+        const rng = vi.fn().mockReturnValueOnce(0b1101);
 
         expect(Random.getChance(chanceValue, rng)).toBe(false);
     });
 
     it("getChance should return false if some of the least significant bits match", () => {
         const chanceValue = 0b11;
-        const rng = jest.fn().mockReturnValueOnce(0b1101);
+        const rng = vi.fn().mockReturnValueOnce(0b1101);
 
         expect(Random.getChance(chanceValue, rng)).toBe(false);
     });
 
     it("getChance should return true if none of the least significant bits match", () => {
         const chanceValue = 0b101;
-        const rng = jest.fn().mockReturnValueOnce(0b1010);
+        const rng = vi.fn().mockReturnValueOnce(0b1010);
 
         expect(Random.getChance(chanceValue, rng)).toBe(true);
     });

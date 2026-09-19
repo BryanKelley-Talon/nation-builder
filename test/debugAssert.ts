@@ -1,3 +1,4 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import { assert } from "../src/debugAssert";
 
 declare var global: any;
@@ -8,7 +9,7 @@ describe("the debug asserter", () => {
 
     beforeEach(() => {
         globalAlert = global.alert;
-        global.alert = jest.fn().mockName("alert");
+        global.alert = vi.fn().mockName("alert");
     });
 
     afterEach(() => {

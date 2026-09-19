@@ -1,3 +1,4 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import * as Direction from "../src/direction";
 import { Position } from "../src/position";
 

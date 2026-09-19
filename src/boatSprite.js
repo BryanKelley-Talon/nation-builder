@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { BaseSprite } from './baseSprite.js';
@@ -16,7 +18,6 @@ import { SHIP_CRASHED, SOUND_HONKHONK } from './messages.ts';
 import { MiscUtils } from './miscUtils.js';
 import { Random } from './random.ts';
 import { SPRITE_SHIP } from './spriteConstants.ts';
-import { SpriteConstants } from './spriteConstants.ts';
 import { SpriteUtils } from './spriteUtils.js';
 import * as TileValues from "./tileValues.ts";
 

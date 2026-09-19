@@ -1,7 +1,8 @@
+// Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
 import * as Direction from "../src/direction";
 import { Random } from "../src/random";
 
-jest.mock("../src/random");
+vi.mock("../src/random");
 
 function allDirections() {
     return [
@@ -163,7 +164,7 @@ describe("the Direction module", () => {
         describe("when iterating over each cardinal direction", () => {
 
             it("should be called as many times as there are cardinal directions", () => {
-                const iterator = jest.fn();
+                const iterator = vi.fn();
 
                 Direction.forEachCardinalDirection(iterator);
 
@@ -171,7 +172,7 @@ describe("the Direction module", () => {
             });
 
             it("should be called in clockwise order from north", () => {
-                const iterator = jest.fn();
+                const iterator = vi.fn();
 
                 Direction.forEachCardinalDirection(iterator);
 
@@ -187,7 +188,7 @@ describe("the Direction module", () => {
             it("should return a different direction when the random number generator returns a different value", () => {
                 let i = 0;
                 const randomValues = [3, 7, 1, 5, 0, 4, 6, 2];
-                (Random.getRandom as jest.Mock).mockImplementation(() => randomValues[i++]);
+                (Random.getRandom as any).mockImplementation(() => randomValues[i++]);
 
                 // tslint:disable-next-line:variable-name
                 const directions = randomValues.map((_unused_) => Direction.getRandomDirection());
@@ -201,7 +202,7 @@ describe("the Direction module", () => {
             it("should return a different direction when the random number generator returns a different value", () => {
                 let i = 0;
                 const randomValues = [3, 1, 2, 0];
-                (Random.getRandom as jest.Mock).mockImplementation(() => randomValues[i++]);
+                (Random.getRandom as any).mockImplementation(() => randomValues[i++]);
 
                 // tslint:disable-next-line:variable-name
                 const directions = randomValues.map((_unused_) => Direction.getRandomCardinalDirection());
