@@ -239,6 +239,14 @@ function Game(gameMap, tileSet, snowTileSet, spriteSheet, difficulty, name, simO
   // Unhide controls
   this.revealControls();
 
+  // Nation Builder: the too-small check used to force a style/layout query on every tick (~250 a second). It only
+  // changes when the window does.
+  var updateTooSmall = function() {
+    this.tooSmall = $('#tooSmall').is(':visible');
+  }.bind(this);
+  updateTooSmall();
+  $(window).on('resize', updateTooSmall);
+
   // Run the sim
   this.tick = tick.bind(this);
   this.tick();
@@ -718,7 +726,7 @@ var tick = function() {
     return;
   }
 
-  if (!this.simulation.isPaused() && !$('#tooSmall').is(':visible')) {
+  if (!this.simulation.isPaused() && !this.tooSmall) {
     // Run the sim
     this.simulation.simTick();
   }
