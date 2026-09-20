@@ -9,12 +9,12 @@ import $ from 'jquery';
 
 import { Game } from '../game.js';
 import * as Messages from '../messages.ts';
-import { eraRules, toolLockedUntil, universalPowerIn } from './era.js';
+import { eraRules, lockedToolLabel, toolDisplayName, toolLockedUntil, universalPowerIn } from './era.js';
 import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor, skillLabel } from './scenario.js';
 import { footprintTouchesWater } from './terrain.js';
-import { classRank, yearReview } from './yearReview.js';
+import { classRank, fill, yearReview } from './yearReview.js';
 
 const AUTOSAVE_KEY = 'nationBuilderAutosave';
 const REVIEW_RETRY_MS = 250;
@@ -119,12 +119,21 @@ export function startSession(ctx) {
   // Era rules: tools appear when their year arrives; the grid becomes necessary after universal power ends.
   let poweredByEra = sim.tuning.universalPower;
 
+  // A locked tool stays clickable. Disabling the button swallowed the click and told the student nothing: the year
+  // they were waiting for was in a hover tooltip they had no reason to look for, so the game read as broken.
   function applyEra(year) {
     $('.toolButton').each(function() {
-      const lockedUntil = toolLockedUntil(rules, $(this).attr('data-tool'), year);
-      $(this).prop('disabled', lockedUntil !== null)
-             .toggleClass('nbLocked', lockedUntil !== null)
-             .attr('title', lockedUntil !== null ? `Available from ${lockedUntil}` : '');
+      const button = $(this);
+      if (button.attr('data-label') === undefined)
+        button.attr('data-label', button.text());
+
+      const label = button.attr('data-label');
+      const lockedUntil = toolLockedUntil(rules, button.attr('data-tool'), year);
+      button.prop('disabled', false)
+            .toggleClass('nbLocked', lockedUntil !== null)
+            .attr('aria-disabled', lockedUntil !== null ? 'true' : null)
+            .attr('title', lockedUntil !== null ? lockedToolMessage(label, lockedUntil) : null)
+            .text(lockedUntil !== null ? lockedToolLabel(label, lockedUntil) : label);
     });
 
     const universal = universalPowerIn(rules, year);
@@ -136,12 +145,36 @@ export function startSession(ctx) {
     }
   }
 
+  function lockedToolMessage(label, year) {
+    return `${fill(strings.era.tool_locked, { tool: toolDisplayName(label), year })} ` +
+           `${fill(strings.era.tool_locked_hint, { year: session.year() })}`;
+  }
+
   applyEra(session.year());
   sim.addEventListener(Messages.DATE_UPDATED, date => applyEra(date.year));
 
+  // Said where the student is looking, before the engine's own click handler can select the tool. The listener
+  // takes the capture phase because upstream binds tool selection on the button itself.
+  document.getElementById('controls').addEventListener('click', event => {
+    const button = event.target.closest('.toolButton');
+    if (!button)
+      return;
+
+    const lockedUntil = toolLockedUntil(rules, button.getAttribute('data-tool'), session.year());
+    if (lockedUntil === null)
+      return;
+
+    event.stopPropagation();
+    event.preventDefault();
+    $('#toolOutput').text(lockedToolMessage(button.getAttribute('data-label'), lockedUntil));
+  }, true);
+
   game.toolGuard = toolName => {
     const lockedUntil = toolLockedUntil(rules, toolName, session.year());
-    return lockedUntil === null ? null : `Not available until ${lockedUntil}`;
+    if (lockedUntil === null)
+      return null;
+    const button = document.querySelector(`.toolButton[data-tool="${toolName}"]`);
+    return lockedToolMessage(button ? button.getAttribute('data-label') : toolName, lockedUntil);
   };
 
   // Terrain-driven placement: when water blocks a zone or building, say so (upstream says "bulldoze first", which

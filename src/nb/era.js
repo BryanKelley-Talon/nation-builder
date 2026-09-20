@@ -39,6 +39,18 @@ export function toolLockedUntil(rules, toolName, year) {
 }
 
 
+// A tool button reads "Police $500" when it can be built and "Police 1838" when it cannot: the year a student is
+// waiting for is more use to them than a price they cannot pay yet.
+export function toolDisplayName(label) {
+  return label.split(' $')[0].trim();
+}
+
+
+export function lockedToolLabel(label, year) {
+  return `${toolDisplayName(label)} ${year}`;
+}
+
+
 export function universalPowerIn(rules, year) {
   return year < rules.universalPowerUntil;
 }

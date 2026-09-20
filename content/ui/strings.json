@@ -8,6 +8,11 @@
   "_note": "Student-facing words the game shows. The disclaimer is the final text confirmed 2026-09-19 (buildconcept v1 section 5).",
   "disclaimer": "This is a history and civics simulation, not a real government. The choices here are simplified so you can see how the pieces connect — real governing is harder and slower than this. Nothing you do here is graded on outcome; it's graded on the thinking behind it.",
   "terrain_water_refused": "Water here. Zones and buildings need dry land.",
+  "era": {
+    "_note": "Shown when a student reaches for a tool their year doesn't have yet. The years themselves are in src/nb/era.js, for the content desks to review. Working wording from the build session; {braces} are filled in by the game.",
+    "tool_locked": "{tool}: nothing like it exists here until {year}.",
+    "tool_locked_hint": "Build with what {year} has."
+  },
   "year_review": {
     "_note": "Shown when a game year ends at a checkpoint: a milestone year (the first year anyone lives here, the year the town changes class, the scenario's last year) or every fifth year otherwise. Working wording from the build session for the content desks to revise; {braces} are filled in by the game. Each pole_lines key is a tuning knob and whether the government turns it up or down from a standard town.",
     "title": "{year} in review",

@@ -182,6 +182,20 @@ footer .nameLicense, footer #build {
   color: var(--amber-bright);
 }
 
+/* Locked by the era: the tool's colour stripe goes quiet, so the palette reads as "not yet", not as broken. */
+#controls .toolButton.nbLocked {
+  color: var(--parchment-dim);
+  border-color: var(--line);
+  border-left-color: var(--line);
+  font-style: italic;
+}
+
+#controls .toolButton.nbLocked:hover {
+  color: var(--parchment);
+  border-color: var(--parchment-dim);
+  border-left-color: var(--parchment-dim);
+}
+
 #controls .toolButton.selected {
   border: 1px solid var(--amber-bright);
   border-left: 4px solid var(--amber-bright);
