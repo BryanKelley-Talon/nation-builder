@@ -1,0 +1,12 @@
+# Netlify build config for a Flashpoint game.
+# Deploy path (per PIPELINE-SPEC): connect the GitHub repo in the Netlify
+# dashboard, or drag the built dist/ folder. CLI: `netlify deploy --prod`.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback: deep-link routes resolve to index.html rather than 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
