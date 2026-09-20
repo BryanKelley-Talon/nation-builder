@@ -18,8 +18,6 @@ import $ from "jquery";
 import { Config } from './config.js';
 import { startNationBuilder } from './nb/main.jsx';
 import { TileSet } from './tileSet.js';
-import { TileSetURI } from './tileSetURI.ts';
-import { TileSetSnowURI } from './tileSetSnowURI.ts';
 
 /*
  *
@@ -29,12 +27,13 @@ import { TileSetSnowURI } from './tileSetSnowURI.ts';
  */
 
 
-var fallbackImage, tileSet, snowTileSet;
+var tileSet, snowTileSet;
 
 
 var onTilesLoaded = function() {
-  var snowTiles = $('#snowtiles')[1];
-  snowTileSet = new TileSet(snowTiles, onAllTilesLoaded, onFallbackTilesLoaded);
+  // Nation Builder: upstream asked for [1] of a one-element set, so the snow tileset was always undefined here and
+  // the game fell back to the base64 copy. There is no fallback now, so this has to name the image it means.
+  snowTileSet = new TileSet($('#snowtiles')[0], onAllTilesLoaded, tileSetError);
 };
 
 
@@ -51,41 +50,10 @@ var onAllTilesLoaded = function() {
 };
 
 
-// XXX Replace with an error dialog
-var onFallbackError = function() {
-  fallbackImage.onload = fallbackImage.onerror = null;
-  alert('Failed to load tileset!');
-};
-
-
-var onFallbackSnowLoad = function() {
-  fallbackImage.onload = fallbackImage.onerror = null;
-  snowTileSet = new TileSet(fallbackImage, onAllTilesLoaded, onFallbackError);
-};
-
-
-var onFallbackTilesLoaded = function() {
-  fallbackImage = new Image();
-  fallbackImage.onload = onFallbackSnowLoad;
-  fallbackImage.onerror = onFallbackError;
-  fallbackImage.src = TileSetSnowURI;
-};
-
-
-var onFallbackLoad = function() {
-  fallbackImage.onload = fallbackImage.onerror = null;
-  tileSet = new TileSet(fallbackImage, onFallbackTilesLoaded, onFallbackError);
-};
-
-
+// Nation Builder: said in the student's words, in the banner they are already looking at, in place of upstream's
+// alert() and the base64 tilesets it fell back to.
 var tileSetError = function() {
-  // We might be running locally in Chrome, which handles the security context of file URIs differently, which makes
-  // things go awry when we try to create an image from a "tainted" canvas (one we've painted on). Let's try creating
-  // the tileset by URI instead
-  fallbackImage = new Image();
-  fallbackImage.onload = onFallbackLoad;
-  fallbackImage.onerror = onFallbackError;
-  fallbackImage.src = TileSetURI;
+  $('#loadingBanner').text('The game\u2019s pictures didn\u2019t load. Reload the page to try again.').css('display', '');
 };
 
 
@@ -95,6 +63,4 @@ Config.debug = window.location.search.slice(1).split('&').some(function(param) {
 });
 
 
-var tiles = $('#tiles')[0];
-tileSet = new TileSet(tiles, onTilesLoaded, tileSetError);
-var snowtiles = $('#snowtiles')[1];
+tileSet = new TileSet($('#tiles')[0], onTilesLoaded, tileSetError);

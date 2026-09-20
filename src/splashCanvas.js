@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import $ from "jquery";
@@ -80,8 +82,7 @@ function SplashCanvas(parentID, tileSet, id) {
 
 // Paint an individual tile at the given map coordinates, with the tile scaled down to 3x3
 SplashCanvas.prototype._paintTile = function(tileVal, x, y, ctx) {
-  var src = this._tileSet[tileVal];
-  ctx.drawImage(src, x * 3, y * 3, 3, 3);
+  this._tileSet.drawTile(ctx, tileVal, x * 3, y * 3, 3);
 };
 
 

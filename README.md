@@ -65,5 +65,10 @@ year, or, if the file is lost, restarts from the code with the same government.
 
 - The engine's event listeners are shared per class and never removed: one `Game` per
   page load. Starting another city reloads the page.
+- Tiles are drawn straight out of `public/images/tiles.png` (a 512 x 512 atlas of 16px
+  tiles) by `src/tileSet.js`. Nothing slices it up, so a tileset is ready as soon as its
+  image has loaded.
+- Seasonal snow is dormant in the port: the date listener that would switch to the snow
+  tileset is commented out upstream (`src/game.js`). The snow image still loads.
 - `test/sim/harness.js` runs the simulation without a DOM or clock:
   `runYears(sim, n)` is 768 simulation phases per year.

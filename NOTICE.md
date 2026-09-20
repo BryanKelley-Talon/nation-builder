@@ -36,8 +36,12 @@ repository's git log.
   field; shrinking-city score scale floored to -1; `_updateTime` rollover called
   an undefined function; auto-bulldoze setting did not load; evaluation's
   problem list grew every year; heavy-traffic message shared another message's
-  name.
-- **Performance:** the sim tick no longer queries layout on every tick.
+  name; the snow tileset was read from the wrong element and so never loaded
+  from its own image.
+- **Performance:** the sim tick no longer queries layout on every tick; tiles
+  are drawn straight from the tileset image instead of being cut into 1,024
+  separate images at startup, which also removes the two base64 copies of the
+  tilesets the old method needed as a fallback.
 - **Engine seams for the teaching layer:** configurable start year and funds
   (saved with the city), a year-end event, an exported tuning object for
   governance modifiers, hooks in `Game` for tool refusal, tool feedback, saving
