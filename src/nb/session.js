@@ -14,7 +14,7 @@ import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor, skillLabel } from './scenario.js';
 import { footprintTouchesWater } from './terrain.js';
-import { yearReview } from './yearReview.js';
+import { classRank, yearReview } from './yearReview.js';
 
 const AUTOSAVE_KEY = 'nationBuilderAutosave';
 const REVIEW_RETRY_MS = 250;
@@ -41,7 +41,7 @@ function writeAutosave(record) {
 
 
 // ctx: {assets, scenario, scenarioIndex, poleId, strings, onSaveRequested, onYearReview,
-//       map + townName (new city) or savedCity + checkpoint (continuing)}
+//       map + townName (new city) or savedCity + checkpoint + lastReview + highestClass (continuing)}
 export function startSession(ctx) {
   const { assets, scenario, scenarioIndex, poleId, strings } = ctx;
   const rules = eraRules(scenario);
@@ -61,6 +61,11 @@ export function startSession(ctx) {
 
   const sim = game.simulation;
   let lastCheckpoint = ctx.checkpoint || null;
+  // The last year-end panel the student saw, so the next one measures the whole span since it. A city resumed from
+  // a save made before this existed falls back to its checkpoint.
+  let lastReview = ctx.lastReview || ctx.checkpoint || null;
+  // The largest the town has ever been: growing into a new class stops play, sliding back and forth doesn't.
+  let highestClass = ctx.highestClass || (ctx.checkpoint && ctx.checkpoint.cityClass) || null;
 
   const session = {
     game,
@@ -105,6 +110,8 @@ export function startSession(ctx) {
         advisor_bits: 0,
         code,
         checkpoint: session.checkpoint(),
+        last_review: lastReview,
+        highest_class: highestClass,
       }, game.saveData());
     },
   };
@@ -152,8 +159,13 @@ export function startSession(ctx) {
   // Checkpoints: every year-end snapshot updates the code, and an autosave on this computer. Then the year in review,
   // once any window the engine opened at the same moment (the mandatory budget, a city-class congratulation) closes.
   sim.addEventListener(Messages.YEAR_ENDED, snapshot => {
-    const review = yearReview({ previous: session.checkpoint(), snapshot, scenario, poleId, strings });
+    const review = yearReview({ previous: lastReview, snapshot, scenario, poleId, strings, townName: game.name,
+                                highestClass });
     lastCheckpoint = snapshot;
+    if (classRank(snapshot.cityClass) > classRank(highestClass))
+      highestClass = snapshot.cityClass;
+    if (review)
+      lastReview = snapshot;
     writeAutosave(session.saveRecord());
 
     if (review && ctx.onYearReview) {

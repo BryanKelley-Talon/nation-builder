@@ -443,6 +443,7 @@ Simulation.prototype._emitYearEnded = function() {
     population: evaluation.cityPop,
     score: evaluation.cityScore,
     approval: evaluation.cityYes,
+    cityClass: evaluation.cityClass,
     problems: problems,
     funds: this.budget.totalFunds,
     taxRate: this.budget.cityTax,

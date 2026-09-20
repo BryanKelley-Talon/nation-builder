@@ -332,6 +332,8 @@ function YearReview({ review, strings, onClose, onSave }) {
     <div className="nb-overlay nb-overlay-dialog" role="dialog" aria-modal="true" aria-labelledby="nb-review-title">
       <div className="nb-panel nb-panel-narrow">
         <h2 id="nb-review-title" className="nb-heading">{review.title}</h2>
+        {review.milestone && <p className="nb-review-milestone">{review.milestone}</p>}
+        {review.since && <p className="nb-hint nb-review-since">{review.since}</p>}
 
         <dl className="nb-review-stats">
           {review.stats.map(s => (

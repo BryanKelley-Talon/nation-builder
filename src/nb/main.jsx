@@ -53,6 +53,8 @@ export async function startNationBuilder(assets) {
       poleId: record.teaching.pole,
       savedCity: record.city,
       checkpoint: record.teaching.checkpoint,
+      lastReview: record.teaching.last_review,
+      highestClass: record.teaching.highest_class,
     });
   };
 

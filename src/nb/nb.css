@@ -370,6 +370,17 @@
   margin: 24px 0 8px;
 }
 
+.nb-review-milestone {
+  border-left: 3px solid var(--amber);
+  padding-left: 16px;
+  font-style: italic;
+}
+
+.nb-review-since {
+  font-size: 15px;
+  margin-top: -4px;
+}
+
 .nb-review-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
