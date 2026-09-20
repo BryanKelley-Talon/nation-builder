@@ -1,0 +1,408 @@
+/* Nation Builder (Flashpoint History), 2026. GNU GPL v3 with additional terms — see LICENSE and NOTICE.md.
+ *
+ * The Flashpoint skin for the game's own chrome: the header and footer, the info bar, the tool palette and misc
+ * buttons, the notification bar, and the engine's modal windows (budget, evaluation, query, settings and the rest).
+ *
+ * Upstream's public/css/style.css keeps its layout — every position, width and height here is the original's, so the
+ * engine's fixed panel geometry and its height media queries still hold. This sheet changes colour, type and edges
+ * only, and it never touches the playfield: the canvas, its tiles and its sprites are the original game's.
+ *
+ * Design tokens come from nb.css (CONVENTIONS.md → Design constants), which loads first.
+ */
+
+/* ---- Page, header, footer ------------------------------------------------------------------------------- */
+
+body {
+  background-image: none;
+  background-color: var(--ink);
+  color: var(--parchment);
+}
+
+header {
+  background-color: var(--ink);
+  background-image: none;
+  border-bottom: 2px solid var(--amber);
+  font-family: var(--font-label);
+}
+
+header h1#title {
+  font-family: var(--font-title);
+  font-size: 22px;
+  line-height: 35px;
+  letter-spacing: 0.02em;
+  color: var(--parchment);
+}
+
+header nav a, header nav a:link, header nav a:visited {
+  font-family: var(--font-label);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--parchment-dim);
+  text-decoration: none;
+}
+
+header nav a:hover, footer a:hover {
+  color: var(--amber-bright);
+}
+
+footer#footer {
+  background-color: var(--ink);
+  border-top: 1px solid var(--line);
+  color: var(--parchment-dim);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+footer#footer a, footer#footer a:link, footer#footer a:visited {
+  color: var(--parchment-dim);
+  text-decoration: underline;
+}
+
+/* The trademark courtesy line and the build stamp stay legible but quiet. */
+footer .nameLicense, footer #build {
+  color: #8f8474;
+}
+
+/* ---- The panels around the playfield -------------------------------------------------------------------- */
+
+#infobar, #miscButtons, #RCIContainer, #controls, #notifications, #debug, #monstertv {
+  background-color: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+}
+
+/* Upstream's control shadow is a hard grey slab; this one just lifts the panel off the map. */
+.shadow, .controlShadow {
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+#infobar .inner {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#infobar #name {
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--amber-bright);
+}
+
+#infobar #cclass {
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--parchment-dim);
+}
+
+#toolInfo {
+  font-family: var(--font-label);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--parchment-dim);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+}
+
+#notifications {
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+/* Good and bad news keep upstream's meaning, in the palette's voice. */
+#notifications.good, .good {
+  background-color: var(--ink-raised);
+  color: var(--ok);
+}
+
+#notifications.bad, .bad {
+  background-color: var(--ink-raised);
+  color: var(--danger);
+}
+
+#notifications.neutral, .neutral, .mintcream {
+  background-color: var(--ink-raised);
+  color: var(--parchment);
+}
+
+/* ---- Buttons -------------------------------------------------------------------------------------------- */
+
+#miscButtons button, #controls button, .modal button, .modal input[type="submit"] {
+  font-family: var(--font-label);
+  letter-spacing: 0.03em;
+  border-radius: 2px;
+}
+
+/* The misc buttons carry upstream's colour as an edge, not a slab: the window each one opens is still colour-coded,
+   but the palette stays the house's. Upstream paints each one by id, so these selectors name the panel to outrank it. */
+#miscButtons .miscButton {
+  background-color: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  font-size: 12px;
+}
+
+#miscButtons .miscButton:hover:not(:disabled) {
+  border-color: var(--amber);
+  color: var(--amber-bright);
+}
+
+#miscButtons #budgetRequest { border-left-color: #4a7fb5; }
+#miscButtons #evalRequest { border-left-color: #5c8a4a; }
+#miscButtons #disasterRequest { border-left-color: #a8503c; }
+#miscButtons #saveRequest { border-left-color: var(--amber); }
+#miscButtons #settingsRequest { border-left-color: #7a5ea8; }
+#miscButtons #screenshotRequest { border-left-color: #b5714a; }
+#miscButtons #pauseRequest { border-left-color: var(--parchment-dim); }
+
+.loadSave:disabled, #miscButtons button:disabled {
+  background-color: var(--ink);
+  color: #6d6457;
+  border-color: var(--line);
+  cursor: not-allowed;
+}
+
+/* Tool buttons: the tool's own colour stays as a stripe, so the palette still reads at a glance. */
+#controls .toolButton {
+  background-color: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  font-size: 12px;
+}
+
+#controls .toolButton:hover:not(:disabled) {
+  border-color: var(--amber);
+  border-left-color: var(--amber);
+  color: var(--amber-bright);
+}
+
+#controls .toolButton.selected {
+  border: 1px solid var(--amber-bright);
+  border-left: 4px solid var(--amber-bright);
+  color: var(--amber-bright);
+  background-color: #2b2119;
+  font-weight: 600;
+}
+
+#controls #residentialButton { border-left-color: #6fa84a; }
+#controls #commercialButton { border-left-color: #4a7fb5; }
+#controls #industrialButton { border-left-color: #c9a227; }
+#controls #roadButton { border-left-color: #8a8073; }
+#controls #railButton { border-left-color: #8a6a4a; }
+#controls #wireButton { border-left-color: #d6c37a; }
+#controls #bulldozerButton { border-left-color: #c47a6a; }
+#controls #queryButton { border-left-color: #5aa8a8; }
+#controls #parkButton { border-left-color: #4a7a4a; }
+#controls #policeButton { border-left-color: #4a5ea8; }
+#controls #fireButton { border-left-color: #b5503c; }
+#controls #portButton { border-left-color: #4a90c4; }
+#controls #stadiumButton { border-left-color: #7a5ea8; }
+#controls #coalButton { border-left-color: #7d7468; }
+#controls #nuclearButton { border-left-color: #c4907a; }
+#controls #airportButton { border-left-color: #b57ab5; }
+
+/* ---- The engine's modal windows ------------------------------------------------------------------------- */
+
+#opaque {
+  background-color: var(--ink);
+  opacity: 0.82;
+}
+
+.modal {
+  background-color: var(--ink);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--amber);
+  border-radius: 3px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+}
+
+.modal header, #budgetHeader, #evalHeader, #disasterHeader, #queryHeader, #congratsHeader, #settingsHeader,
+.screenshotHeader, .saveHeader {
+  background-color: var(--ink);
+  color: var(--amber-bright);
+  font-family: var(--font-label);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  height: auto;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal h2 {
+  font-family: var(--font-title);
+  font-size: 20px;
+  color: var(--parchment);
+}
+
+.modal fieldset {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.modal legend, .modal label, .queryItem, .statisticsItem, .evalItem {
+  font-family: var(--font-label);
+  color: var(--parchment);
+}
+
+.modal .budgetData, .modal dd {
+  color: var(--parchment-dim);
+}
+
+.modal input[type="range"], .modal input[type="radio"], .modal input[type="checkbox"] {
+  accent-color: var(--amber);
+}
+
+.modal select, .modal input[type="text"], #nameForm {
+  background-color: var(--ink-raised);
+  color: var(--parchment);
+  border: 1px solid var(--parchment-dim);
+  border-radius: 3px;
+  font-family: var(--font-body);
+}
+
+/* OK is the one amber button in a window; everything else is outlined. */
+.dialogOK, #playit {
+  background-color: var(--amber);
+  color: var(--ink);
+  border: 1px solid var(--amber);
+  font-weight: 600;
+}
+
+.dialogOK:hover, #playit:hover {
+  background-color: var(--amber-bright);
+}
+
+.cancel, #budgetReset, #debugRequest {
+  background-color: transparent;
+  color: var(--parchment);
+  border: 1px solid var(--parchment-dim);
+}
+
+.cancel:hover, #budgetReset:hover, #debugRequest:hover {
+  border-color: var(--amber-bright);
+  color: var(--amber-bright);
+}
+
+/* The "now a town!" window keeps its meaning without the green slab. */
+#congratsHeader {
+  color: var(--ok);
+}
+
+/* The label face is taller than upstream's Open Sans, and the budget form's panels are inline blocks of a fixed
+   width: left at 16px the fieldsets grow into the button row. */
+#budgetForm legend, #budgetForm label, #budgetForm .budgetData {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* Upstream lays these out as two inline-block columns of a fixed 230px; keep the padding inside that width. */
+#budgetForm > div, #budgetForm > fieldset {
+  box-sizing: border-box;
+}
+
+#budgetForm > fieldset {
+  padding: 4px 8px 8px;
+}
+
+#evalContainer .opinionList dd {
+  font-style: normal;
+}
+
+/* Upstream centres the problem list but leaves its numbers out at the margin. */
+#problemList {
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+/* ---- Everything else the engine can put on screen ------------------------------------------------------- */
+
+#loadingBanner, #tooSmall, #tooSmallInner, #noscript, #splash, #start {
+  background-color: var(--ink);
+  color: var(--parchment);
+  border-color: var(--line);
+  font-family: var(--font-body);
+}
+
+#tooSmallInner h2, #noscript h1, #splash h2, #start h2 {
+  font-family: var(--font-title);
+  color: var(--parchment);
+}
+
+/* Upstream's .chunk is ChunkFive, the old display face; the house's structural label face replaces it. */
+.chunk {
+  font-family: var(--font-label);
+  font-weight: 600;
+}
+
+.nb-header-badge {
+  color: var(--parchment);
+}
+
+/* ---- The about and name-license pages ------------------------------------------------------------------- */
+
+#aboutHeader, #licenseHeader {
+  background-color: var(--ink);
+  background-image: none;
+  border-bottom: 2px solid var(--amber);
+}
+
+#aboutHeader h1#title a, #licenseHeader h1#title a {
+  font-family: var(--font-title);
+  font-size: 22px;
+  color: var(--parchment);
+  text-decoration: none;
+}
+
+#aboutMain, #licenseMain {
+  color: var(--parchment);
+}
+
+#aboutContainer, #licenseContainer {
+  background-color: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  max-width: var(--max-content);
+  font-family: var(--font-body);
+  font-size: 17px;
+  /* Upstream justifies this column; at this measure it opens rivers. */
+  text-align: left;
+}
+
+#aboutContainer h2, #licenseContainer h2, #aboutContainer h3, #licenseContainer h3 {
+  font-family: var(--font-title);
+  color: var(--parchment);
+}
+
+#appeal {
+  background-color: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--parchment-dim);
+  font-size: 14px;
+}
+
+#aboutMain a, #aboutMain a:link, #aboutMain a:visited,
+#licenseMain a, #licenseMain a:link, #licenseMain a:visited {
+  color: var(--amber-bright);
+}
+
+#aboutFooter, #licenseFooter {
+  background-color: var(--ink);
+  border-top: 1px solid var(--line);
+  color: var(--parchment-dim);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+/* Keyboard focus has to stay visible on the game's own controls too. */
+#miscButtons button:focus-visible, #controls button:focus-visible, .modal button:focus-visible,
+.modal input:focus-visible, .modal select:focus-visible, header nav a:focus-visible, footer a:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}

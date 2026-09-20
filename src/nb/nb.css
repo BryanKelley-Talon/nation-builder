@@ -12,26 +12,7 @@
   text-align: left !important;
 }
 
-/* Design tokens (CONVENTIONS.md → Design constants). Dark mode only. */
-:root {
-  --amber: #c17700;
-  --amber-bright: #e89923;
-  --ink: #16120e;
-  --parchment: #ede3d2;
-  --parchment-dim: #c9bda8;
-  --ink-raised: #221b15;
-  --line: #3a2f25;
-  --danger: #f0a08a;
-  --ok: #b9d99a;
-
-  --font-label: "Cinzel", Georgia, serif;
-  --font-title: "Playfair Display", Georgia, serif;
-  --font-body: "Libre Baskerville", Georgia, serif;
-  --font-code: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-
-  --max-content: 1040px;
-  --reading-col: 640px;
-}
+/* Design tokens (CONVENTIONS.md → Design constants) live in public/css/tokens.css, linked by every page. */
 
 @media (prefers-reduced-motion: reduce) {
   .nb-overlay *, .nb-overlay *::before, .nb-overlay *::after {

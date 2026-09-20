@@ -1,0 +1,26 @@
+/* Nation Builder (Flashpoint History), 2026. GNU GPL v3 with additional terms — see LICENSE and NOTICE.md.
+ *
+ * The house's design tokens (CONVENTIONS.md → Design constants), as a plain stylesheet so that every page can use
+ * them: the game, the about page and the name-license page. Nothing here is component-specific.
+ */
+
+/* Design tokens (CONVENTIONS.md → Design constants). Dark mode only. */
+:root {
+  --amber: #c17700;
+  --amber-bright: #e89923;
+  --ink: #16120e;
+  --parchment: #ede3d2;
+  --parchment-dim: #c9bda8;
+  --ink-raised: #221b15;
+  --line: #3a2f25;
+  --danger: #f0a08a;
+  --ok: #b9d99a;
+
+  --font-label: "Cinzel", Georgia, serif;
+  --font-title: "Playfair Display", Georgia, serif;
+  --font-body: "Libre Baskerville", Georgia, serif;
+  --font-code: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --max-content: 1040px;
+  --reading-col: 640px;
+}

@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import $ from "jquery";
@@ -78,7 +80,8 @@ RCI.prototype._drawRect = function(ctx) {
   var boxWidth = 7 * this._padding * this._rectSize;
   var boxHeight = this._padding * this._rectSize;
 
-  ctx.fillStyle = 'rgb(192, 192, 192)';
+  // Nation Builder: the baseline reads against the dark chrome instead of the original's silver.
+  ctx.fillStyle = 'rgb(58, 47, 37)';
   ctx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
 };
 
@@ -88,7 +91,8 @@ RCI.prototype._drawValue = function(ctx, index, value) {
   if (index > 1)
     value = Math.floor(2000/1500 * value);
 
-  var colours = ['rgb(0,255,0)', 'rgb(0, 0, 139)', 'rgb(255, 255, 0)'];
+  // Nation Builder: the same three colours the Residential, Commercial and Industrial tool buttons carry.
+  var colours = ['rgb(111, 168, 74)', 'rgb(74, 127, 181)', 'rgb(201, 162, 39)'];
   var barHeightRect = Math.floor(Math.abs(value) / this._scale);
   var barStartY = (value >= 0) ?
     this._buckets + this._padding - barHeightRect : this._buckets + 2 * this._padding;
@@ -106,7 +110,7 @@ RCI.prototype._drawLabel = function(ctx, index) {
                  Math.floor(this._padding/2);
 
   ctx.font = 'normal xx-small sans-serif';
-  ctx.fillStyle = 'rgb(0, 0, 0)';
+  ctx.fillStyle = 'rgb(237, 227, 210)';
   ctx.textBaseline = 'bottom';
   ctx.fillText(labels[index], textLeft * this._rectSize,
                (this._buckets + 2 * this._padding) * this._rectSize);

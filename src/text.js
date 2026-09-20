@@ -9,6 +9,8 @@
  * (Micropolis Corporation, the "licensor") and is licensed here to the authors/publishers of the "Micropolis"
  * city simulation game and its source code (the project or "licensee(s)") as a courtesy of the owner.
  *
+ * Modified for Nation Builder (Flashpoint History), 2026 — see NOTICE.md.
+ *
  */
 
 import { Evaluation } from './evaluation.js';
@@ -124,7 +126,7 @@ messageText[Messages.NEED_SEAPORT] = 'Industry requires a Sea Port';
 messageText[Messages.NEED_STADIUM] = 'Residents demand a Stadium';
 messageText[Messages.ROAD_NEEDS_FUNDING] = 'Roads deteriorating, due to lack of funds';
 messageText[Messages.POLICE_NEEDS_FUNDING] = 'Police departments need funding';
-messageText[Messages.WELCOME] = 'Welcome to micropolisJS';
+messageText[Messages.WELCOME] = 'Welcome to Nation Builder';
 messageText[Messages.BLACKOUTS_REPORTED] = 'Brownouts, build another Power Plant';
 messageText[Messages.EARTHQUAKE] = 'Major earthquake reported !!';
 messageText[Messages.EXPLOSION_REPORTED] = 'Explosion detected ';
