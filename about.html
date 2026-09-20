@@ -46,53 +46,32 @@
           <p>Nation Builder is a free history and civics simulation from Flashpoint History. It is a <strong>modified version</strong> of <a href="https://github.com/graememcc/micropolisJS">micropolisJS</a>, Graeme McCutcheon's JavaScript port of Micropolis, the open-source release of a city simulator once sold by Electronic Arts. It is not the original program, and it has no affiliation with Electronic Arts.</p>
           <p>The game code is free software under the <a href="LICENSE">GNU GPL v3 with additional terms</a> (<a href="COPYING">full license text</a>, <a href="NOTICE.md">what we changed</a>). Scenario and lesson content is a separate work under its own license (<a href="content/LICENSE.md">content license</a>).</p>
         </div>
-        <h3 class="alignCenter chunk">Welcome to your city!</h3>
-        <p>
-          The aim is to grow your city, balancing the various competing demands. Use the buttons in the toolbox to select the various zones and buildings, and then click on the desired location to build.
-        </p>
-          <ul>
-          <li><strong>Residential zones:</strong> Your citizens need somewhere to live! Use this tool to lay out residential zones, and watch people move in. Watch out though: no-one wants to live anywhere polluted!</li>
-          <li><strong>Commercial zones:</strong>Sometimes your citizens need to pop round to the shops for some milk. However, they're screwed if there are no shops! Commercial zones contain the shops and offices that will power the economy.</li>
-          <li><strong>Industrial zones:</strong> There's only so much daytime television your citizens can watch. Provide industrial zones and put those shirkers to work!</li>
-          <li><strong>Police Stations:</strong> There are always some bad apples. Build some police stations to bring down the hammer of justice and keep crime under control!</li>
-          <li><strong>Fire Stations:</strong> Some people just want to play with matches. Sometimes a great big freaking monster comes along and stomps all over your town. Put out the flames by building fire stations.</li>
-          <li><strong>Coal Power:</strong> Show your dominion over nature by filling that fresh air with honking big dusty clouds of smoke, and keep those lights on!</li>
-          <li><strong>Nuclear Power:</strong> More expensive than coal power, but less polluting. These things are totally safe. Right?</li>
-          <li><strong>Stadium:</strong> After a day struggling at those infernal industrial workhouses you erected, your citizens deserve to relax by watching the big game!</li>
-          <li><strong>Airport:</strong> As your creation grows, your citizens will be seduced by the romantic dream of flying. Build an airport and let them meet the reality of weather delays and lousy service!</li>
-          <li><strong>Seaport:</strong> Making stuff is hard work! As your town grows, your citizens will want huge container ships importing finished goods from halfway across the world.</li>
-          <li><strong>Park:</strong> Sometimes you need to get away from it all. Parks provide a place to relax, get back to nature, and stare at the clouds of smoke from the power plant in the middle distance.</li>
-          <li><strong>Road, Rail:</strong> Your citizens are going places. Unless you neglect to lay these.</li>
-          <li><strong>Wire:</strong> Plug your citizens into the matrix. And to 240v AC.</li>
-        </ul>
-        <h3 class="alignCenter chunk">Tips</h3>
-        <p>
-          If you're starting to run out of money, use the budget tool to modify the tax rate, and funding for various city services. Don't cut things too much, or things will start to fall apart!</p>
-        <p>
-          The evaluation tool can provide insight into the opinion of the city's inhabitants, and the query tool offers finer-grained insight.
-        </p>
-        <h3 class="alignCenter chunk">Disasters</h3>
-        <p>
-          Some people just want to watch the world burn. If you're one of them, then the disasters button on the left hand side will give you the matches. Choose one of the options to unleash mayhem!
-        </p>
+        <h3 class="alignCenter chunk">Overview</h3>
+        <p>Welcome to Nation Builder. I'm your advisor &mdash; I've seen more towns rise and fall than I can count, and I'm here to help you build one that lasts.</p>
+        <p>You're about to found a town at a real moment in history &mdash; this scenario drops you into a real year, no time machine, no reskin. Before your first road goes down, you'll choose how you govern: how much you weigh individual liberty against collective security. That choice isn't cosmetic. It shapes how your town grows, what your citizens tolerate, and what kind of leader you turn out to be. There's no wrong pole. There's only the one you can defend.</p>
+        <p>One more thing before you start: name your town. Make one up &mdash; not your own name, not anyone real. This town is yours to build, not to sign.</p>
+
+        <h3 class="alignCenter chunk">Basic overview</h3>
+        <p>Here's what's on your toolbar, mayor.</p>
         <ul>
-          <li><strong>Fire:</strong> Turn your city into an advert for smoke detectors.</li>
-          <li><strong>Flood:</strong> I hope your citizens can swim</li>
-          <li><strong>Meltdown:</strong> <i>Nervously pats the nuclear reactor</i> <q>These things are safe&mdash;right?</q></li>
-          <li><strong>Monster:</strong> Is it a bird? Is it a plane? Well, it's big, red and scary, so I'm not waiting to find out!</li>
-          <li><strong>Plane crash:</strong> What goes up...</li>
-          <li><strong>Tornado:</strong> Your citizens won't want to watch <cite>Twister</cite> on NetFlix for a while</li>
+          <li><strong>Residential zones</strong> give your citizens somewhere to live. No rooftops, no workforce, no town.</li>
+          <li><strong>Commercial zones</strong> are where your citizens shop and work retail. They need residents nearby to survive, and they feed your tax base.</li>
+          <li><strong>Industrial zones</strong> are where the real jobs and the real money come from &mdash; and the real pollution, if you're not careful where you put them.</li>
+          <li><strong>Police and Fire stations</strong> protect what you've built. Leave a neighborhood outside their reach and you'll hear about it.</li>
+          <li><strong>Power plants</strong> keep the lights on, literally &mdash; nothing runs without power, and every plant has a cost, whether that's money, land, or something else.</li>
+          <li><strong>Stadium, Airport, and Seaport</strong> are the big civic wins &mdash; expensive, but they're what turns a town into a city people know by name.</li>
+          <li><strong>Parks</strong> cost you land and money for nothing you can tax directly. Your citizens will thank you anyway.</li>
+          <li><strong>Road, rail, and power lines</strong> are how everything else connects. A zone that isn't connected doesn't grow.</li>
         </ul>
-        <h3 class="alignCenter chunk">Settings</h3>
-        <p>
-          You will find assorted helpful controls by clicking the settings button on the left.
-        </p>
-        <ul>
-          <li><strong>Auto-budget:</strong> The simulator takes care of finances for you&mdash;well, until you go broke at least&mdash;. If you prefer more control, you can switch this on or off here, and spend spend spend every January.</li>
-          <li><strong>Auto-bulldoze:</strong> When building on areas that contain terrain other than plain dirt, these must be cleared first, at a cost. You can turn this off, and prepare your building sites manually.</li>
-          <li><strong>Auto-disasters:</strong> What's more fun than manually unleashing mayhem? Why having it unleashed by surprise of course!</li>
-          <li><strong>Speed:</strong> Time flies when you max out the game speed</li>
-        </ul>
+        <p>Lay these down with the terrain in mind. Rivers, hills, and forests aren't just scenery &mdash; they'll make some of these choices for you.</p>
+
+        <h3 class="alignCenter chunk">Best practices</h3>
+        <p>A few things I've learned the hard way, so you don't have to.</p>
+        <p><strong>Watch your budget before it watches you.</strong> Taxes fund everything &mdash; police, fire, roads &mdash; but tax too hard and growth slows down. Check your budget window before it becomes an emergency, not after.</p>
+        <p><strong>Use the evaluation tool.</strong> It tells you, in your citizens' own words, what's actually bothering them &mdash; not enough jobs, too much crime, whatever it is. Read it like a town hall, not a report card.</p>
+        <p><strong>Auto-budget, auto-bulldoze, and auto-disasters are in your settings</strong>, and each one trades control for convenience. Auto-budget balances your books for you but takes the wheel away from your own tax decisions. Auto-bulldoze clears obstacles automatically when you zone &mdash; faster, less deliberate. Auto-disasters lets the game throw the occasional disaster at you &mdash; leave it off if you'd rather build in peace, on if you want to be tested.</p>
+        <p><strong>Your progress saves as you go</strong> &mdash; a code for picking up where you left off, and a downloadable file if you want your city with you. You won't finish a town in one sitting, and you're not meant to. Every so often, I'll check in with you on how it's going. Pay attention to those check-ins &mdash; they're where you'll actually see what your choices added up to.</p>
+        <p>Build something you'd want to live in.</p>
       </div>
     </main>
     <footer id="aboutFooter" class="alignCenter chunk white padding10">

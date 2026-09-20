@@ -1,8 +1,9 @@
 # Nation Builder content license
 
 Everything in this `content/` folder — scenario files, curriculum and lesson text,
-governance-pole and advisor text — is a **separate work** from the Nation Builder
-game code. It is data the game loads at runtime.
+governance-pole and advisor text, and artwork such as the opening backdrop
+(`images/`) — is a **separate work** from the Nation Builder game code. It is data
+the game loads at runtime.
 
 **License:** Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 (CC BY-NC-SA 4.0), https://creativecommons.org/licenses/by-nc-sa/4.0/

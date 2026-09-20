@@ -20,7 +20,8 @@
   }
 }
 
-/* The overlay sits above the game and its upstream modals (z 20) but below the too-small screen (z 200). */
+/* The overlay sits above the game and its upstream modals (z 20) but below the too-small screen (z 200). The
+   opening screens' backdrop picture is set in public/css/chrome.css, where the path to content/ can be written. */
 .nb-overlay {
   position: fixed;
   inset: 0;

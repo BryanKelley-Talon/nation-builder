@@ -345,6 +345,22 @@ footer .nameLicense, footer #build {
   color: var(--parchment);
 }
 
+/* ---- The opening screens' backdrop ----------------------------------------------------------------------- */
+
+/* The teaching layer's opening screens — the disclaimer, founding a town, continuing one — over the town the
+   student is about to build. `src/nb/nb.css` owns everything else about `.nb-overlay`; the backdrop is set from
+   here because the image ships with the content it belongs to, and only a static sheet can name that path. The
+   dialogs the game opens over the map (`.nb-overlay-dialog`) keep their plain dim, so the map stays visible
+   behind them. The scrim carries the text: parchment on it clears 4.5:1 over every part of the picture. */
+.nb-overlay:not(.nb-overlay-dialog) {
+  background-image:
+    linear-gradient(rgba(var(--ink-rgb), 0.88), rgba(var(--ink-rgb), 0.8) 45%, rgba(var(--ink-rgb), 0.97)),
+    url('../content/images/opening-splash.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 /* ---- The about and name-license pages ------------------------------------------------------------------- */
 
 #aboutHeader, #licenseHeader {

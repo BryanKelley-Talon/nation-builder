@@ -9,6 +9,8 @@
   --amber: #c17700;
   --amber-bright: #e89923;
   --ink: #16120e;
+  /* The same ink, for scrims that need an alpha. */
+  --ink-rgb: 22, 18, 14;
   --parchment: #ede3d2;
   --parchment-dim: #c9bda8;
   --ink-raised: #221b15;
