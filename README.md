@@ -4,6 +4,8 @@ A history and civics city-building simulation from Flashpoint History. Students 
 a town in a historical year, choose once how it is governed, and live with that choice
 as the city grows. Free, no accounts, nothing about the student leaves their computer.
 
+Source: https://github.com/BryanKelley-Talon/nation-builder — public, as the GPL requires for a program we hand to students.
+
 **This is a modified version of [micropolisJS](https://github.com/graememcc/micropolisJS)**
 (Graeme McCutcheon's port of Micropolis), not the original program. See `NOTICE.md`
 for what changed and `README-upstream.md` for the original readme.

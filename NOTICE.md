@@ -6,6 +6,8 @@ and contributors (itself adapted from the Micropolis source release), forked at
 upstream commit `f13a162` on 2026-09-19. Upstream history is preserved in this
 repository's git log.
 
+- **Source:** the complete corresponding source for this program, including this
+  modified version's own history, is at https://github.com/BryanKelley-Talon/nation-builder.
 - **Code license:** GNU GPL v3 with the Section 7 additional terms in `LICENSE`
   (full GPL text in `COPYING`). Both apply to this whole repository's code,
   including any Flashpoint template code merged in.
