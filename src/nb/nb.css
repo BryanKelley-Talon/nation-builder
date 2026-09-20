@@ -405,6 +405,125 @@
   margin: 0 0 12px;
 }
 
+/* The advisor's news: a clipping over the running map, bottom right, clear of the tool palette and the engine's own
+   message strip. It never pauses the game, so it sits below the overlays (z 100) and above the canvas. */
+.nb-news {
+  position: fixed;
+  right: 20px;
+  bottom: 92px;
+  z-index: 40;
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--amber);
+  border-radius: 3px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.62);
+  padding: 14px 16px 12px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+  animation: nb-news-in 240ms ease-out;
+}
+
+@keyframes nb-news-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nb-news { animation: none; }
+}
+
+.nb-news-masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 6px !important;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+}
+
+.nb-news-dateline {
+  font-family: var(--font-code);
+  letter-spacing: 0.06em;
+  color: var(--parchment-dim);
+}
+
+.nb-news-headline {
+  font-family: var(--font-title);
+  font-size: 20px;
+  line-height: 1.25;
+  margin: 0 0 10px;
+  color: var(--parchment);
+}
+
+.nb-news-counsel {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.nb-news-portrait {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--amber);
+}
+
+.nb-news-line {
+  margin: 0 0 4px !important;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.nb-news-byline {
+  margin: 0 !important;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--parchment-dim);
+}
+
+.nb-news-dismiss {
+  margin-top: 10px;
+  width: auto;
+  height: auto;
+  padding: 5px 14px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--parchment-dim);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.nb-news-dismiss:hover {
+  border-color: var(--amber-bright);
+  color: var(--amber-bright);
+}
+
+.nb-news-dismiss:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+/* On a short screen the engine's own panels crowd the bottom; keep the clipping clear of them. */
+@media (max-height: 700px) {
+  .nb-news {
+    bottom: 76px;
+    width: 320px;
+  }
+}
+
 /* In game: the chosen government, in the header bar. */
 .nb-header-badge {
   position: absolute;

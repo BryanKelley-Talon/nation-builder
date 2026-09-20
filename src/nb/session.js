@@ -13,10 +13,21 @@ import { eraRules, lockedToolLabel, toolDisplayName, toolLockedUntil, universalP
 import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor, skillLabel } from './scenario.js';
+import { makeNewsroom, vignette } from './news.js';
 import { footprintTouchesWater } from './terrain.js';
 import { classRank, fill, yearReview } from './yearReview.js';
 
 const AUTOSAVE_KEY = 'nationBuilderAutosave';
+
+// A scenario may set its own pace for the advisor's news: news_rules.every_years, news_rules.repeat_years.
+function newsPace(scenario) {
+  const rules = (scenario && scenario.news_rules) || {};
+  return {
+    ...(Number.isInteger(rules.every_years) && rules.every_years > 0 ? { everyYears: rules.every_years } : {}),
+    ...(Number.isInteger(rules.repeat_years) && rules.repeat_years > 0 ? { repeatYears: rules.repeat_years } : {}),
+  };
+}
+
 const REVIEW_RETRY_MS = 250;
 
 
@@ -40,7 +51,7 @@ function writeAutosave(record) {
 }
 
 
-// ctx: {assets, scenario, scenarioIndex, poleId, strings, onSaveRequested, onYearReview,
+// ctx: {assets, scenario, scenarioIndex, poleId, strings, onSaveRequested, onYearReview, onNews,
 //       map + townName (new city) or savedCity + checkpoint + lastReview + highestClass (continuing)}
 export function startSession(ctx) {
   const { assets, scenario, scenarioIndex, poleId, strings } = ctx;
@@ -205,6 +216,24 @@ export function startSession(ctx) {
       const show = () => game.dialogOpen ? window.setTimeout(show, REVIEW_RETRY_MS) : ctx.onYearReview(session, review);
       show();
     }
+  });
+
+  // The town's news: the engine's own citizen-need messages, handed over in the advisor's voice. The newsroom keeps
+  // the pace; the engine's message strip still carries everything, including the stories the newsroom holds back.
+  const newsroom = makeNewsroom(newsPace(scenario));
+
+  sim.addEventListener(Messages.FRONT_END_MESSAGE, message => {
+    if (!ctx.onNews)
+      return;
+
+    const year = session.year();
+    const story = newsroom.consider(message.subject, year);
+    if (!story)
+      return;
+
+    const printed = vignette({ story, strings, scenario, rules, townName: game.name, year, skillLabel });
+    if (printed)
+      ctx.onNews(printed);
   });
 
   game.onSaveRequested = () => ctx.onSaveRequested(session);

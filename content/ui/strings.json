@@ -13,6 +13,94 @@
     "tool_locked": "{tool}: nothing like it exists here until {year}.",
     "tool_locked_hint": "Build with what {year} has."
   },
+  "news": {
+    "_note": "The advisor's news vignettes, raised from the engine's own citizen-need messages (src/nb/news.js maps them). Working wording from the build session, in the advisor voice of the about page, for the content desks to revise. {town} and {year} are filled in by the game; 'not_yet' is used instead of 'line' when the thing being asked for doesn't exist yet in that year.",
+    "masthead": "The {town} Gazette",
+    "dateline": "{year}",
+    "byline": "Your advisor",
+    "dismiss": "Noted",
+    "items": {
+      "need_residential": {
+        "headline": "Families arrive with nowhere to live",
+        "line": "People want in, mayor. Zone somewhere residential and they'll fill it — leave it too long and they go somewhere else."
+      },
+      "need_commercial": {
+        "headline": "Nowhere to spend a day's wages",
+        "line": "Your people earn and have nowhere to spend it. Shops and offices keep that money in town instead of out of it."
+      },
+      "need_industrial": {
+        "headline": "Workers idle, and looking",
+        "line": "There's labour here with nothing to do. Industry gives them work — put it downwind of where people sleep."
+      },
+      "need_roads": {
+        "headline": "Wagons bogged down at the edge of town",
+        "line": "Nothing you build grows if it can't be reached. Roads first, then the buildings that need them."
+      },
+      "need_rails": {
+        "headline": "Freight outgrowing the roads",
+        "line": "Your roads are carrying more than they were meant to. Rail moves the heavy loads and frees the streets.",
+        "not_yet": "Your people want rail before the country has it. Nothing runs on rails here until {year} — roads carry this town until then."
+      },
+      "heavy_traffic": {
+        "headline": "Streets jammed end to end",
+        "line": "Traffic is choking the town. More road won't fix it alone — look at where people live against where they work."
+      },
+      "need_electricity": {
+        "headline": "A town in the dark",
+        "line": "Nothing grows without power. Build a plant and wire it to the zones that need it.",
+        "not_yet": "Your citizens are asking for electricity the world hasn't built yet. No plant exists here until {year}; until then this town runs on muscle, water and daylight."
+      },
+      "blackouts": {
+        "headline": "Lights out across the district",
+        "line": "Power is reaching some of the town and not the rest. Follow the wires and find the gap.",
+        "not_yet": "Blackouts, in a town with no grid to fail. Electricity doesn't arrive here until {year}."
+      },
+      "need_police": {
+        "headline": "Citizens asking who keeps the peace",
+        "line": "They want a police station. What that costs, and what it buys, is exactly the argument your government exists to settle.",
+        "not_yet": "They're asking for a police force, mayor. No American city has one until {year} — for now, order here is a neighbour's business, not an office's."
+      },
+      "high_crime": {
+        "headline": "Crime rising in the older streets",
+        "line": "Crime is climbing. Policing is one answer; land value, jobs and crowding are the others — your government leans one way already."
+      },
+      "need_fire": {
+        "headline": "A bucket line is not a fire department",
+        "line": "One bad night is all it takes. A fire station is cheap next to what it saves."
+      },
+      "high_pollution": {
+        "headline": "Smoke where the children play",
+        "line": "The air is bad where people live. Industry pays the bills and fouls the ward — where you put it is the whole decision."
+      },
+      "need_stadium": {
+        "headline": "A town with nowhere to gather",
+        "line": "They want somewhere to be a public together. It earns nothing directly, and they'll remember it anyway.",
+        "not_yet": "A stadium, in {town}? Not for a while yet — nothing like it is built here until {year}."
+      },
+      "need_seaport": {
+        "headline": "Merchants want a proper wharf",
+        "line": "Trade wants a way in and out. A seaport pays for itself if there's industry behind it.",
+        "not_yet": "Your merchants are ahead of their time. A port of that kind isn't built here until {year}."
+      },
+      "need_airport": {
+        "headline": "Talk of flying machines",
+        "line": "An airport is a large bet on a growing town. Make it when the town is already large.",
+        "not_yet": "Flight is a rumour here, mayor. No airfield until {year}."
+      },
+      "roads_underfunded": {
+        "headline": "Potholes, and a budget to blame",
+        "line": "Your roads are funded below what they cost to keep. They'll crumble quietly until you look at the budget."
+      },
+      "police_underfunded": {
+        "headline": "Police say they can't cover the ward",
+        "line": "You're paying for less policing than you have stations for. Fund them or close them — half-funding buys neither."
+      },
+      "fire_underfunded": {
+        "headline": "Fire crews short of everything",
+        "line": "Underfunded fire stations are a bet that nothing will burn this year."
+      }
+    }
+  },
   "year_review": {
     "_note": "Shown when a game year ends at a checkpoint: a milestone year (the first year anyone lives here, the year the town changes class, the scenario's last year) or every fifth year otherwise. Working wording from the build session for the content desks to revise; {braces} are filled in by the game. Each pole_lines key is a tuning knob and whether the government turns it up or down from a standard town.",
     "title": "{year} in review",

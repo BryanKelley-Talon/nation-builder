@@ -20,6 +20,7 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
   const [session, setSession] = useState(null);
   const [saving, setSaving] = useState(false);
   const [review, setReview] = useState(null);
+  const [news, setNews] = useState(null);
 
   // Each dialog pauses the game; Escape closes it through the close function handed to openExternalDialog.
   const openSave = s => {
@@ -37,6 +38,8 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
         setReview(r);
         s.game.openExternalDialog(() => setReview(null));
       },
+      // The news does not pause the game: it is read while the town keeps running.
+      news: story => setNews({ ...story, at: Date.now() }),
     });
   }, [bindDialogs]);
 
@@ -53,6 +56,7 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
     return (
       <>
         {session && <HeaderBadge session={session} />}
+        {news && !review && !saving && <NewsVignette story={news} onDismiss={() => setNews(null)} />}
         {review && session && (
           <YearReview review={review} strings={content.strings.year_review}
                       onClose={() => { setReview(null); session.game.closeExternalDialog(); }}
@@ -323,6 +327,37 @@ function SaveDialog({ session, onClose }) {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// The advisor's news: a clipping that arrives over the running map and sees itself out.
+const NEWS_SECONDS = 16;
+
+function NewsVignette({ story, onDismiss }) {
+  useEffect(() => {
+    const timer = window.setTimeout(onDismiss, NEWS_SECONDS * 1000);
+    return () => window.clearTimeout(timer);
+  }, [story.key, story.at, onDismiss]);
+
+  return (
+    <aside className="nb-news" role="status" aria-live="polite">
+      <p className="nb-news-masthead">
+        <span>{story.masthead}</span>
+        <span className="nb-news-dateline">{story.dateline}</span>
+      </p>
+      <h3 className="nb-news-headline">{story.headline}</h3>
+      <div className="nb-news-counsel">
+        <img className="nb-news-portrait" src="content/images/advisor-guide-bk.webp" alt="" width="48" height="48" />
+        <div>
+          <p className="nb-news-line">{story.counsel}</p>
+          <p className="nb-news-byline">
+            — {story.byline}{story.skillLabel && <SkillChip label={story.skillLabel} />}
+          </p>
+        </div>
+      </div>
+      <button className="nb-news-dismiss" onClick={onDismiss}>Noted</button>
+    </aside>
   );
 }
 

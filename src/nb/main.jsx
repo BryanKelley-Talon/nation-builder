@@ -30,13 +30,14 @@ export async function startNationBuilder(assets) {
   }
 
   // The in-game dialogs live in App; it binds their openers once it mounts.
-  const dialogs = { save: () => {}, yearReview: () => {} };
+  const dialogs = { save: () => {}, yearReview: () => {}, news: () => {} };
   const bindDialogs = openers => Object.assign(dialogs, openers);
   const common = {
     assets,
     strings: content.strings,
     onSaveRequested: session => dialogs.save(session),
     onYearReview: (session, review) => dialogs.yearReview(session, review),
+    onNews: story => dialogs.news(story),
   };
 
   const onFound = ({ scenarioIndex, poleId, townName }) => {
