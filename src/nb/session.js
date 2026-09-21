@@ -20,6 +20,7 @@ import { DEFAULT_LEVEL as DEFAULT_SCHOOLS, isLevel, levelOf, unrestRelief, yearl
 import { currentTuning } from './governance.js';
 import { advance, fromSave, leaderById, leadershipRules, leaderVoice, startingState, toSave } from './leadership.js';
 import { makeNewsroom, vignette } from './news.js';
+import { asked, consequence, isDue, nextItem, questionRules } from './questions.js';
 import { nextUnrest, unrestWeights } from './unrest.js';
 import { footprintTouchesWater } from './terrain.js';
 import { classRank, fill, yearReview } from './yearReview.js';
@@ -59,6 +60,7 @@ function writeAutosave(record) {
 
 
 // ctx: {assets, scenario, scenarioIndex, poleId, strings, leadership, onSaveRequested, onYearReview, onNews,
+//       questions, onQuestion,
 //       map + townName (new city) or savedCity + checkpoint + lastReview + highestClass (continuing)}
 export function startSession(ctx) {
   const { assets, scenario, scenarioIndex, poleId, strings } = ctx;
@@ -120,6 +122,8 @@ export function startSession(ctx) {
 
     decide,
 
+    resolveQuestion,
+
     policing: () => policing,
 
     schools: () => ({ level: schoolFunding, count: sim._census.stadiumPop,
@@ -173,6 +177,7 @@ export function startSession(ctx) {
         highest_class: highestClass,
         leadership: toSave(leadership),
         clue_state: clueState,
+        question_state: questionState,
       }, game.saveData());
     },
   };
@@ -191,6 +196,13 @@ export function startSession(ctx) {
   let policing = isStance(ctx.policing) ? ctx.policing : DEFAULT_STANCE;
   // What the town spends on the schools it has built. The engine gives them no running cost of their own.
   let schoolFunding = isLevel(ctx.school_funding) ? ctx.school_funding : DEFAULT_SCHOOLS;
+
+  // Scheduled questions: the course's bank, on the scenario's beat. `pending` is the item on screen, so a town saved
+  // or reopened mid-question asks it again rather than skipping it. Only positions and years are kept — never what a
+  // student wrote, and never how many hints they used.
+  const questionBank = (ctx.questions && ctx.questions[scenario.course]) || null;
+  const questionBeat = questionRules(scenario);
+  let questionState = ctx.question_state || {};
 
   function leaderBends() {
     if (!leadership)
@@ -236,6 +248,46 @@ export function startSession(ctx) {
     applyTuning(session.year());
     writeAutosave(session.saveRecord());
     return outcome;
+  }
+
+  // A scenario question resolved: the town feels it the same year, through the same bounded bends as a decision.
+  // hintsUsed is read once, here, and not kept.
+  function resolveQuestion({ hintsUsed = 0 } = {}) {
+    if (!Number.isInteger(questionState.pending))
+      return null;
+
+    const effect = consequence(questionBank, { hintsUsed });
+    decisionBends = { ...decisionBends, ...effect.tuning };
+    if (leadership)
+      leadership = { ...leadership, unrest: Math.max(0, Math.min(100, leadership.unrest + effect.unrest)) };
+
+    const { pending, ...rest } = questionState;
+    questionState = rest;
+    applyTuning(session.year());
+    writeAutosave(session.saveRecord());
+    return effect;
+  }
+
+  function askQuestion(item) {
+    if (!ctx.onQuestion)
+      return;
+    const show = () => game.dialogOpen ? window.setTimeout(show, REVIEW_RETRY_MS) : ctx.onQuestion(session, item);
+    show();
+  }
+
+  // Is a question due at this year-end? It waits a year rather than share one with the year-in-review panel or a
+  // change of government: one stop at a time.
+  function scheduledQuestion(year, { review, change }) {
+    if (!questionBank || !ctx.onQuestion || Number.isInteger(questionState.pending) || review || change)
+      return null;
+    if (!isDue({ rules: questionBeat, state: questionState, year, startYear: scenario.start_year }))
+      return null;
+
+    const next = nextItem(questionBank, questionState);
+    if (!next)
+      return null;
+    questionState = { ...asked(questionState, next.index, year), pending: next.index };
+    return next.item;
   }
 
   function applyTuning(year) {
@@ -402,7 +454,11 @@ export function startSession(ctx) {
       highestClass = snapshot.cityClass;
     if (review)
       lastReview = snapshot;
+    const question = scheduledQuestion(snapshot.year, { review, change: government.change });
     writeAutosave(session.saveRecord());
+
+    if (question)
+      askQuestion(question);
 
     if (review && ctx.onYearReview) {
       const show = () => game.dialogOpen ? window.setTimeout(show, REVIEW_RETRY_MS) : ctx.onYearReview(session, review);
@@ -493,6 +549,13 @@ export function startSession(ctx) {
     });
 
     window.addEventListener('mouseup', () => { dragFrom = null; });
+  }
+
+  // A town reopened with a question still on screen asks it again, once the page has the session in hand.
+  if (Number.isInteger(questionState.pending) && questionBank) {
+    const item = questionBank.items[questionState.pending % questionBank.items.length];
+    if (item)
+      window.setTimeout(() => askQuestion(item), 0);
   }
 
   game.onSaveRequested = () => ctx.onSaveRequested(session);

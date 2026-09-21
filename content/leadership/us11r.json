@@ -34,7 +34,8 @@
       ],
       "on_overthrow": [
         "limited_gov_leader",
-        "activist_gov_leader"
+        "activist_gov_leader",
+        "order_leader"
       ]
     },
     {
@@ -84,7 +85,8 @@
         "activist_gov_leader"
       ],
       "on_overthrow": [
-        "activist_gov_leader"
+        "activist_gov_leader",
+        "order_leader"
       ]
     },
     {
@@ -134,6 +136,28 @@
         "limited_gov_leader"
       ],
       "on_overthrow": [
+        "limited_gov_leader",
+        "order_leader"
+      ]
+    },
+    {
+      "id": "order_leader",
+      "label": "A government that answers to one office",
+      "summary": "Believes a town that can't govern itself needs someone who will.",
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 1, BK-ruled 2026-09-21. Label and summary are his verbatim; the id is his placeholder, kept. Disposition, tuning and pools are the build session's, ported from Global's Strongman shape per Josh's work order 2026-09-21 section 2: overthrow-arising only, heavier control than either scheduled tendency, a thinner pool out.",
+      "disposition": {
+        "militarism": 0.8,
+        "reform": 0.1
+      },
+      "tuning": {
+        "policeEffectiveness": "higher",
+        "crimePressure": "lower"
+      },
+      "succeeds_to": [
+        "limited_gov_leader"
+      ],
+      "on_overthrow": [
+        "activist_gov_leader",
         "limited_gov_leader"
       ]
     }
@@ -398,5 +422,6 @@
     "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
     "_prompt_source": "Will spec section 6, reused for both courses - the NYSED task verbs are shared"
   },
-  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one."
+  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one.",
+  "_order_leader_note": "order_leader is appended last because a leader's index is load-bearing for save codes. It arises only by overthrow: no leader lists it in succeeds_to, so scheduled succession still alternates the two tendencies. chooseSuccessor picks it when an overthrow is driven by crime or by power gathering in one office (its militarism outscores the others); an overthrow driven by approval, tax or unemployment still installs one of the two tendencies. Its own scheduled successor (limited_gov_leader) and its overthrow pool are the build session's choice and want Sam's confirmation."
 }

@@ -1,0 +1,283 @@
+{
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "holder": "Flashpoint History",
+    "sellable": false
+  },
+  "_note": "Global 10R scenario questions: Will's first working set (12 items) for founding-1789, 2026-09-21, reshaped from his proposed fields into the engine's: type vocab/move becomes choice/written by what the item asks for, resolution becomes the correct option or the exemplar, and his term/move/umbrella fields are kept as desk notes (underscored) because none of them is said to a student. Order is load-bearing - append only. His ' -- ' dashes are kept verbatim here and render as em dashes.",
+  "course": "global10r",
+  "on_resolve": {
+    "unrest_relief": 6,
+    "hint_cost": 2,
+    "tuning": {
+      "taxGrowthDrag": "lower"
+    },
+    "_note": "What resolving a question gives the town: a small drop in unrest, less for every hint used (the costed-hint model, as an in-fiction cost since the build has no equilibrium score), and one bounded bend - a town that understands how it is governed pays its taxes a little less grudgingly. Engineering defaults chosen by the build session 2026-09-21, not content and not a balance pass."
+  },
+  "items": [
+    {
+      "id": "sq-natural-rights",
+      "type": "choice",
+      "prompt": "A philosophe argues that no king granted you the right to your own life and liberty -- you were born with it. Name the term for a right that exists before any government and isn't given by one.",
+      "options": [
+        {
+          "id": "a",
+          "label": "social contract"
+        },
+        {
+          "id": "b",
+          "label": "consent of the governed"
+        },
+        {
+          "id": "c",
+          "label": "natural rights"
+        },
+        {
+          "id": "d",
+          "label": "general will"
+        }
+      ],
+      "correct": "c",
+      "hints": [
+        "Think about where the right comes from -- a ruler, or something older than any ruler.",
+        "The term starts with the idea that some rights exist before government does.",
+        "It's the pair of words Locke used to argue government exists to protect, not to grant."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_resolution": "natural rights",
+      "_options_note": "Will delivered this as a named-term item with no options. The build made it a choice item because its resolution is the bare term; the three wrong options are other terms from the same set of twelve, chosen by the build session 2026-09-21 - no distractor was invented. For Will to confirm or replace.",
+      "_term": "natural rights"
+    },
+    {
+      "id": "sq-social-contract",
+      "type": "written",
+      "prompt": "Explain, in one sentence, why people would voluntarily give up some of their freedom to a government at all.",
+      "hints": [
+        "This isn't about fear of the ruler. It's about a trade the people choose to make.",
+        "The word you want pairs 'social' with a word for a binding agreement.",
+        "It's the deal Hobbes, Locke, and Rousseau all describe differently but all name the same way."
+      ],
+      "exemplar": "They trade some freedom for protection of their rights -- that trade is the social contract.",
+      "checklist": [
+        "It says people give up something — some of their freedom.",
+        "It says what they get back — protection of their rights.",
+        "It treats it as a trade people agree to, not something forced on them."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_term": "social contract"
+    },
+    {
+      "id": "sq-consent-of-the-governed",
+      "type": "written",
+      "prompt": "A government changes its tax law. Under what condition does the Enlightenment argument say that law is legitimate?",
+      "hints": [
+        "Legitimacy here isn't about force. It's about agreement.",
+        "Whose agreement has to be present for power to be legitimate?",
+        "Three words: consent... of the...?"
+      ],
+      "exemplar": "Only if the people being governed have agreed to be ruled by that government -- consent of the governed.",
+      "checklist": [
+        "It says legitimacy comes from agreement, not force.",
+        "It names whose agreement counts — the people being governed."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_term": "consent of the governed"
+    },
+    {
+      "id": "sq-identification-power",
+      "type": "written",
+      "prompt": "Your Minister just told you: 'They're starting to ask whether obedience was ever the same as consent.' Name the pattern this line is pointing at -- not the event, the issue underneath it.",
+      "hints": [
+        "Don't describe what's happening in the town. Name what's always at stake when a line like this gets said.",
+        "This is the same question every government has had to answer since the town's founding.",
+        "It's the umbrella issue this whole founding choice sits under: Power and Its ______."
+      ],
+      "exemplar": "Power and its legitimacy -- whether a government's authority is real just because people obey it, or only when they've actually agreed to it.",
+      "checklist": [
+        "It names an issue, not an event in the town.",
+        "It connects obeying to agreeing — whether the government's power is legitimate."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_move": "Identification",
+      "_umbrella": "power-its-abuse"
+    },
+    {
+      "id": "sq-causation",
+      "type": "written",
+      "prompt": "Unrest rose the week after you raised taxes. Is that proof the tax caused the unrest? Explain in one sentence what more you'd need to know.",
+      "hints": [
+        "Something happening after something else isn't enough on its own.",
+        "What's the difference between something following an event and being caused by it?",
+        "The move here has a name: don't confuse timing with causation."
+      ],
+      "exemplar": "No -- 'after' isn't 'because.' You'd need to rule out other causes happening the same week before you can call the tax the cause.",
+      "checklist": [
+        "It says that one thing coming after another isn't proof it caused it.",
+        "It names what else you'd need to check or rule out."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_move": "Causation"
+    },
+    {
+      "id": "sq-source-use",
+      "type": "written",
+      "prompt": "Two advisors give you opposite readings of the same unrest. Before you decide who's right, what's the first thing you should ask about each of them?",
+      "hints": [
+        "The content of what they say matters less right now than something else about them.",
+        "Ask about the speaker, not just the statement.",
+        "Say who said it -- and why that changes things."
+      ],
+      "exemplar": "Who they are and why their position might shape what they're telling you -- who's speaking, and what they want.",
+      "checklist": [
+        "It asks who each advisor is.",
+        "It asks why their position might shape what they tell you."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_move": "Source Use"
+    },
+    {
+      "id": "sq-purpose-audience",
+      "type": "written",
+      "prompt": "The Town Crier's announcement is written very differently from your Minister's private report. Why would the same information be phrased two different ways?",
+      "hints": [
+        "Who is each one actually written for?",
+        "What does each speaker want the audience to do or feel?",
+        "Purpose and ______ -- the second word is who's listening."
+      ],
+      "exemplar": "Because they're written for different audiences with different purposes -- a public announcement and a private advisory don't need to say the same thing the same way.",
+      "checklist": [
+        "It names who each message is written for.",
+        "It says what each speaker wants their audience to do or feel."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_move": "Purpose & Audience"
+    },
+    {
+      "id": "sq-tyranny",
+      "type": "choice",
+      "prompt": "Name the term for rule that has no limit and no consent behind it.",
+      "options": [
+        {
+          "id": "a",
+          "label": "general will"
+        },
+        {
+          "id": "b",
+          "label": "tyranny"
+        },
+        {
+          "id": "c",
+          "label": "separation of powers"
+        },
+        {
+          "id": "d",
+          "label": "social contract"
+        }
+      ],
+      "correct": "b",
+      "hints": [
+        "It's not just 'a bad ruler' -- it's a specific structural failure.",
+        "No limit, and no agreement from the governed.",
+        "It's the word Locke uses for what happens when a ruler breaks the social contract."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_resolution": "tyranny",
+      "_options_note": "Will delivered this as a named-term item with no options. The build made it a choice item because its resolution is the bare term; the three wrong options are other terms from the same set of twelve, chosen by the build session 2026-09-21 - no distractor was invented. For Will to confirm or replace.",
+      "_term": "tyranny"
+    },
+    {
+      "id": "sq-separation-of-powers",
+      "type": "choice",
+      "prompt": "The Reformer's council splits authority between a body that writes laws and a body that enforces them. Name the principle behind that split.",
+      "options": [
+        {
+          "id": "a",
+          "label": "consent of the governed"
+        },
+        {
+          "id": "b",
+          "label": "natural rights"
+        },
+        {
+          "id": "c",
+          "label": "general will"
+        },
+        {
+          "id": "d",
+          "label": "separation of powers"
+        }
+      ],
+      "correct": "d",
+      "hints": [
+        "The goal is making sure no single branch holds everything.",
+        "Legislature, executive, judiciary -- divided rather than combined.",
+        "Two words: separation of ______."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_resolution": "separation of powers",
+      "_options_note": "Will delivered this as a named-term item with no options. The build made it a choice item because its resolution is the bare term; the three wrong options are other terms from the same set of twelve, chosen by the build session 2026-09-21 - no distractor was invented. For Will to confirm or replace.",
+      "_term": "separation of powers"
+    },
+    {
+      "id": "sq-general-will",
+      "type": "written",
+      "prompt": "Rousseau's rule isn't 'whatever the majority wants right now.' What is it instead?",
+      "hints": [
+        "It's not the same as majority opinion -- that's a different term (will of all).",
+        "Think 'common good,' not 'most votes.'",
+        "Two words, and the first one means 'shared by everyone.'"
+      ],
+      "exemplar": "The general will -- what's genuinely in the shared interest of the whole community, not just the sum of individual wants.",
+      "checklist": [
+        "It separates the general will from whatever most people want right now.",
+        "It says what the general will is — the shared interest of the whole community."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_term": "general will"
+    },
+    {
+      "id": "sq-claim-support",
+      "type": "written",
+      "prompt": "'The old system had to go because it no longer served the people.' Is that reason enough, or does it go too far? Explain.",
+      "hints": [
+        "A reason can be true and still be incomplete on its own.",
+        "What would you need to see to actually believe that claim?",
+        "This move is about whether the support actually holds up the claim, or just restates it."
+      ],
+      "exemplar": "It's a real reason, but stated alone it goes too far -- it needs evidence of how it stopped serving people, not just the assertion.",
+      "checklist": [
+        "It says whether the reason holds up on its own.",
+        "It says what evidence you'd need to back it up."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_move": "Claim Support"
+    },
+    {
+      "id": "sq-divine-right-absolute-monarchy",
+      "type": "written",
+      "prompt": "A ruler claims their authority comes directly from God and cannot be questioned by any court or assembly. Name both the claim and the system it justifies.",
+      "hints": [
+        "One term is the justification, the other is the government it's used to defend.",
+        "Divine ______ justifies absolute ______.",
+        "This is Hobbes' pole, taken to its most extreme historical form."
+      ],
+      "exemplar": "Divine right justifies absolute monarchy -- the claim, and the system it defends.",
+      "checklist": [
+        "It names the claim the ruler makes.",
+        "It names the system of government that claim is used to defend."
+      ],
+      "_source": "Will, will-pass-2026-09-21-scenario-questions-founding-set1.json - prompt, hints and resolution verbatim",
+      "_checklist_note": "Exemplar is Will's own resolution, verbatim. CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, drawn from his resolution. For Will to replace.",
+      "_term": "divine right / absolute monarchy"
+    }
+  ]
+}

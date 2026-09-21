@@ -5,10 +5,11 @@
  * year in review and save dialog. The game canvas and its tools stay the original's.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import { decodeSaveCode } from './saveCode.js';
 import { decodeSaveFile, encodeSaveFile, saveFileName, SAVE_EXTENSION } from './saveFile.js';
+import { attemptIsReal, gateReducer, startGate } from './questions.js';
 import { governanceChoices } from './scenario.js';
 import { readAutosave } from './session.js';
 
@@ -21,6 +22,8 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
   const [saving, setSaving] = useState(false);
   const [review, setReview] = useState(null);
   const [news, setNews] = useState(null);
+  // A scheduled question stops play and holds the floor until it is resolved; Escape does not dismiss it.
+  const [question, setQuestion] = useState(null);
   // An advisor card that has asked something holds the floor until it is answered: no later story may push it
   // off the screen, or the decision it wanted becomes a notification the student never made.
   const awaitingAnswer = useRef(false);
@@ -48,6 +51,11 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
         awaitingAnswer.current = Array.isArray(story.choices) && story.choices.length > 0;
         return { ...story, at: Date.now() };
       }),
+      question: (s, item) => {
+        setSession(s);
+        setQuestion(item);
+        s.game.openExternalDialog(() => {}, { blocking: true });
+      },
     });
   }, [bindDialogs]);
 
@@ -67,7 +75,7 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
         {session && <MapTools strings={content.strings.map} />}
         {session && <PolicingDial session={session} strings={content.strings.policing} />}
         {session && <SchoolFunding session={session} strings={content.strings.schools} />}
-        {news && !review && !saving && (
+        {news && !review && !saving && !question && (
           <NewsVignette story={news}
                         onDismiss={() => { awaitingAnswer.current = false; setNews(null); }}
                         onDecide={(ladder, choice) => {
@@ -80,6 +88,11 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
           <YearReview review={review} strings={content.strings.year_review}
                       onClose={() => { setReview(null); session.game.closeExternalDialog(); }}
                       onSave={() => openSave(session)} />
+        )}
+        {question && session && (
+          <QuestionGate key={question.id} item={question} strings={content.strings.questions}
+                        onResolve={hintsUsed => session.resolveQuestion({ hintsUsed })}
+                        onClose={() => { setQuestion(null); session.game.closeExternalDialog(); }} />
         )}
         {saving && session && (
           <SaveDialog session={session} onClose={() => { setSaving(false); session.game.closeExternalDialog(); }} />
@@ -548,6 +561,131 @@ function NewsVignette({ story, onDismiss, onDecide }) {
 
       {!asks && <button className="nb-news-dismiss" onClick={onDismiss}>Noted</button>}
     </aside>
+  );
+}
+
+
+// The desks' own lines, as written: *asterisks* mark emphasis, and ' -- ' is a dash typed in plain text.
+function Line({ text }) {
+  const parts = String(text).replace(/ -- /g, ' — ').split(/(\*[^*]+\*)/);
+  return <>{parts.map((part, i) => /^\*[^*]+\*$/.test(part) ? <em key={i}>{part.slice(1, -1)}</em> : part)}</>;
+}
+
+
+// A scheduled question. It stops play, and nothing but resolving it lets play go on: the right answer for a choice,
+// the whole write-read-check sequence for a written one. Whatever the student writes lives in this component's
+// state and nowhere else.
+function QuestionGate({ item, strings, onResolve, onClose }) {
+  const [gate, dispatch] = useReducer((state, action) => gateReducer(item, state, action), item, startGate);
+  const [effect, setEffect] = useState(null);
+
+  useEffect(() => {
+    if (gate.resolved && !effect)
+      setEffect(onResolve(gate.hintsShown) || { unrest: 0 });
+  }, [gate.resolved]);
+
+  const hints = item.hints.slice(0, gate.hintsShown);
+
+  return (
+    <div className="nb-overlay nb-overlay-dialog" role="dialog" aria-modal="true" aria-labelledby="nb-question-title">
+      <div className="nb-panel nb-panel-narrow nb-question">
+        <h2 id="nb-question-title" className="nb-heading">{strings.title}</h2>
+        <p className="nb-question-prompt"><Line text={item.prompt} /></p>
+
+        {item.type === 'choice' && (
+          <>
+            {!gate.resolved && <p className="nb-hint">{strings.choice_instruction}</p>}
+            <div className="nb-question-options">
+              {item.options.map(option => {
+                const tried = gate.tried.includes(option.id);
+                const right = gate.resolved && option.id === item.correct;
+                return (
+                  <button key={option.id}
+                          className={'nb-question-option' + (tried ? ' nb-question-option-tried' : '') +
+                                     (right ? ' nb-question-option-right' : '')}
+                          disabled={tried || gate.resolved}
+                          onClick={() => dispatch({ type: 'choose', optionId: option.id })}>
+                    <Line text={option.label} />
+                  </button>
+                );
+              })}
+            </div>
+            {gate.tried.length > 0 && !gate.resolved && <p className="nb-question-wrong" role="status">{strings.wrong}</p>}
+          </>
+        )}
+
+        {item.type === 'written' && (
+          <>
+            {!gate.revealed && (
+              <>
+                <p className="nb-hint">{strings.written_instruction}</p>
+                <label className="nb-label nb-question-attempt">
+                  {strings.attempt_label}
+                  <textarea className="nb-input nb-question-textarea" value={gate.attempt} autoFocus
+                            placeholder={strings.attempt_placeholder} spellCheck
+                            onChange={e => dispatch({ type: 'write', text: e.target.value })} />
+                </label>
+                <div className="nb-actions">
+                  <button className="nb-primary" disabled={!attemptIsReal(gate.attempt)}
+                          onClick={() => dispatch({ type: 'reveal' })}>
+                    {strings.reveal}
+                  </button>
+                  {gate.hintsShown < item.hints.length && (
+                    <button className="nb-secondary" onClick={() => dispatch({ type: 'hint' })}>{strings.ask_hint}</button>
+                  )}
+                </div>
+                {!attemptIsReal(gate.attempt) && <p className="nb-quiet">{strings.no_shortcuts}</p>}
+              </>
+            )}
+
+            {gate.revealed && (
+              <>
+                <h3 className="nb-subheading">{strings.your_attempt_heading}</h3>
+                <p className="nb-question-readonly">{gate.attempt}</p>
+                <h3 className="nb-subheading">{strings.model_heading}</h3>
+                <p className="nb-question-model"><Line text={item.exemplar} /></p>
+                <fieldset className="nb-field nb-question-checklist">
+                  <legend>{strings.checklist_heading}</legend>
+                  {item.checklist.map((part, i) => (
+                    <label key={i} className="nb-question-check">
+                      <input type="checkbox" checked={gate.checked[i]} disabled={gate.resolved}
+                             onChange={() => dispatch({ type: 'check', index: i })} />
+                      <span><Line text={part} /></span>
+                    </label>
+                  ))}
+                  <p className="nb-hint">{strings.checklist_note}</p>
+                </fieldset>
+                {!gate.resolved && (
+                  <div className="nb-actions">
+                    <button className="nb-primary" onClick={() => dispatch({ type: 'finish' })}>{strings.finish}</button>
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        {hints.length > 0 && !gate.resolved && (
+          <section className="nb-question-hints" aria-live="polite">
+            <h3 className="nb-subheading">{strings.hint_heading}</h3>
+            <ol>{hints.map((hint, i) => <li key={i}><Line text={hint} /></li>)}</ol>
+            <p className="nb-quiet">{strings.hint_cost}</p>
+          </section>
+        )}
+
+        {gate.resolved && (
+          <section className="nb-question-resolved" role="status">
+            <p className="nb-question-resolved-line">
+              {item.type === 'choice' ? strings.resolved_choice : strings.resolved_written}
+            </p>
+            <p className="nb-hint">{gate.hintsShown > 0 ? strings.resolved_effect_hints : strings.resolved_effect}</p>
+            <div className="nb-actions">
+              <button className="nb-primary" onClick={onClose} autoFocus>{strings.keep_building}</button>
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
   );
 }
 

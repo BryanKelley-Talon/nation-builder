@@ -6,5 +6,8 @@
     "sellable": false
   },
   "_note": "Scenario registry. A scenario's position in this list is its number inside save codes: append only, never reorder or delete (retire a scenario by leaving its id in place).",
-  "scenarios": ["dev-fixture-us11r"]
+  "scenarios": [
+    "dev-fixture-us11r",
+    "founding-1789"
+  ]
 }

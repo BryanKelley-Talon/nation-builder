@@ -216,5 +216,29 @@
     "checkpoint": "Checkpoint saved on this computer. Save your city file too if class is ending.",
     "keep_building": "Keep building",
     "save": "Save my town"
+  },
+  "questions": {
+    "_note": "Scenario-question gate UI. ALL OF THIS COPY WAS AUTHORED BY THE BUILD SESSION 2026-09-21 as working wording, for BK and the desks to revise - the questions themselves are the desks' own words and live in content/questions/*.json. 'no_shortcuts' echoes the Arena's own reveal-hint line.",
+    "title": "A question before the year goes on",
+    "choice_instruction": "Choose one. The town waits until you get it.",
+    "wrong": "Not that one.",
+    "hint_heading": "Something to go on",
+    "written_instruction": "Write your answer first. A strong answer stays locked until you do.",
+    "attempt_label": "Your answer",
+    "attempt_placeholder": "One sentence is enough.",
+    "no_shortcuts": "Write your attempt first. There are no shortcuts here.",
+    "ask_hint": "I need a hint",
+    "hint_cost": "Help is never free: every hint takes a little off what working this out is worth to your town.",
+    "reveal": "Show me a strong answer",
+    "model_heading": "A strong answer",
+    "your_attempt_heading": "What you wrote",
+    "checklist_heading": "Which of these did your answer have?",
+    "checklist_note": "Tick what is honestly there. This isn't a score — it's how the next one gets sharper.",
+    "finish": "I've checked my answer",
+    "resolved_choice": "That's it.",
+    "resolved_written": "Good. Keep that answer in your head for the next one.",
+    "resolved_effect": "A town that understands how it is governed is a little easier to govern.",
+    "resolved_effect_hints": "You got there. The help you took cost the town some of what it would have gained.",
+    "keep_building": "Keep building"
   }
 }

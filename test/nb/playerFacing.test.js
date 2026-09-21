@@ -84,6 +84,25 @@ describe('no internal shorthand reaches a player', () => {
     }
   });
 
+  it('keeps them out of every scenario question a student can see', () => {
+    // Everything a question puts on screen: prompt, options, hints, the model answer and the checklist. The desks'
+    // own labels for an item (the skill it practises, the umbrella it sits under) live under "_" keys and stay there.
+    const banks = readdirSync(new URL('questions/', CONTENT))
+      .filter(name => name.endsWith('.json'))
+      .map(name => [name, JSON.parse(readFileSync(new URL(`questions/${name}`, CONTENT)))]);
+    expect(banks.map(([name]) => name).sort()).toEqual(['global10r.json', 'us11r.json']);
+
+    for (const [name, bank] of banks) {
+      const texts = playerFacingStrings(bank.items).filter(([path]) => !/\.(id|type|correct)$/.test(path));
+      expect(texts.length, name).toBeGreaterThan(40);
+      for (const [path, text] of texts) {
+        expect(SKILL_CODE.test(text), `${name}:${path}: ${text}`).toBe(false);
+        expect(DESK_WORDS.test(text), `${name}:${path}: ${text}`).toBe(false);
+        expect(text, `${name}:${path}`).not.toMatch(/\b(six moves|enduring issue|umbrella issue list|skill line)\b/i);
+      }
+    }
+  });
+
   it('never hands the student the vocabulary word the ladder is pointing at', () => {
     // Both desks wrote to this rule: the advisor gets near the tip and stops. Naming the Enduring Issue or the
     // Civic Principle out loud would be doing the student's own work for them.

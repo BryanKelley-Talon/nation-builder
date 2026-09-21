@@ -144,7 +144,8 @@
           },
           "aftermath": "You let the record answer for you. It may. It may not."
         }
-      ]
+      ],
+      "_umbrella": "power-its-abuse"
     },
     {
       "key": "human_rights",
@@ -183,7 +184,8 @@
           },
           "aftermath": "Slower, dearer, and it treats the cause. You will not see it work for a while."
         }
-      ]
+      ],
+      "_umbrella": "power-its-abuse"
     },
     {
       "key": "scarcity",
@@ -218,7 +220,8 @@
           },
           "aftermath": "You held. Now the town watches what the money buys."
         }
-      ]
+      ],
+      "_umbrella": "wealth-resources"
     },
     {
       "key": "nationalism",
@@ -257,12 +260,14 @@
           },
           "aftermath": "You let the record answer for you. It may. It may not."
         }
-      ]
+      ],
+      "_umbrella": "identity-nationalism"
     }
   ],
   "debrief": {
     "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
     "_prompt_source": "Will spec section 6, verbatim - ungraded, nothing saved"
   },
-  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one."
+  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one.",
+  "_umbrella_note": "Each ladder's _umbrella is the Six Umbrellas label from Will's correction (will-CORRECTION-2026-09-20-leadership-spec-six-umbrellas.md), matching the umbrella ids in founding-1789.json's advisors block. Recorded as a desk note only: the ladder keys stay as they were (they are saved in clue_state), and no umbrella is ever said to a student."
 }

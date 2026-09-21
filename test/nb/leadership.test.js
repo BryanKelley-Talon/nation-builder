@@ -188,13 +188,14 @@ describe('the two content layers', () => {
     }
   });
 
-  it('gives US11R two tendencies that succeed and overthrow each other', () => {
+  it('gives US11R two tendencies that succeed each other, and a third that only an overthrow installs', () => {
     const rules = leadershipRules(layers.us11r);
     const limited = leaderById(rules, 'limited_gov_leader');
     const activist = leaderById(rules, 'activist_gov_leader');
 
     expect(limited.succeeds_to).toEqual(['activist_gov_leader']);
-    expect(activist.on_overthrow).toEqual(['limited_gov_leader']);
+    expect(activist.succeeds_to).toEqual(['limited_gov_leader']);
+    expect(activist.on_overthrow).toEqual(['limited_gov_leader', 'order_leader']);
   });
 
   it("changes US11R's words as the clock advances, keeping one identity", () => {
@@ -407,5 +408,95 @@ describe('answering the advisor', () => {
     expect(bits).toBeLessThan(1 << DECISION_BITS);
     expect(decisionsTaken(bits)).toBeGreaterThan(0);
     expect(decisionsTaken(0)).toBe(0);
+  });
+});
+
+
+// The third US11R archetype (Sam, BK-ruled 2026-09-21): a government that answers to one office. It fills the slot
+// Global's Strongman fills — it arises from an overthrow and never from a term ending — so US11R's changes of
+// government are no longer a metronome: a town that falls over crime or gathering power can fall into this.
+describe('order_leader', () => {
+  const rules = leadershipRules(layers.us11r);
+  const order = leaderById(rules, 'order_leader');
+
+  it("carries Sam's words verbatim", () => {
+    expect(order.label).toBe('A government that answers to one office');
+    expect(order.summary).toBe("Believes a town that can't govern itself needs someone who will.");
+  });
+
+  it('is appended, so every code already written still names the same leader', () => {
+    expect(rules.leaders.map(leader => leader.id))
+      .toEqual(['founder', 'limited_gov_leader', 'activist_gov_leader', 'order_leader']);
+  });
+
+  it('is never a scheduled successor: succession still only alternates the two tendencies', () => {
+    for (const leader of rules.leaders)
+      expect(leader.succeeds_to, leader.id).not.toContain('order_leader');
+
+    let state = { leader: 'limited_gov_leader', since: 1800, tenureEnds: 1810, unrest: 0, sustained: 0, history: [] };
+    const seen = [];
+    for (let year = 1810; seen.length < 12; year++) {
+      const outcome = advance({ rules, state, year, unrest: 0, dominant: 'approval', random: fixed(0.5) });
+      state = outcome.state;
+      if (outcome.event) {
+        expect(outcome.event).toBe(EVENT_SUCCESSION);
+        seen.push(outcome.to.id);
+      }
+    }
+    expect(seen).toEqual(Array.from({ length: 12 }, (_, i) => i % 2 === 0 ? 'activist_gov_leader'
+                                                                          : 'limited_gov_leader'));
+  });
+
+  it.each([
+    ['founder', 'crime'], ['founder', 'militarism'],
+    ['limited_gov_leader', 'crime'], ['activist_gov_leader', 'militarism'],
+  ])('is what an overthrow of %s driven by %s installs', (from, dominant) => {
+    const successor = chooseSuccessor(rules, leaderById(rules, from),
+                                      { event: EVENT_OVERTHROW, dominant, random: fixed(0.5) });
+    expect(successor.id).toBe('order_leader');
+  });
+
+  it.each(['approval', 'tax', 'unemployment'])('is not what an overthrow driven by %s installs', dominant => {
+    for (const from of ['founder', 'limited_gov_leader', 'activist_gov_leader']) {
+      const successor = chooseSuccessor(rules, leaderById(rules, from),
+                                        { event: EVENT_OVERTHROW, dominant, random: fixed(0.5) });
+      expect(successor.id, `${from} / ${dominant}`).not.toBe('order_leader');
+    }
+  });
+
+  it('arrives through the real trigger: three sustained years over crime turn the town over to it', () => {
+    let state = { leader: 'activist_gov_leader', since: 1900, tenureEnds: 1990, unrest: 70, sustained: 0,
+                  history: [] };
+    let outcome;
+    for (const year of [1901, 1902, 1903]) {
+      outcome = advance({ rules, state, year, unrest: 75, dominant: 'crime', random: fixed(0.5) });
+      state = outcome.state;
+    }
+    expect(outcome.event).toBe(EVENT_OVERTHROW);
+    expect(state.leader).toBe('order_leader');
+  });
+
+  it("governs with a heavier hand than either scheduled tendency, inside the same bounds", () => {
+    const pole = { policeEffectiveness: 1, crimePressure: 0 };
+    const under = id => currentTuning({ pole, leader: leaderById(rules, id).tuning });
+
+    for (const id of ['limited_gov_leader', 'activist_gov_leader']) {
+      expect(under('order_leader').policeEffectiveness).toBeGreaterThan(under(id).policeEffectiveness);
+      expect(under('order_leader').crimePressure).toBeLessThan(under(id).crimePressure);
+    }
+    expect(order.disposition.militarism).toBeGreaterThanOrEqual(0.5);
+    // Global's Strongman, the shape this ports: a thin pool out, no scheduled road back to itself.
+    expect(order.succeeds_to).toHaveLength(1);
+    expect(order.succeeds_to).not.toContain('order_leader');
+    expect(order.on_overthrow).not.toContain('order_leader');
+  });
+
+  it("makes Sam's Due Process ladder reachable by a leader, not only by the player's policing", () => {
+    // Its conduct is the cause: the selector prefers the Due Process reading whenever that ladder has lines.
+    const layer = { ...layers.us11r, ladders: layers.us11r.ladders.map(ladder => ladder.key === 'due_process'
+      ? { ...ladder, tiers: ['one', 'two', 'three'] } : ladder) };
+    expect(selectLadder({ layer, dominant: 'crime', leader: order }).key).toBe('due_process');
+    // As delivered it has no lines yet, so it still falls back to Rule of Law.
+    expect(selectLadder({ layer: layers.us11r, dominant: 'crime', leader: order }).key).toBe('rule_of_law');
   });
 });

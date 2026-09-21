@@ -446,3 +446,27 @@ footer .nameLicense, footer #build {
   outline: 2px solid var(--amber-bright);
   outline-offset: 2px;
 }
+
+
+/* ---- Short windows ------------------------------------------------------------------------------------------------
+   Upstream refuses to run at or below 582px of window height ("This screen is too small"), which a school laptop hits
+   with Windows display scaling, a taskbar and browser toolbars (BK, 2026-09-21: the game would not open on his work
+   laptop). Rather than refuse, the side panels shrink to fit, the way Ctrl-minus would: src/nb/fit.js sets --nb-fit to
+   the window's height over the height the panels were laid out for. The map canvas is never scaled, so a click on the
+   map still lands on the tile under the pointer. Only a window too short to read even shrunk is still refused. */
+#infobar, #miscButtons, #RCIContainer, #controls, #monstertv, #debug, #notifications,
+.nb-policing, .nb-schools, .nb-news, .nb-panel-toggle {
+  zoom: var(--nb-fit, 1);
+}
+
+@media (max-height: 582px) {
+  #tooSmall[data-hasscript=true] {
+    display: none;
+  }
+}
+
+@media (max-height: 399px) {
+  #tooSmall[data-hasscript=true] {
+    display: block;
+  }
+}

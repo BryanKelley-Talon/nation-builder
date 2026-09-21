@@ -30,6 +30,27 @@ describe('content/scenarios', () => {
       expect(validateScenario(readJson(`${id}.json`)).scenario_id).toBe(id);
   });
 
+  it('keeps the registry append-only: a scenario is its position inside every save code already written', () => {
+    expect(readJson('index.json').scenarios.slice(0, 2)).toEqual(['dev-fixture-us11r', 'founding-1789']);
+  });
+
+  it('offers both courses at the founding door', () => {
+    // BK's founding-door ruling: the course a student founds under decides which vocabulary the game speaks. Until
+    // founding-1789 there was a door with one room behind it.
+    const courses = readJson('index.json').scenarios.map(id => validateScenario(readJson(`${id}.json`)).course);
+    expect(new Set(courses)).toEqual(new Set(['us11r', 'global10r']));
+  });
+
+  it("registers Will's founding-1789 as he wrote it, and as real content rather than a fixture", () => {
+    const founding = validateScenario(readJson('founding-1789.json'));
+    expect(founding.dev_fixture).toBe(false);
+    expect(founding.title).toBe('1789: The Estates');
+    expect(founding.license.sellable).toBe(false);
+    expect(Object.keys(founding.governance_poles)).toEqual(['hobbes', 'locke', 'rousseau']);
+    // His terrain is the fixture's placeholder map, reused on purpose until a real 1789 terrain exists.
+    expect(founding.terrain).toEqual(readJson('dev-fixture-us11r.json').terrain);
+  });
+
   it('every content file carries the content license, never the code license', () => {
     for (const f of readdirSync(SCENARIO_DIR)) {
       const text = readFileSync(new URL(f, SCENARIO_DIR), 'utf8');

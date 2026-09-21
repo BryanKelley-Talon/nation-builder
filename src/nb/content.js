@@ -4,6 +4,7 @@
  * own license), rather than bundling it into the GPL'd script.
  */
 
+import { validateQuestionBank } from './questions.js';
 import { validateScenario } from './scenario.js';
 
 async function getJson(path) {
@@ -24,10 +25,13 @@ export async function loadContent() {
   const [index, strings] = await Promise.all([getJson('content/scenarios/index.json'), getJson('content/ui/strings.json')]);
   const scenarios = await Promise.all(index.scenarios.map(id => getJson(`content/scenarios/${id}.json`)));
   const layers = await Promise.all(LEADERSHIP_COURSES.map(course => getJson(`content/leadership/${course}.json`)));
+  // Scenario questions, one bank per course, chosen the same way as the leadership layer.
+  const banks = await Promise.all(LEADERSHIP_COURSES.map(course => getJson(`content/questions/${course}.json`)));
 
   return {
     scenarios: scenarios.map(validateScenario),
     strings,
     leadership: Object.fromEntries(LEADERSHIP_COURSES.map((course, i) => [course, layers[i]])),
+    questions: Object.fromEntries(LEADERSHIP_COURSES.map((course, i) => [course, validateQuestionBank(banks[i])])),
   };
 }

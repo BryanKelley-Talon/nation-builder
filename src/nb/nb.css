@@ -840,3 +840,123 @@
     padding: 20px 16px;
   }
 }
+
+
+/* Scenario questions: a gate that stops play. Same panel as the year in review, so it reads as the game's own
+   voice rather than a pop-up. */
+.nb-question-prompt {
+  font-family: var(--font-title);
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--parchment);
+}
+
+.nb-question-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+/* Two classes, to outrank `.nb-overlay button`, which sets every overlay button in the label face. An answer is
+   read, not scanned, so it takes the body face. */
+.nb-overlay .nb-question-option {
+  width: 100%;
+  height: auto;
+  text-align: left;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  background: var(--ink-raised);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.nb-question-option:hover:not(:disabled) {
+  border-color: var(--amber-bright);
+}
+
+.nb-question-option:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+/* Ruled out, but still legible: a student should be able to read back what they tried. */
+.nb-question-option-tried {
+  cursor: default;
+  color: var(--parchment-dim);
+  border-left-color: var(--line);
+  text-decoration: line-through;
+}
+
+.nb-question-option-right {
+  cursor: default;
+  border-color: var(--ok);
+  border-left-color: var(--ok);
+}
+
+.nb-question-wrong {
+  color: var(--amber-bright);
+}
+
+.nb-question-hints {
+  border-left: 3px solid var(--amber);
+  padding: 4px 0 4px 14px;
+  margin: 8px 0 12px;
+}
+
+.nb-question-hints ol {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+
+.nb-question-hints li {
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.nb-question-textarea {
+  max-width: none;
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.nb-question-readonly,
+.nb-question-model {
+  padding: 10px 14px;
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.nb-question-model {
+  border-left: 3px solid var(--amber);
+}
+
+.nb-question-check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 8px;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.nb-question-check input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--amber);
+}
+
+.nb-question-resolved-line {
+  font-family: var(--font-title);
+  font-size: 20px;
+  color: var(--amber-bright);
+}

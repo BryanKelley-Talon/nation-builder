@@ -281,10 +281,11 @@ Game.prototype.save = function() {
 
 
 // Nation Builder: pause the game behind a teaching-layer dialog. Escape calls close(), as for upstream windows.
-Game.prototype.openExternalDialog = function(close) {
+// A blocking dialog ignores Escape: it closes only through closeExternalDialog, once it has been answered.
+Game.prototype.openExternalDialog = function(close, options) {
   this.dialogOpen = true;
   this._openWindow = 'externalDialog';
-  this.externalDialog = {close: close};
+  this.externalDialog = {close: close, blocking: !!(options && options.blocking)};
 };
 
 
@@ -578,7 +579,10 @@ Game.prototype.handleInput = function() {
 
   if (this.inputStatus.escape) {
     // We need to handle escape, as InputStatus won't know what dialogs are showing
-    if (this.dialogOpen) {
+    // Nation Builder: a blocking teaching-layer dialog (a scenario question) is answered, never escaped.
+    if (this.dialogOpen && this._openWindow === 'externalDialog' && this.externalDialog.blocking) {
+      // Nothing: the game stays paused behind it.
+    } else if (this.dialogOpen) {
       this.dialogOpen = false;
       this[this._openWindow].close();
       this._openWindow = null;

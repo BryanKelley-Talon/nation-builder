@@ -8,12 +8,14 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from './App.jsx';
 import { loadContent } from './content.js';
+import { fitPanelsToWindow } from './fit.js';
 import { startSession } from './session.js';
 import { buildMap } from './terrain.js';
 import './nb.css';
 
 
 export async function startNationBuilder(assets) {
+  fitPanelsToWindow();
   const root = createRoot(document.getElementById('nb-root'));
 
   let content;
@@ -30,15 +32,17 @@ export async function startNationBuilder(assets) {
   }
 
   // The in-game dialogs live in App; it binds their openers once it mounts.
-  const dialogs = { save: () => {}, yearReview: () => {}, news: () => {} };
+  const dialogs = { save: () => {}, yearReview: () => {}, news: () => {}, question: () => {} };
   const bindDialogs = openers => Object.assign(dialogs, openers);
   const common = {
     assets,
     strings: content.strings,
     leadership: content.leadership,
+    questions: content.questions,
     onSaveRequested: session => dialogs.save(session),
     onYearReview: (session, review) => dialogs.yearReview(session, review),
     onNews: story => dialogs.news(story),
+    onQuestion: (session, item) => dialogs.question(session, item),
   };
 
   const onFound = ({ scenarioIndex, poleId, townName }) => {
@@ -59,6 +63,7 @@ export async function startNationBuilder(assets) {
       highestClass: record.teaching.highest_class,
       leadership_state: record.teaching.leadership,
       clue_state: record.teaching.clue_state,
+      question_state: record.teaching.question_state,
       advisor_bits: record.teaching.advisor_bits,
       decision_bends: record.teaching.decision_bends,
       policing: record.teaching.policing,

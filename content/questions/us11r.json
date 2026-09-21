@@ -1,0 +1,175 @@
+{
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "holder": "Flashpoint History",
+    "sellable": false
+  },
+  "_note": "US11R scenario questions: Sam's first working set (6 items), BK-ruled 2026-09-21. Order is load-bearing - a saved town remembers its place in this list by position - so append only. Prompts, options, answers and hints are Sam's verbatim; *asterisks* in a line mark his emphasis and render as italics. The two written items' exemplars and checklists are the build session's, marked on each item.",
+  "course": "us11r",
+  "on_resolve": {
+    "unrest_relief": 6,
+    "hint_cost": 2,
+    "tuning": {
+      "taxGrowthDrag": "lower"
+    },
+    "_note": "What resolving a question gives the town: a small drop in unrest, less for every hint used (the costed-hint model, as an in-fiction cost since the build has no equilibrium score), and one bounded bend - a town that understands how it is governed pays its taxes a little less grudgingly. Engineering defaults chosen by the build session 2026-09-21, not content and not a balance pass."
+  },
+  "items": [
+    {
+      "id": "us11r-sq-due-process",
+      "type": "choice",
+      "prompt": "Your sheriff arrested a man and held him for a week without ever charging him with a crime. A councilman objects. What's he objecting to?",
+      "options": [
+        {
+          "id": "a",
+          "label": "A failure of Rule of Law"
+        },
+        {
+          "id": "b",
+          "label": "A failure of Due Process"
+        },
+        {
+          "id": "c",
+          "label": "A tax dispute"
+        },
+        {
+          "id": "d",
+          "label": "A treaty violation"
+        }
+      ],
+      "correct": "b",
+      "hints": [
+        "Rule of Law is about whether the law gets enforced at all. This isn't about whether a law existed.",
+        "This is about whether the *process* the law promises — charges, a hearing — actually happened.",
+        "The man wasn't let off the hook. He was denied the steps the law says he's owed first."
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 1)"
+    },
+    {
+      "id": "us11r-sq-federalism",
+      "type": "choice",
+      "prompt": "Your town wants to set its own tax rate, but a regional authority says it needs their approval first. What principle is at stake?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Popular Sovereignty"
+        },
+        {
+          "id": "b",
+          "label": "Federalism"
+        },
+        {
+          "id": "c",
+          "label": "Checks and Balances"
+        },
+        {
+          "id": "d",
+          "label": "Due Process"
+        }
+      ],
+      "correct": "b",
+      "hints": [
+        "This is about who holds power — one level of government, or several sharing it.",
+        "Federalism is the word for power split between a central authority and local ones.",
+        "Your town is the \"local\" half of that split."
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 2)",
+      "_hint_names_answer": "Hint 2 names the correct option outright ('Federalism is the word for...'). Wired verbatim because BK ruled the item as written; flagged to Sam in the 2026-09-21 build handoff. test/nb/questions.test.js allows this one item by id and no other."
+    },
+    {
+      "id": "us11r-sq-checks-and-balances",
+      "type": "choice",
+      "prompt": "Your council wants to spend the treasury on a new road. The mayor can veto it. What keeps that veto itself from becoming absolute power?",
+      "options": [
+        {
+          "id": "a",
+          "label": "The council can override it"
+        },
+        {
+          "id": "b",
+          "label": "Nothing — the mayor's word is final"
+        },
+        {
+          "id": "c",
+          "label": "Popular Sovereignty"
+        },
+        {
+          "id": "d",
+          "label": "Due Process"
+        }
+      ],
+      "correct": "a",
+      "hints": [
+        "Look for the word that means one power checking another, which is checked right back.",
+        "If the veto had no answer, that's not checks and balances — that's just one office holding all the power.",
+        "Somebody else in the system needs their own move in response to the veto."
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 3)"
+    },
+    {
+      "id": "us11r-sq-historical-context",
+      "type": "written",
+      "prompt": "Write one sentence that sets the scene for why your town's unrest is rising — what was already true before this crisis hit?",
+      "hints": [
+        "Don't describe the crisis itself yet — what was already going on before it?",
+        "Think tax rate, policing level, or a decision you made turns ago — the conditions, not the event.",
+        "One clause with \"already\" or \"for years\" in it usually does the job."
+      ],
+      "exemplar": "For years before this, the town had been taxed close to its limit while the watch stayed thin, so people were already stretched and already uneasy when the trouble came.",
+      "checklist": [
+        "It describes a condition, not the crisis itself.",
+        "It names something that was already true — a tax rate, the policing, or a decision made earlier.",
+        "It shows that condition came first, with words like \"already\" or \"for years.\""
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 4); EXEMPLAR AND CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, not by Sam - his package leaves the grading bank to the build. Checklist taken from what his own prompt and hints ask for. For Sam to replace."
+    },
+    {
+      "id": "us11r-sq-coverture",
+      "type": "choice",
+      "prompt": "A widow in your town can't sign the deed to her own house without a male relative co-signing. What's the legal principle that allows this?",
+      "options": [
+        {
+          "id": "a",
+          "label": "Due Process"
+        },
+        {
+          "id": "b",
+          "label": "Coverture"
+        },
+        {
+          "id": "c",
+          "label": "Federalism"
+        },
+        {
+          "id": "d",
+          "label": "Popular Sovereignty"
+        }
+      ],
+      "correct": "b",
+      "hints": [
+        "This isn't about a right being denied for a crime — it's about a right never granted in the first place.",
+        "It's specifically about a married or widowed woman's legal identity being absorbed into a man's.",
+        "You read the actual term for this in your Casefile B documents."
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 5)"
+    },
+    {
+      "id": "us11r-sq-so-what",
+      "type": "written",
+      "prompt": "Your advisor reports: 'Unemployment is climbing.' Add ONE sentence that explains why that matters for your town right now.",
+      "hints": [
+        "Don't repeat the fact — say what it *causes* or *risks*.",
+        "Think about what unemployment does to unrest, tax revenue, or who's available to work.",
+        "A sentence starting \"This means...\" or \"As a result...\" usually gets you there."
+      ],
+      "exemplar": "This means fewer people are earning wages the town can tax, so the treasury shrinks at the same moment more people are angry about how hard work is to find.",
+      "checklist": [
+        "It says what the fact causes or risks, instead of repeating it.",
+        "It ties that effect to something in your town — unrest, tax money, or who is available to work.",
+        "It uses a cause-and-effect connector, like \"This means\" or \"As a result.\""
+      ],
+      "_source": "Sam, from-sam-2026-09-21-scenario-question-content-and-third-archetype.md section 2, BK-ruled 2026-09-21 - prompt, options, answer and hints verbatim (item 6); EXEMPLAR AND CHECKLIST AUTHORED BY THE BUILD SESSION 2026-09-21, not by Sam - his package leaves the grading bank to the build. Checklist taken from what his own prompt and hints ask for. For Sam to replace."
+    }
+  ]
+}
