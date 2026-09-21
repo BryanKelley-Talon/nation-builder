@@ -13,7 +13,11 @@ import { eraRules, lockedToolLabel, toolDisplayName, toolLockedUntil, universalP
 import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor } from './scenario.js';
+import { changeOfGovernment, nextClue, successionVignette } from './clues.js';
+import { currentTuning } from './governance.js';
+import { advance, fromSave, leaderById, leadershipRules, leaderVoice, startingState, toSave } from './leadership.js';
 import { makeNewsroom, vignette } from './news.js';
+import { nextUnrest, unrestWeights } from './unrest.js';
 import { footprintTouchesWater } from './terrain.js';
 import { classRank, fill, yearReview } from './yearReview.js';
 
@@ -51,11 +55,11 @@ function writeAutosave(record) {
 }
 
 
-// ctx: {assets, scenario, scenarioIndex, poleId, strings, onSaveRequested, onYearReview, onNews,
+// ctx: {assets, scenario, scenarioIndex, poleId, strings, leadership, onSaveRequested, onYearReview, onNews,
 //       map + townName (new city) or savedCity + checkpoint + lastReview + highestClass (continuing)}
 export function startSession(ctx) {
   const { assets, scenario, scenarioIndex, poleId, strings } = ctx;
-  const rules = eraRules(scenario);
+  const era = eraRules(scenario);
   const poleIds = Object.keys(scenario.governance_poles);
   const poleTuning = (scenario.governance_poles[poleId] && scenario.governance_poles[poleId].tuning) || {};
 
@@ -65,10 +69,16 @@ export function startSession(ctx) {
     game = new Game(city, assets.tileSet, assets.snowTileSet, assets.spriteSheet, city._gameLevel || 0, city.name);
   } else {
     const startYear = scenario.start_year;
-    const options = simOptionsFor(scenario, poleId, { universalPower: universalPowerIn(rules, startYear) });
+    const options = simOptionsFor(scenario, poleId, { universalPower: universalPowerIn(era, startYear) });
     game = new Game(ctx.map, assets.tileSet, assets.snowTileSet, assets.spriteSheet, 0, ctx.townName, options);
     applyStartingPressures(scenario, game.simulation);
   }
+
+  // Leadership: one architecture, the content layer chosen by the scenario's own course (BK's founding-door
+  // ruling). A scenario with no layer for its course simply has no leadership, and everything else still runs.
+  const layer = (ctx.leadership && ctx.leadership[scenario.course]) || null;
+  const rules = leadershipRules(layer || {});
+  const weights = unrestWeights(scenario);
 
   const sim = game.simulation;
   let lastCheckpoint = ctx.checkpoint || null;
@@ -85,6 +95,14 @@ export function startSession(ctx) {
     townName: game.name,
 
     year: () => sim.getDate().year,
+
+    // Who is in office, in the words this year uses. Null for a scenario with no leadership layer.
+    leader() {
+      if (!leadership)
+        return null;
+      const leader = leaderById(rules, leadership.leader);
+      return leader ? { id: leader.id, ...leaderVoice(leader, sim.getDate().year) } : null;
+    },
 
     // Headline state for the save code: the latest year-end snapshot, or the live numbers before the first one.
     checkpoint() {
@@ -123,9 +141,39 @@ export function startSession(ctx) {
         checkpoint: session.checkpoint(),
         last_review: lastReview,
         highest_class: highestClass,
+        leadership: toSave(leadership),
+        clue_state: clueState,
       }, game.saveData());
     },
   };
+
+  // Who governs, and the town's mood. A leader bends the founding choice; governance.js is where that is made
+  // mechanical, and every tuning change in this file goes through it.
+  let leadership = layer
+    ? (ctx.leadership_state ? fromSave(ctx.leadership_state, rules, session.year()) : startingState(rules, session.year()))
+    : null;
+  let clueState = ctx.clue_state || {};
+
+  function leaderBends() {
+    if (!leadership)
+      return {};
+
+    const leader = leaderById(rules, leadership.leader);
+    if (!leader)
+      return {};
+
+    const voice = leaderVoice(leader, session.year());
+    const byEra = (leader.by_era || []).find(entry => entry.id === voice.era);
+    return { ...(leader.tuning || {}), ...((byEra && byEra.tuning) || {}) };
+  }
+
+  function applyTuning(year) {
+    sim.setTuning(currentTuning({
+      pole: poleTuning,
+      leader: leaderBends(),
+      era: { universalPower: universalPowerIn(era, year) },
+    }));
+  }
 
   // Era rules: tools appear when their year arrives; the grid becomes necessary after universal power ends.
   let poweredByEra = sim.tuning.universalPower;
@@ -139,7 +187,7 @@ export function startSession(ctx) {
         button.attr('data-label', button.text());
 
       const label = button.attr('data-label');
-      const lockedUntil = toolLockedUntil(rules, button.attr('data-tool'), year);
+      const lockedUntil = toolLockedUntil(era, button.attr('data-tool'), year);
       button.prop('disabled', false)
             .toggleClass('nbLocked', lockedUntil !== null)
             .attr('aria-disabled', lockedUntil !== null ? 'true' : null)
@@ -147,10 +195,10 @@ export function startSession(ctx) {
             .text(lockedUntil !== null ? lockedToolLabel(label, lockedUntil) : label);
     });
 
-    const universal = universalPowerIn(rules, year);
+    const universal = universalPowerIn(era, year);
     if (universal !== poweredByEra) {
       poweredByEra = universal;
-      sim.setTuning({ ...poleTuning, universalPower: universal });
+      applyTuning(year);
       if (!universal)
         game._notificationBar.badNews({ subject: Messages.NEED_ELECTRICITY });
     }
@@ -171,7 +219,7 @@ export function startSession(ctx) {
     if (!button)
       return;
 
-    const lockedUntil = toolLockedUntil(rules, button.getAttribute('data-tool'), session.year());
+    const lockedUntil = toolLockedUntil(era, button.getAttribute('data-tool'), session.year());
     if (lockedUntil === null)
       return;
 
@@ -181,7 +229,7 @@ export function startSession(ctx) {
   }, true);
 
   game.toolGuard = toolName => {
-    const lockedUntil = toolLockedUntil(rules, toolName, session.year());
+    const lockedUntil = toolLockedUntil(era, toolName, session.year());
     if (lockedUntil === null)
       return null;
     const button = document.querySelector(`.toolButton[data-tool="${toolName}"]`);
@@ -200,11 +248,68 @@ export function startSession(ctx) {
       : null;
   };
 
+  // One year of governing: the town's mood, the advisor's line about it, and — when it comes to it — a change of
+  // government. Returns whatever the year in review and the news should carry.
+  function governYear(snapshot) {
+    if (!leadership)
+      return { change: null };
+
+    const year = snapshot.year;
+    const leader = leaderById(rules, leadership.leader);
+    // Read before advance(): once it returns, `leadership` is the new government and `since` is this year.
+    const governedSince = leadership.since;
+    const militarism = (leader && leader.disposition && leader.disposition.militarism) || 0;
+    const reading = nextUnrest({ snapshot, previous: leadership.unrest, militarism, weights });
+
+    const outcome = advance({ rules, state: leadership, year, unrest: reading.value, dominant: reading.dominant });
+    leadership = outcome.state;
+
+    if (outcome.event) {
+      // A new government bends the pole its own way from the year it takes office.
+      applyTuning(year);
+      clueState = {};
+
+      const outgoing = { id: outcome.from.id, ...leaderVoice(outcome.from, year) };
+      const incoming = { id: outcome.to.id, ...leaderVoice(outcome.to, year) };
+
+      if (ctx.onNews)
+        ctx.onNews(successionVignette({ strings, townName: game.name, year, event: outcome.event, outgoing, incoming }));
+
+      return {
+        change: changeOfGovernment({ strings, event: outcome.event, outgoing, incoming, year,
+                                     since: governedSince, sustainedYears: rules.sustainedYears,
+                                     dominant: reading.dominant, layer }),
+      };
+    }
+
+    // No change this year: the advisor may still have something to say about where it is heading.
+    const clue = nextClue({ layer, dominant: reading.dominant, leader, unrestValue: reading.value, year,
+                            state: clueState });
+    if (clue && ctx.onNews) {
+      clueState = clue.state;
+      ctx.onNews({
+        key: `clue:${clue.key}`,
+        masthead: fill(strings.leadership.advisor_masthead, {}),
+        dateline: String(year),
+        headline: '',
+        counsel: clue.line,
+        byline: strings.news.byline,
+        mechanic: 'governance_dial',
+      });
+    }
+
+    return { change: null };
+  }
+
+
   // Checkpoints: every year-end snapshot updates the code, and an autosave on this computer. Then the year in review,
   // once any window the engine opened at the same moment (the mandatory budget, a city-class congratulation) closes.
   sim.addEventListener(Messages.YEAR_ENDED, snapshot => {
+    // The town's mood, and which pressure is driving it: both desks' advisor material keys off the dominant term.
+    const government = governYear(snapshot);
+
     const review = yearReview({ previous: lastReview, snapshot, scenario, poleId, strings, townName: game.name,
-                                highestClass });
+                                highestClass, government: government.change });
     lastCheckpoint = snapshot;
     if (classRank(snapshot.cityClass) > classRank(highestClass))
       highestClass = snapshot.cityClass;
@@ -231,7 +336,7 @@ export function startSession(ctx) {
     if (!story)
       return;
 
-    const printed = vignette({ story, strings, rules, townName: game.name, year });
+    const printed = vignette({ story, strings, rules: era, townName: game.name, year });
     if (printed)
       ctx.onNews(printed);
   });

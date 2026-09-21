@@ -1,0 +1,238 @@
+{
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "holder": "Flashpoint History",
+    "sellable": false
+  },
+  "_note": "US11R leadership layer. Every leader sentence and every advisor line is Sam's, verbatim from US11R_NationBuilder_LeadershipSuccession_ContentPackage_2026-09-20.docx (sections 4-5). Two persistent government-tendency identities succeed and overthrow each other; their words change by era, which is Sam's Axis A. Ladders are his Axis B, keyed to the dominant unrest term. No ladder or label ever says 'conservative' or 'progressive', and none names its Civic Principle out loud.",
+  "course": "us11r",
+  "starts_with": "founder",
+  "succession": "tenure",
+  "tenure_years": [
+    16,
+    28
+  ],
+  "unrest": {
+    "overthrow_at": 60,
+    "sustained_years": 3,
+    "_note": "Measured against real engine runs on 2026-09-20, not balanced: a town taxed to the ceiling and never policed sits in the high 50s to low 70s for years, a well-run one peaks near 2. A balance pass owns the final numbers (scope doc stage 4)."
+  },
+  "leaders": [
+    {
+      "id": "founder",
+      "label": "The Founding Town Meeting",
+      "summary": "The meeting that set, at the town's founding, how much government this place would have.",
+      "disposition": {
+        "militarism": 0.0,
+        "reform": 0.3
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "limited_gov_leader",
+        "activist_gov_leader"
+      ],
+      "on_overthrow": [
+        "limited_gov_leader",
+        "activist_gov_leader"
+      ]
+    },
+    {
+      "id": "limited_gov_leader",
+      "label": "A government of enumerated powers",
+      "summary": "Believes the Constitution means only what it says, no more.",
+      "by_era": [
+        {
+          "id": "founding",
+          "from": 1789,
+          "to": 1869,
+          "label": "A government of enumerated powers",
+          "summary": "Believes the Constitution means only what it says, no more."
+        },
+        {
+          "id": "progressive",
+          "from": 1870,
+          "to": 1932,
+          "label": "A government that leaves the market alone",
+          "summary": "Believes the market corrects itself if you leave it alone.",
+          "tuning": {
+            "policeEffectiveness": "lower"
+          }
+        },
+        {
+          "id": "depression",
+          "from": 1933,
+          "to": 1963,
+          "label": "A government that leaves relief to neighbours",
+          "summary": "Believes relief is a neighbor's job, not a government's."
+        },
+        {
+          "id": "postwar",
+          "from": 1964,
+          "label": "A government kept smaller on purpose",
+          "summary": "Believes a bigger government isn't the same as a better one."
+        }
+      ],
+      "disposition": {
+        "militarism": 0.2,
+        "reform": 0.2
+      },
+      "tuning": {
+        "taxYield": "lower"
+      },
+      "succeeds_to": [
+        "activist_gov_leader"
+      ],
+      "on_overthrow": [
+        "activist_gov_leader"
+      ]
+    },
+    {
+      "id": "activist_gov_leader",
+      "label": "A government strong enough to build",
+      "summary": "Believes a young country needs a government strong enough to build it.",
+      "by_era": [
+        {
+          "id": "founding",
+          "from": 1789,
+          "to": 1869,
+          "label": "A government strong enough to build",
+          "summary": "Believes a young country needs a government strong enough to build it."
+        },
+        {
+          "id": "progressive",
+          "from": 1870,
+          "to": 1932,
+          "label": "A government willing to referee",
+          "summary": "Believes unchecked business needs a government willing to referee.",
+          "tuning": {
+            "policeEffectiveness": "higher"
+          }
+        },
+        {
+          "id": "depression",
+          "from": 1933,
+          "to": 1963,
+          "label": "A government that is the backstop",
+          "summary": "Believes when this many people are hurting, government has to be the backstop."
+        },
+        {
+          "id": "postwar",
+          "from": 1964,
+          "label": "A government that takes the problems on",
+          "summary": "Believes a town's problems are the government's to solve."
+        }
+      ],
+      "disposition": {
+        "militarism": 0.2,
+        "reform": 0.6
+      },
+      "tuning": {
+        "taxYield": "higher"
+      },
+      "succeeds_to": [
+        "limited_gov_leader"
+      ],
+      "on_overthrow": [
+        "limited_gov_leader"
+      ]
+    }
+  ],
+  "_tuning_note": "Directions only, from Sam's 'tuning direction' rows; numbers are a balance pass's to set. Two of his claims have no knob in src/tuning.js and are deliberately not invented here: 'universalPower use' (Founding Era) and 'social spending' (Depression Era). Flagged to Sam.",
+  "ladders": [
+    {
+      "key": "consent_of_the_governed",
+      "for": [
+        "approval"
+      ],
+      "tiers": [
+        "The people grumble, mayor, but they still show up to town meeting.",
+        "They're starting to ask whether you still speak for this town, or just for yourself.",
+        "They didn't put you in office to stop asking them, mayor."
+      ],
+      "_source": "Sam package section 5, approval-gap dominant"
+    },
+    {
+      "key": "rule_of_law",
+      "for": [
+        "crime"
+      ],
+      "tiers": [
+        "The watch can't be everywhere, mayor, but folks are noticing where it isn't.",
+        "They're asking whether the law applies the same on both sides of town.",
+        "A town stops believing in the law the moment it sees who it's actually for."
+      ],
+      "_source": "Sam package section 5, crime dominant - crime the leader fails to control"
+    },
+    {
+      "key": "due_process",
+      "for": [
+        "crime"
+      ],
+      "tiers": [],
+      "when": {
+        "leader_conduct": true
+      },
+      "_source": "BK ruling 2026-09-20 number 2: build Rule of Law and Due Process as distinct ladders",
+      "_note": "Crime the leader's own conduct causes - skipping fair procedure - reads as Due Process, not Rule of Law. The selector is built and fires when the sitting leader's militarism disposition is high; Sam's package names the distinction but wrote no lines for it, and this build does not write them in his voice. With no tiers, the engine falls back to rule_of_law. NEEDS-SAM: three lines, same three-tier shape."
+    },
+    {
+      "key": "limited_government",
+      "for": [
+        "tax"
+      ],
+      "tiers": [
+        "The tax rolls came due, mayor. People are doing the math out loud.",
+        "They're asking what exactly they're getting for what they're paying.",
+        "A government that takes this much and gives this little back doesn't stay a government for long."
+      ],
+      "_source": "Sam package section 5, tax-pressure dominant"
+    },
+    {
+      "key": "limited_government_depression",
+      "for": [
+        "unemployment"
+      ],
+      "tiers": [
+        "Work's harder to find this year, mayor. People notice who's not helping.",
+        "They're asking whether a government that won't help in hard times is a government at all.",
+        "A town remembers who it stood in line for, once the hard years are over."
+      ],
+      "_source": "Sam package section 5, unemployment-pressure dominant - same principle, different register"
+    },
+    {
+      "key": "checks_and_balances",
+      "for": [
+        "militarism"
+      ],
+      "tiers": [
+        "The council's stopped asking questions in session, mayor. People noticed.",
+        "They're asking who's actually allowed to overrule you, if it comes to that.",
+        "Every power this unchecked has met a veto, an impeachment, or a court, mayor — eventually."
+      ],
+      "_source": "Sam package section 5, leader disposition militarism dominant"
+    },
+    {
+      "key": "individual_rights",
+      "for": [
+        "militarism"
+      ],
+      "tiers": [
+        "Some folks are saying less than they used to, mayor. Not because they've got nothing to say.",
+        "They're asking how much safety is worth how much of what they used to be free to say.",
+        "Every town that traded this much liberty for safety got the safety, mayor. Ask what it cost them after."
+      ],
+      "when": {
+        "disposition": {
+          "liberties": "restricting"
+        }
+      },
+      "_source": "Sam package section 5, rights-restriction scenario",
+      "_note": "Wired and selectable, but no US11R leader carries disposition.liberties yet, so it cannot fire as delivered. NEEDS-SAM: which tendency, in which era, restricts liberties under a security justification."
+    }
+  ],
+  "debrief": {
+    "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
+    "_prompt_source": "Will spec section 6, reused for both courses - the NYSED task verbs are shared"
+  }
+}

@@ -375,6 +375,27 @@ function MapTools({ strings }) {
 }
 
 
+// A change of government, in the year-in-review panel. It says plainly what happened and why — BK's ruling that an
+// event a student would not understand cold gets explained, not left to the clue ladder — and only then asks the
+// ungraded question the curriculum desks wrote.
+function ChangeOfGovernment({ change }) {
+  return (
+    <section className="nb-government">
+      <h3 className="nb-government-title">{change.title}</h3>
+      <p className="nb-government-took-office">{change.took_office}</p>
+      <p className="nb-government-summary">{change.summary}</p>
+      <p className="nb-government-explain">{change.explain}</p>
+      {change.prompt && (
+        <p className="nb-government-prompt">
+          <span className="nb-government-prompt-heading">{change.debriefHeading}</span>
+          {change.prompt}
+        </p>
+      )}
+    </section>
+  );
+}
+
+
 // The advisor's news: a clipping that arrives over the running map and sees itself out.
 const NEWS_SECONDS = 16;
 
@@ -412,6 +433,7 @@ function YearReview({ review, strings, onClose, onSave }) {
       <div className="nb-panel nb-panel-narrow">
         <h2 id="nb-review-title" className="nb-heading">{review.title}</h2>
         {review.milestone && <p className="nb-review-milestone">{review.milestone}</p>}
+        {review.government && <ChangeOfGovernment change={review.government} />}
         {review.since && <p className="nb-hint nb-review-since">{review.since}</p>}
 
         <dl className="nb-review-stats">

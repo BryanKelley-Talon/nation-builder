@@ -64,9 +64,13 @@ export function classRank(cityClass) {
 
 // Why this year earns a panel, or null for a year that passes without one. previous is the last snapshot shown, not
 // last year's: between panels the years go by uninterrupted. highestClass is the largest the town has ever been.
-export function reviewReason({ previous, snapshot, scenario, highestClass }) {
+export function reviewReason({ previous, snapshot, scenario, highestClass, government }) {
   if (!snapshot.population)
     return null;
+
+  // A change of government always stops play: it is the one event a student cannot be left to infer.
+  if (government)
+    return 'government';
 
   if (!previous || !previous.population)
     return 'first';
@@ -83,8 +87,8 @@ export function reviewReason({ previous, snapshot, scenario, highestClass }) {
 
 // previous: the last snapshot shown (or the checkpoint a resumed city came back with); snapshot: this year's.
 // Returns null for a year that hasn't earned a panel.
-export function yearReview({ previous, snapshot, scenario, poleId, strings, townName, highestClass }) {
-  const reason = reviewReason({ previous, snapshot, scenario, highestClass });
+export function yearReview({ previous, snapshot, scenario, poleId, strings, townName, highestClass, government }) {
+  const reason = reviewReason({ previous, snapshot, scenario, highestClass, government });
   if (!reason)
     return null;
 
@@ -96,6 +100,8 @@ export function yearReview({ previous, snapshot, scenario, poleId, strings, town
     year: snapshot.year,
     reason,
     milestone: milestone({ reason, snapshot, townName, words }),
+    // A change of government: what happened, why, and only then Will's ungraded Identify/Explain prompt.
+    government: government || null,
     since: from !== null && snapshot.year - from > 1 ? fill(words.since, { year: from }) : null,
     title: from !== null && snapshot.year - from > 1
       ? fill(words.title_span, { from: from + 1, year: snapshot.year })

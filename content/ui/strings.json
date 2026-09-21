@@ -24,6 +24,27 @@
     "tool_locked": "{tool}: nothing like it exists here until {year}.",
     "tool_locked_hint": "Build with what {year} has."
   },
+  "leadership": {
+    "_note": "Leadership succession UI. THE EXPLANATORY COPY IN 'explain' AND 'took_office' WAS AUTHORED BY THE BUILD SESSION ON 2026-09-20, not supplied by Sam or Will - per BK's ruling that an event a student would not understand cold must be explained in plain language, not left to the clue ladder. Written conservatively, in the advisor's voice, for BK to review as new copy. The advisor clue ladders and leader sentences themselves are the desks' own words and live in content/leadership/*.json. {braces} are filled in by the game.",
+    "advisor_masthead": "A word from your advisor",
+    "succession_headline": "{town} changes hands",
+    "overthrow_headline": "{town} turns out its government",
+    "took_office": "{label} takes office.",
+    "panel_title": "A change of government",
+    "explain": {
+      "succession": "{outgoing} governed {years}, and that term has ended. {incoming} takes office now. Nothing you built changes hands — the roads, the zones and the money are yours still. What changes is the hand on the dial: the choice you made when you founded this town still sets the terms, and this government bends them its own way.",
+      "overthrow": "This was not a term ending. The town had been unsettled {years} running, and a government that stays unsettled that long stops being the government. {incoming} holds the town now, in place of {outgoing}. What drove it was {driver} — that is the number that climbed while the rest held. Your founding choice still stands; the town has simply changed who answers for it."
+    },
+    "drivers": {
+      "approval": "people no longer feeling that this government answered to them",
+      "crime": "crime the town did not believe was being handled",
+      "tax": "the cost of what the town was being asked to pay",
+      "unemployment": "how hard work had become to find",
+      "militarism": "power gathering in one office, with fewer and fewer checks on it"
+    },
+    "debrief_heading": "Before you keep building",
+    "dismiss": "Keep building"
+  },
   "news": {
     "_note": "The advisor's news vignettes, raised from the engine's own citizen-need messages (src/nb/news.js maps them). Working wording from the build session, in the advisor voice of the about page, for the content desks to revise. {town} and {year} are filled in by the game; 'not_yet' is used instead of 'line' when the thing being asked for doesn't exist yet in that year.",
     "masthead": "The {town} Gazette",
@@ -84,9 +105,9 @@
         "line": "The air is bad where people live. Industry pays the bills and fouls the ward — where you put it is the whole decision."
       },
       "need_stadium": {
-        "headline": "A town with nowhere to gather",
-        "line": "They want somewhere to be a public together. It earns nothing directly, and they'll remember it anyway.",
-        "not_yet": "A stadium, in {town}? Not for a while yet — nothing like it is built here until {year}."
+        "headline": "A town with nowhere to teach its children",
+        "line": "They want a school. It earns you nothing directly, and it is the closest thing a town has to a promise about the next twenty years.",
+        "not_yet": "A school, in {town}? Not for a while yet — nothing like it is built here until {year}."
       },
       "need_seaport": {
         "headline": "Merchants want a proper wharf",

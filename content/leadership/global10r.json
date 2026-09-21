@@ -1,0 +1,174 @@
+{
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "holder": "Flashpoint History",
+    "sellable": false
+  },
+  "_note": "Global 10R leadership layer. Leader labels, summaries and every advisor line are Will's, verbatim from GS10R_SPEC_leadership-succession-content-layer_2026-09-20.md (sections 4-6). Dispositions encode his own 'arises from' column; succession pools are derived from the same column and want his confirmation. Leaders carry no tuning bends: Will made no directional tuning claim per archetype, and this build does not invent one. Ladders name no Enduring Issue out loud - supplying the word is the student's job.",
+  "course": "global10r",
+  "starts_with": "founder",
+  "succession": "tenure",
+  "tenure_years": [
+    18,
+    34
+  ],
+  "unrest": {
+    "overthrow_at": 60,
+    "sustained_years": 3,
+    "_note": "Measured against real engine runs on 2026-09-20, not balanced: a town taxed to the ceiling and never policed sits in the high 50s to low 70s for years, a well-run one peaks near 2. A balance pass owns the final numbers (scope doc stage 4)."
+  },
+  "leaders": [
+    {
+      "id": "founder",
+      "label": "The Founding Council",
+      "summary": "The council that answered, at the town's founding, the question every government has to answer: what makes power legitimate?",
+      "disposition": {
+        "militarism": 0.0,
+        "reform": 0.3
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "heir",
+        "reformer"
+      ],
+      "on_overthrow": [
+        "strongman",
+        "revolutionary_council"
+      ]
+    },
+    {
+      "id": "heir",
+      "label": "The Heir",
+      "summary": "Power passed the way it was always going to — by blood, not by testing.",
+      "disposition": {
+        "militarism": 0.3,
+        "reform": 0.1
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "heir",
+        "reformer"
+      ],
+      "on_overthrow": [
+        "strongman",
+        "revolutionary_council"
+      ]
+    },
+    {
+      "id": "reformer",
+      "label": "The Reformer",
+      "summary": "Chosen because the old answer to 'how much control is too much' had stopped working, and someone offered a new one before it broke.",
+      "disposition": {
+        "militarism": 0.1,
+        "reform": 0.8
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "heir",
+        "reformer"
+      ],
+      "on_overthrow": [
+        "revolutionary_council",
+        "strongman"
+      ]
+    },
+    {
+      "id": "strongman",
+      "label": "The Strongman",
+      "summary": "Order restored, at a price the town is still paying.",
+      "disposition": {
+        "militarism": 0.8,
+        "reform": 0.1
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "heir"
+      ],
+      "on_overthrow": [
+        "revolutionary_council",
+        "reformer"
+      ]
+    },
+    {
+      "id": "revolutionary_council",
+      "label": "The Revolutionary Council",
+      "summary": "The people's own government, replacing the one that stopped being theirs.",
+      "disposition": {
+        "militarism": 0.1,
+        "reform": 0.7
+      },
+      "tuning": {},
+      "succeeds_to": [
+        "reformer"
+      ],
+      "on_overthrow": [
+        "strongman"
+      ]
+    }
+  ],
+  "ladders": [
+    {
+      "key": "government_power",
+      "names": "",
+      "for": [
+        "approval",
+        "legitimacy",
+        "other"
+      ],
+      "tiers": [
+        "The people grumble, but they still line up for bread, my lord.",
+        "They're starting to ask whether obedience was ever the same as consent.",
+        "This is what every government built on that bargain has looked like, right before it broke."
+      ],
+      "_source": "Will spec section 5, default ladder"
+    },
+    {
+      "key": "human_rights",
+      "names": "",
+      "for": [
+        "crime"
+      ],
+      "tiers": [
+        "The watch is heavier on the streets than it used to be, mayor.",
+        "Folks are asking who the guards are actually protecting.",
+        "This is what it looks like right before people stop calling it order and start calling it something else."
+      ],
+      "_source": "Will spec section 5, Human Rights ladder"
+    },
+    {
+      "key": "scarcity",
+      "names": "",
+      "for": [
+        "tax",
+        "unemployment"
+      ],
+      "tiers": [
+        "Taxes are the talk of the tavern this week, mayor.",
+        "They're asking who the burden actually falls on.",
+        "This is what it looks like right before people decide the cost isn't worth the bargain anymore."
+      ],
+      "_source": "Will spec section 5, Scarcity/Inequality ladder"
+    },
+    {
+      "key": "nationalism",
+      "names": "",
+      "for": [
+        "approval"
+      ],
+      "tiers": [
+        "There's a flag flying in the square that isn't yours, my lord.",
+        "They're not asking you for anything anymore. They're asking each other.",
+        "This is what it looks like right before a people stop asking to be governed and start governing themselves."
+      ],
+      "when": {
+        "overthrow_candidate": "revolutionary_council"
+      },
+      "_source": "Will spec section 5, Nationalism ladder - fires only on the approach to a Revolutionary Council pool"
+    }
+  ],
+  "debrief": {
+    "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
+    "_prompt_source": "Will spec section 6, verbatim - ungraded, nothing saved"
+  }
+}

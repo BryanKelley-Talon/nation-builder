@@ -35,6 +35,7 @@ export async function startNationBuilder(assets) {
   const common = {
     assets,
     strings: content.strings,
+    leadership: content.leadership,
     onSaveRequested: session => dialogs.save(session),
     onYearReview: (session, review) => dialogs.yearReview(session, review),
     onNews: story => dialogs.news(story),
@@ -56,6 +57,8 @@ export async function startNationBuilder(assets) {
       checkpoint: record.teaching.checkpoint,
       lastReview: record.teaching.last_review,
       highestClass: record.teaching.highest_class,
+      leadership_state: record.teaching.leadership,
+      clue_state: record.teaching.clue_state,
     });
   };
 

@@ -349,4 +349,4 @@ Object.defineProperties(Evaluation,
   TRAFFIC: MiscUtils.makeConstantDescriptor(4),
   UNEMPLOYMENT: MiscUtils.makeConstantDescriptor(5),
   FIRE: MiscUtils.makeConstantDescriptor(6)});
-export { Evaluation };
+export { Evaluation, getUnemployment };

@@ -17,6 +17,11 @@ const DESK_WORDS = /\b(dev pole|dev fixture|placeholder|not real content|lorem)\
 
 const strings = JSON.parse(readFileSync(new URL('ui/strings.json', CONTENT)));
 
+// The leadership layers are player-facing too: leader labels, summaries, every advisor ladder line, the debrief.
+const leadershipLayers = readdirSync(new URL('leadership/', CONTENT))
+  .filter(name => name.endsWith('.json'))
+  .map(name => [name, JSON.parse(readFileSync(new URL(`leadership/${name}`, CONTENT)))]);
+
 // Everything under a key beginning with "_" is a note to the desks, not player-facing text.
 function playerFacingStrings(value, path = []) {
   if (typeof value === 'string')
@@ -59,6 +64,36 @@ describe('no internal shorthand reaches a player', () => {
     for (const scenario of scenarios()) {
       expect(scenario.skill_line_map.governance_dial).toMatch(SKILL_CODE);
       expect(scenario.skill_line_map.zone_placement).toMatch(SKILL_CODE);
+    }
+  });
+
+  it('keeps them out of every leadership layer a student can hear', () => {
+    for (const [name, layer] of leadershipLayers) {
+      const texts = [
+        ...layer.leaders.flatMap(leader => [leader.label, leader.summary,
+          ...(leader.by_era || []).flatMap(era => [era.label, era.summary])]),
+        ...layer.ladders.flatMap(ladder => ladder.tiers),
+        layer.debrief.prompt,
+      ].filter(Boolean);
+
+      expect(texts.length, name).toBeGreaterThan(10);
+      for (const text of texts) {
+        expect(SKILL_CODE.test(text), `${name}: ${text}`).toBe(false);
+        expect(DESK_WORDS.test(text), `${name}: ${text}`).toBe(false);
+      }
+    }
+  });
+
+  it('never hands the student the vocabulary word the ladder is pointing at', () => {
+    // Both desks wrote to this rule: the advisor gets near the tip and stops. Naming the Enduring Issue or the
+    // Civic Principle out loud would be doing the student's own work for them.
+    const NAMES = /enduring issue|civic principle|rule of law|due process|consent of the governed|checks and balances|popular sovereignty|limited government|human rights|nationalism|scarcity|social contract/i;
+
+    for (const [name, layer] of leadershipLayers) {
+      for (const ladder of layer.ladders) {
+        for (const line of ladder.tiers)
+          expect(NAMES.test(line), `${name}:${ladder.key}: ${line}`).toBe(false);
+      }
     }
   });
 

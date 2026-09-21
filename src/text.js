@@ -28,7 +28,7 @@ var rateStrings = ['Declining', 'Stable', 'Slow Growth', 'Fast Growth'];
 var zoneTypes = ['Clear', 'Water', 'Trees', 'Rubble', 'Flood', 'Radioactive Waste',
                  'Fire', 'Road', 'Power', 'Rail', 'Residential', 'Commercial',
                  'Industrial', 'Seaport', 'Airport', 'Coal Power', 'Fire Department',
-                 'Police Department', 'Stadium', 'Nuclear Power', 'Draw Bridge',
+                 'Police Department', 'School', 'Nuclear Power', 'Draw Bridge',
                  'Radar Dish', 'Fountain', 'Industrial', 'Steelers 38  Bears 3',
                  'Draw Bridge', 'Ur 238'];
 
@@ -123,7 +123,7 @@ messageText[Messages.NEED_MORE_RAILS] = 'Inadequate rail system';
 messageText[Messages.NEED_MORE_ROADS] = 'More roads required';
 messageText[Messages.NEED_POLICE_STATION] = 'Citizens demand a Police Department';
 messageText[Messages.NEED_SEAPORT] = 'Industry requires a Sea Port';
-messageText[Messages.NEED_STADIUM] = 'Residents demand a Stadium';
+messageText[Messages.NEED_STADIUM] = 'Residents demand a School';
 messageText[Messages.ROAD_NEEDS_FUNDING] = 'Roads deteriorating, due to lack of funds';
 messageText[Messages.POLICE_NEEDS_FUNDING] = 'Police departments need funding';
 messageText[Messages.WELCOME] = 'Welcome to Nation Builder';

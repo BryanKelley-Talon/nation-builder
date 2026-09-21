@@ -21,7 +21,7 @@ import { Commercial } from './commercial.js';
 import { DisasterManager } from './disasterManager.js';
 import { EventEmitter } from './eventEmitter.js';
 import { EmergencyServices } from './emergencyServices.js';
-import { Evaluation } from './evaluation.js';
+import { Evaluation, getUnemployment } from './evaluation.js';
 import { Industrial } from './industrial.js';
 import { MapScanner } from './mapScanner.js';
 import * as Messages from './messages.ts';
@@ -449,7 +449,9 @@ Simulation.prototype._emitYearEnded = function() {
     taxRate: this.budget.cityTax,
     taxesCollected: this.budget.taxFund,
     crimeAverage: this._census.crimeAverage,
-    pollutionAverage: this._census.pollutionAverage
+    pollutionAverage: this._census.pollutionAverage,
+    // Nation Builder: the teaching layer's unrest metric reads this; the engine only used it for problem votes.
+    unemployment: getUnemployment(this._census)
   });
 };
 
