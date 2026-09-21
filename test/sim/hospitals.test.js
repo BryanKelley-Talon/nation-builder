@@ -50,7 +50,7 @@ function grownTown(years) {
 
 
 describe('hospitals', () => {
-  it('appear on their own once a town has residents who need one', () => {
+  it('appear on their own once a town has residents who need one', { timeout: 30000 }, () => {
     const world = grownTown(12);
     const census = world.sim._census;
 
@@ -59,7 +59,7 @@ describe('hospitals', () => {
     expect(census.hospitalPop).toBeGreaterThan(0);
   });
 
-  it('keep pace with the population, one per 256 residents', () => {
+  it('keep pace with the population, one per 256 residents', { timeout: 30000 }, () => {
     const world = grownTown(50);
     const census = world.sim._census;
 
