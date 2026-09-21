@@ -15,6 +15,8 @@ import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor } from './scenario.js';
 import { changeOfGovernment, nextClue, successionVignette } from './clues.js';
 import { findChoice, recordDecision, resolve } from './decisions.js';
+import { DEFAULT_STANCE, isStance, restrictsLiberties, stancePressure, stanceTuning } from './policing.js';
+import { DEFAULT_LEVEL as DEFAULT_SCHOOLS, isLevel, levelOf, unrestRelief, yearlyCost } from './schools.js';
 import { currentTuning } from './governance.js';
 import { advance, fromSave, leaderById, leadershipRules, leaderVoice, startingState, toSave } from './leadership.js';
 import { makeNewsroom, vignette } from './news.js';
@@ -118,6 +120,28 @@ export function startSession(ctx) {
 
     decide,
 
+    policing: () => policing,
+
+    schools: () => ({ level: schoolFunding, count: sim._census.stadiumPop,
+                      cost: yearlyCost(schoolFunding, sim._census.stadiumPop) }),
+
+    setSchoolFunding(level) {
+      if (!isLevel(level) || level === schoolFunding)
+        return schoolFunding;
+      schoolFunding = levelOf(level);
+      writeAutosave(session.saveRecord());
+      return schoolFunding;
+    },
+
+    setPolicing(stance) {
+      if (!isStance(stance) || stance === policing)
+        return policing;
+      policing = stance;
+      applyTuning(session.year());
+      writeAutosave(session.saveRecord());
+      return policing;
+    },
+
     code() {
       const c = session.checkpoint();
       return encodeSaveCode({
@@ -141,6 +165,8 @@ export function startSession(ctx) {
         town_name: game.name,
         advisor_bits: decisionBits,
         decision_bends: decisionBends,
+        policing,
+        school_funding: schoolFunding,
         code,
         checkpoint: session.checkpoint(),
         last_review: lastReview,
@@ -161,18 +187,23 @@ export function startSession(ctx) {
   // The knobs the student's own decisions have bent, carried between years and into the save.
   let decisionBends = ctx.decision_bends || {};
   let decisionMilitarism = 0;
+  // How heavily the town is policed. Unlike the founding choice, this one is meant to be revisited.
+  let policing = isStance(ctx.policing) ? ctx.policing : DEFAULT_STANCE;
+  // What the town spends on the schools it has built. The engine gives them no running cost of their own.
+  let schoolFunding = isLevel(ctx.school_funding) ? ctx.school_funding : DEFAULT_SCHOOLS;
 
   function leaderBends() {
     if (!leadership)
-      return {};
+      return { ...decisionBends, ...stanceTuning(policing) };
 
     const leader = leaderById(rules, leadership.leader);
     if (!leader)
-      return {};
+      return { ...decisionBends, ...stanceTuning(policing) };
 
     const voice = leaderVoice(leader, session.year());
     const byEra = (leader.by_era || []).find(entry => entry.id === voice.era);
-    return { ...(leader.tuning || {}), ...((byEra && byEra.tuning) || {}), ...decisionBends };
+    return { ...(leader.tuning || {}), ...((byEra && byEra.tuning) || {}), ...decisionBends,
+             ...stanceTuning(policing) };
   }
 
 
@@ -299,7 +330,16 @@ export function startSession(ctx) {
     // Read before advance(): once it returns, `leadership` is the new government and `since` is this year.
     const governedSince = leadership.since;
     const militarism = (leader && leader.disposition && leader.disposition.militarism) || 0;
-    const reading = nextUnrest({ snapshot, previous: leadership.unrest, militarism, weights });
+    const schools = sim._census.stadiumPop;
+    const owed = yearlyCost(schoolFunding, schools);
+    const paid = owed > 0 && sim.budget.totalFunds >= owed;
+    if (paid)
+      sim.budget.spend(owed);
+
+    const reading = nextUnrest({ snapshot, previous: leadership.unrest, militarism, weights,
+                                 libertiesPressure: stancePressure(policing) });
+    // Schools the town actually pays for make it easier to govern; unpaid schools buy nothing.
+    reading.value = Math.max(0, reading.value - unrestRelief(schoolFunding, schools, { paid: paid || owed === 0 }));
 
     const outcome = advance({ rules, state: leadership, year, unrest: reading.value, dominant: reading.dominant });
     leadership = outcome.state;
@@ -323,7 +363,11 @@ export function startSession(ctx) {
     }
 
     // No change this year: the advisor may still have something to say about where it is heading.
-    const clue = nextClue({ layer, dominant: reading.dominant, leader, unrestValue: reading.value, year,
+    const governing = leader
+      ? { ...leader, disposition: { ...(leader.disposition || {}),
+                                    liberties: restrictsLiberties(policing) ? 'restricting' : 'open' } }
+      : leader;
+    const clue = nextClue({ layer, dominant: reading.dominant, leader: governing, unrestValue: reading.value, year,
                             state: clueState });
     if (clue && ctx.onNews) {
       clueState = clue.state;

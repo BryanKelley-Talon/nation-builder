@@ -19,6 +19,7 @@ export const DEFAULT_WEIGHTS = Object.freeze({
   tax: 0.15,             // tax above what a town takes quietly
   unemployment: 0.15,    // the engine's own unemployment pressure, 0-255, as a percentage
   militarism: 0.20,      // the one term that is not a metric: the leader's own disposition, while unrest rises
+  liberties: 0.30,       // what a heavy hand on the town costs, whoever is in office
   legitimacy: 0.20,      // subtracted: a city score above 500 is legitimacy the leader has earned
 });
 
@@ -39,7 +40,8 @@ function percentOf255(value) {
 
 // snapshot: the engine's year-end event. militarism: the sitting leader's disposition, 0-1, or 0 if none.
 // Returns every term's contribution, so the caller can ask which one is doing the work.
-export function unrestTerms(snapshot, { militarism = 0, rising = false, weights = DEFAULT_WEIGHTS } = {}) {
+export function unrestTerms(snapshot, { militarism = 0, rising = false, libertiesPressure = 0,
+                                        weights = DEFAULT_WEIGHTS } = {}) {
   const approvalGap = Math.max(0, 100 - (snapshot.approval ?? 50));
   const crime = percentOf255(snapshot.crimeAverage ?? 0);
   const taxPressure = Math.max(0, (snapshot.taxRate ?? 0) - COMFORTABLE_TAX) * TAX_PRESSURE_PER_POINT;
@@ -53,6 +55,7 @@ export function unrestTerms(snapshot, { militarism = 0, rising = false, weights 
     // A war-leaning leader is only a pressure while the town is already unsettled: Sam's Checks and Balances
     // ladder is "a war-leaning leader who starts concentrating power under cover of a crisis".
     militarism: rising ? weights.militarism * militarism * 100 : 0,
+    liberties: weights.liberties * libertiesPressure,
   };
 }
 
@@ -63,15 +66,16 @@ export function dominantTerm(terms) {
 
 
 // The running value. previous is last year's unrest (0 the first time).
-export function nextUnrest({ snapshot, previous = 0, militarism = 0, weights = DEFAULT_WEIGHTS }) {
+export function nextUnrest({ snapshot, previous = 0, militarism = 0, libertiesPressure = 0,
+                             weights = DEFAULT_WEIGHTS }) {
   // "Rising" is judged on the raw reading before smoothing, so a leader's disposition starts counting the year
   // the town turns, not a year later.
-  const dry = unrestTerms(snapshot, { militarism, rising: false, weights });
+  const dry = unrestTerms(snapshot, { militarism, rising: false, libertiesPressure, weights });
   const rawWithoutMilitarism = Object.values(dry).reduce((sum, n) => sum + n, 0);
   const legitimacy = weights.legitimacy * Math.max(0, ((snapshot.score ?? 500) - 500) / 5);
   const rising = rawWithoutMilitarism - legitimacy > previous;
 
-  const terms = unrestTerms(snapshot, { militarism, rising, weights });
+  const terms = unrestTerms(snapshot, { militarism, rising, libertiesPressure, weights });
   const raw = Object.values(terms).reduce((sum, n) => sum + n, 0) - legitimacy;
   const value = Math.round(Math.min(MAX_UNREST, Math.max(0, SMOOTHING * previous + (1 - SMOOTHING) * raw)));
 

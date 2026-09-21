@@ -65,6 +65,8 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
       <>
         {session && <HeaderBadge session={session} />}
         {session && <MapTools strings={content.strings.map} />}
+        {session && <PolicingDial session={session} strings={content.strings.policing} />}
+        {session && <SchoolFunding session={session} strings={content.strings.schools} />}
         {news && !review && !saving && (
           <NewsVignette story={news}
                         onDismiss={() => { awaitingAnswer.current = false; setNews(null); }}
@@ -343,6 +345,78 @@ function SaveDialog({ session, onClose }) {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// What the town spends on its schools: a real yearly bill the original engine never charged, against a town that
+// is easier to govern. The cost-benefit is the lesson.
+function SchoolFunding({ session, strings }) {
+  const [level, setLevel] = useState(() => session.schools().level);
+  const [bill, setBill] = useState(() => session.schools());
+  const levels = [
+    { id: 'none', label: strings.none_label, cost: strings.none_cost },
+    { id: 'basic', label: strings.basic_label, cost: strings.basic_cost },
+    { id: 'full', label: strings.full_label, cost: strings.full_cost },
+  ];
+  const current = levels.find(entry => entry.id === level) || levels[1];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setBill(session.schools()), 4000);
+    return () => window.clearInterval(timer);
+  }, [session]);
+
+  return (
+    <section className="nb-policing nb-schools" aria-label={strings.title}>
+      <h3 className="nb-policing-title">{strings.title}</h3>
+      <div className="nb-policing-stances" role="group">
+        {levels.map(entry => (
+          <button key={entry.id}
+                  className={'nb-policing-stance' + (entry.id === level ? ' nb-policing-stance-on' : '')}
+                  aria-pressed={entry.id === level}
+                  onClick={() => { setLevel(session.setSchoolFunding(entry.id)); setBill(session.schools()); }}>
+            {entry.label}
+          </button>
+        ))}
+      </div>
+      <p className="nb-policing-cost">
+        {current.cost}
+        <span className="nb-schools-bill">
+          {bill.count > 0
+            ? `$${bill.cost.toLocaleString('en-US')} a year for ${bill.count} school${bill.count === 1 ? '' : 's'}`
+            : strings.none_built}
+        </span>
+      </p>
+    </section>
+  );
+}
+
+
+// The civil-liberties-against-security dial: set during play, changeable, and costly whichever way it is set.
+function PolicingDial({ session, strings }) {
+  const [stance, setStance] = useState(() => session.policing());
+  const stances = [
+    { id: 'light', label: strings.light_label, cost: strings.light_cost },
+    { id: 'balanced', label: strings.balanced_label, cost: strings.balanced_cost },
+    { id: 'heavy', label: strings.heavy_label, cost: strings.heavy_cost },
+  ];
+  const current = stances.find(entry => entry.id === stance) || stances[1];
+
+  return (
+    <section className="nb-policing" aria-label={strings.title}>
+      <h3 className="nb-policing-title">{strings.title}</h3>
+      <div className="nb-policing-stances" role="group">
+        {stances.map(entry => (
+          <button key={entry.id}
+                  className={'nb-policing-stance' + (entry.id === stance ? ' nb-policing-stance-on' : '')}
+                  aria-pressed={entry.id === stance}
+                  onClick={() => setStance(session.setPolicing(entry.id))}>
+            {entry.label}
+          </button>
+        ))}
+      </div>
+      <p className="nb-policing-cost">{current.cost}</p>
+    </section>
   );
 }
 

@@ -45,6 +45,28 @@
     "debrief_heading": "Before you keep building",
     "dismiss": "Keep building"
   },
+  "policing": {
+    "_note": "The civil-liberties-against-security dial the buildconcept names as tier-1. Wording written by the build session 2026-09-20 as a placeholder; the desks own this voice. No option is the correct one.",
+    "title": "Policing",
+    "light_label": "Light hand",
+    "light_cost": "Less watch on the streets. More crime, less resentment.",
+    "balanced_label": "Even hand",
+    "balanced_cost": "The ordinary amount of policing, and the ordinary amount of complaint.",
+    "heavy_label": "Heavy hand",
+    "heavy_cost": "Quieter streets, bought with something. People notice who the watch is for."
+  },
+  "schools": {
+    "_note": "The school funding line. Wording written by the build session 2026-09-20 as a placeholder; the desks own this voice. The longer education-to-jobs-to-tax chain is NOT built - see the handoff.",
+    "title": "Schools",
+    "none_label": "Unfunded",
+    "basic_label": "Basic",
+    "full_label": "Full",
+    "none_cost": "The doors are open and nothing else is. Costs nothing; buys nothing.",
+    "basic_cost": "Enough to keep the doors open and the rooms warm.",
+    "full_cost": "Properly funded. It costs, every year, and a served town is a steadier one.",
+    "bill": "{cost} a year for {count}",
+    "none_built": "No schools built yet."
+  },
   "news": {
     "_note": "The advisor's news vignettes, raised from the engine's own citizen-need messages (src/nb/news.js maps them). Working wording from the build session, in the advisor voice of the about page, for the content desks to revise. {town} and {year} are filled in by the game; 'not_yet' is used instead of 'line' when the thing being asked for doesn't exist yet in that year.",
     "masthead": "The {town} Gazette",

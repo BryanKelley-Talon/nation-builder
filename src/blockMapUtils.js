@@ -186,6 +186,27 @@ var getCityCentreDistance = function(map, x, y) {
 //   * Proximity to undeveloped terrain (who doesn't love a good view?)
 //
 // Pollution is completely determined by the tile types in the block
+// Nation Builder: what a green tile takes back out of the air. Parks and woods score nothing in the original —
+// they are simply not sources — so a town could never plant its way out of its own industry. BK's direction,
+// 2026-09-20: "balance environment. create ability with parks to counter environmental effects." A park now
+// subtracts from the pollution of the block it sits in, and the block still floors at zero, so greenery can clean
+// a neighbourhood and never drive it negative. The tuning knob is the amount; this is the first honest number.
+var GREEN_POLLUTION_RELIEF = 12;
+
+
+// What the park tool lays down, and the woodland it imitates. Note the ranges: WOODS_HIGH is 39, but the park
+// tool places WOODS2-WOODS4 (40-42), and a fountain is tile 840 — far above RUBBLE, so it arrives in the
+// developed branch of the scan rather than the undeveloped one. Both have to be named or half the parks a student
+// plants would count for nothing.
+var isGreenTile = function(tileValue) {
+  // Everything from the first tree up to rubble is woodland or park: the park tool lays WOODS2 plus a random
+  // offset, which runs past WOODS4 and has no named constant of its own, so the range is bounded by RUBBLE
+  // rather than by a name that would quietly miss a quarter of the parks a student plants.
+  return tileValue === TileValues.FOUNTAIN ||
+         (tileValue >= TileValues.TREEBASE && tileValue < TileValues.RUBBLE);
+};
+
+
 var pollutionTerrainLandValueScan = function(map, census, blockMaps) {
   // We record raw pollution readings for each tile into tempMap1, and then use tempMap2 and tempMap1 to smooth
   // out the pollution in order to construct the new values for the populationDensityMap
@@ -229,17 +250,28 @@ var pollutionTerrainLandValueScan = function(map, census, blockMaps) {
             // maximum value of 240
             var terrainValue = tempMap3.worldGet(mapX, mapY);
             tempMap3.worldSet(mapX, mapY, terrainValue + 15);
+
+            // Nation Builder: trees and parks take pollution back out of the block they sit in.
+            if (isGreenTile(tileValue))
+              pollutionLevel -= GREEN_POLLUTION_RELIEF;
+
             continue;
           }
 
-          pollutionLevel += getPollutionValue(tileValue);
+          // Nation Builder: a fountain is a park that sits above RUBBLE in the tile table, so it lands here.
+          if (isGreenTile(tileValue))
+            pollutionLevel -= GREEN_POLLUTION_RELIEF;
+          else
+            pollutionLevel += getPollutionValue(tileValue);
+
           if (tileValue >= TileValues.ROADBASE)
             developed = true;
         }
       }
 
       // Clamp pollution in range 0-255 (at the moment it's range is 0-1020) and record it for later.
-      pollutionLevel = Math.min(pollutionLevel, 255);
+      // Nation Builder: greenery can bring a block down to clean, never below it.
+      pollutionLevel = MiscUtils.clamp(pollutionLevel, 0, 255);
       tempMap1.set(x, y, pollutionLevel);
 
       if (developed) {

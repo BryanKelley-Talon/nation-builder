@@ -61,6 +61,8 @@ export async function startNationBuilder(assets) {
       clue_state: record.teaching.clue_state,
       advisor_bits: record.teaching.advisor_bits,
       decision_bends: record.teaching.decision_bends,
+      policing: record.teaching.policing,
+      school_funding: record.teaching.school_funding,
     });
   };
 

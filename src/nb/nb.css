@@ -465,6 +465,101 @@
   margin: 0 0 12px;
 }
 
+/* The policing dial: always reachable, never modal — the student is meant to change it as the town changes. */
+/* Right-hand column, under the tool palette: the left edge belongs to the engine's own info bar and its
+   Budget/Evaluation buttons, and these were sitting on top of them. */
+.nb-policing {
+  position: fixed;
+  right: 20px;
+  top: 480px;
+  z-index: 40;
+  width: 210px;
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amber);
+  border-radius: 3px;
+  padding: 10px 12px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+}
+
+.nb-policing-title {
+  margin: 0 0 6px;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+}
+
+.nb-policing-stances {
+  display: flex;
+  gap: 4px;
+}
+
+.nb-policing-stance {
+  flex: 1;
+  width: auto;
+  height: auto;
+  padding: 5px 4px;
+  font-family: var(--font-label);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--parchment-dim);
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.nb-policing-stance:hover {
+  color: var(--amber-bright);
+  border-color: var(--amber);
+}
+
+.nb-policing-stance-on {
+  color: var(--ink);
+  background: var(--amber);
+  border-color: var(--amber);
+  font-weight: 600;
+}
+
+.nb-policing-stance:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+.nb-policing-cost {
+  margin: 8px 0 0 !important;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--parchment-dim);
+}
+
+@media (max-height: 700px) {
+  .nb-policing {
+    top: 430px;
+  }
+}
+
+.nb-schools {
+  top: 336px;
+}
+
+.nb-schools-bill {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--amber-bright);
+}
+
+@media (max-height: 700px) {
+  .nb-schools {
+    top: 300px;
+  }
+}
+
 /* Moving the map, and clearing the engine's panels off it. */
 .nb-panel-toggle {
   position: fixed;
