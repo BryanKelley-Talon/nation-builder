@@ -13,7 +13,6 @@
 
 import { Evaluation } from '../evaluation.js';
 import { DEFAULT_TUNING } from '../tuning.js';
-import { skillLabel } from './scenario.js';
 
 export const TOP_PROBLEMS = 3;
 export const DEFAULT_EVERY_YEARS = 5;
@@ -109,7 +108,6 @@ export function yearReview({ previous, snapshot, scenario, poleId, strings, town
     })),
     problems: snapshot.problems.slice(0, TOP_PROBLEMS).map(p => words.problems[PROBLEM_KEYS[p]]),
     poleLine: pole ? poleLine({ previous, snapshot, pole, words }) : null,
-    skillLabel: skillLabel(scenario, 'governance_dial'),
   };
 }
 

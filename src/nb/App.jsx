@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { decodeSaveCode } from './saveCode.js';
 import { decodeSaveFile, encodeSaveFile, saveFileName, SAVE_EXTENSION } from './saveFile.js';
-import { governanceChoices, skillLabel } from './scenario.js';
+import { governanceChoices } from './scenario.js';
 import { readAutosave } from './session.js';
 
 const TOWN_NAME_MAX = 15;
@@ -119,20 +119,18 @@ function Found({ content, preset, go, onFound }) {
             {content.scenarios.map((s, i) => (
               <Card key={s.scenario_id} selected={i === scenarioIndex}
                     onSelect={() => { setScenarioIndex(i); setPoleId(null); }}
-                    title={s.title} detail={`Starts ${s.start_year}`} badge={s.dev_fixture ? 'Dev fixture' : null} />
+                    title={s.title} detail={`Starts ${s.start_year}`} />
             ))}
           </div>
         </fieldset>
       )}
       {content.scenarios.length === 1 && (
-        <p className="nb-scenario">
-          {scenario.title} · starts {scenario.start_year}
-          {scenario.dev_fixture && <span className="nb-badge">Dev fixture</span>}
-        </p>
+        <p className="nb-scenario">{scenario.title} · starts {scenario.start_year}</p>
       )}
+      {scenario.dev_fixture && <p className="nb-beta">{content.strings.beta_notice}</p>}
 
       <fieldset className="nb-field">
-        <legend>Choose how your town is governed <SkillChip label={skillLabel(scenario, 'governance_dial')} /></legend>
+        <legend>Choose how your town is governed</legend>
         <p className="nb-hint">You choose once. Watch how it shapes your town as the years pass.</p>
         <div className="nb-cards">
           {available.map(pole => (
@@ -140,7 +138,8 @@ function Found({ content, preset, go, onFound }) {
                   title={pole.label} detail={pole.summary} />
           ))}
           {reserved.map(id => (
-            <Card key={id} disabled title={id[0].toUpperCase() + id.slice(1)} detail="Coming later" />
+            <Card key={id} disabled title={content.strings.reserved_pole_title}
+                  detail={content.strings.reserved_pole_detail} />
           ))}
         </div>
       </fieldset>
@@ -352,7 +351,7 @@ function NewsVignette({ story, onDismiss }) {
         <div>
           <p className="nb-news-line">{story.counsel}</p>
           <p className="nb-news-byline">
-            — {story.byline}{story.skillLabel && <SkillChip label={story.skillLabel} />}
+            — {story.byline}
           </p>
         </div>
       </div>
@@ -389,7 +388,7 @@ function YearReview({ review, strings, onClose, onSave }) {
 
         {review.poleLine && (
           <>
-            <h3 className="nb-subheading">{strings.pole_heading} <SkillChip label={review.skillLabel} /></h3>
+            <h3 className="nb-subheading">{strings.pole_heading}</h3>
             <p>{review.poleLine}</p>
           </>
         )}
@@ -452,7 +451,7 @@ function HeaderBadge({ session }) {
   const pole = session.scenario.governance_poles[session.poleId];
   return (
     <div className="nb-header-badge">
-      {pole ? pole.label : 'No government chosen'} <SkillChip label={skillLabel(session.scenario, 'governance_dial')} />
+      {pole ? pole.label : 'No government chosen'}
     </div>
   );
 }
@@ -466,11 +465,6 @@ function Card({ title, detail, badge, selected, disabled, onSelect }) {
       {detail && <span className="nb-card-detail">{detail}</span>}
     </button>
   );
-}
-
-
-function SkillChip({ label }) {
-  return <span className="nb-skill" title="Skill line">{label}</span>;
 }
 
 

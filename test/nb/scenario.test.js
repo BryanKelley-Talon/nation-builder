@@ -38,9 +38,10 @@ describe('content/scenarios', () => {
     }
   });
 
-  it('marks the dev fixture as a dev fixture', () => {
+  it("marks the dev fixture as a dev fixture, in the flag rather than in the player's face", () => {
     expect(fixture().dev_fixture).toBe(true);
-    expect(fixture().title).toMatch(/not real content/i);
+    // The flag is what raises the beta notice on the founding screen. The title is a place, not a disclaimer.
+    expect(fixture().title).not.toMatch(/dev|fixture|placeholder|not real/i);
   });
 });
 

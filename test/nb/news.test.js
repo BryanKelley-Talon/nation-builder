@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import * as Messages from '../../src/messages.ts';
 import { eraRules } from '../../src/nb/era.js';
 import { makeNewsroom, storyFor, vignette } from '../../src/nb/news.js';
-import { skillLabel, validateScenario } from '../../src/nb/scenario.js';
+import { validateScenario } from '../../src/nb/scenario.js';
 
 const strings = JSON.parse(readFileSync(new URL('../../content/ui/strings.json', import.meta.url)));
 const fixture = validateScenario(
@@ -14,7 +14,7 @@ const rules = eraRules(fixture);
 
 function print(subject, year, options = {}) {
   const story = storyFor(subject);
-  return vignette({ story, strings, scenario: fixture, rules, townName: 'Testville', year, skillLabel, ...options });
+  return vignette({ story, strings, rules, townName: 'Testville', year, ...options });
 }
 
 describe('the newsroom', () => {
@@ -59,11 +59,13 @@ describe('a vignette', () => {
     expect(story.byline).toBe('Your advisor');
   });
 
-  it('carries the skill line of the mechanic it teaches, and nothing where there is none', () => {
-    expect(print(Messages.NEED_MORE_RESIDENTIAL, 1801).skillLabel).toBe('TH');
-    expect(print(Messages.NEED_MORE_ROADS, 1801).skillLabel).toBe('DU');
-    expect(print(Messages.HIGH_CRIME, 1801).skillLabel).toBe('CP');
-    expect(print(Messages.NEED_FIRE_STATION, 1801).skillLabel).toBeNull();
+  it('knows the mechanic it teaches, and never says its code out loud', () => {
+    expect(print(Messages.NEED_MORE_RESIDENTIAL, 1801).mechanic).toBe('zone_placement');
+    expect(print(Messages.NEED_MORE_ROADS, 1801).mechanic).toBe('roads_rail');
+    expect(print(Messages.HIGH_CRIME, 1801).mechanic).toBe('governance_dial');
+    expect(print(Messages.NEED_FIRE_STATION, 1801).mechanic).toBeNull();
+    // The codes themselves (TH, DU, CP...) belong to the desks, not to a student's screen.
+    expect(print(Messages.NEED_MORE_RESIDENTIAL, 1801).skillLabel).toBeUndefined();
   });
 
   it('says so when the citizens ask for something their year does not have', () => {

@@ -12,7 +12,7 @@ import * as Messages from '../messages.ts';
 import { eraRules, lockedToolLabel, toolDisplayName, toolLockedUntil, universalPowerIn } from './era.js';
 import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
-import { applyStartingPressures, simOptionsFor, skillLabel } from './scenario.js';
+import { applyStartingPressures, simOptionsFor } from './scenario.js';
 import { makeNewsroom, vignette } from './news.js';
 import { footprintTouchesWater } from './terrain.js';
 import { classRank, fill, yearReview } from './yearReview.js';
@@ -196,7 +196,7 @@ export function startSession(ctx) {
     if (result === tool.TOOLRESULT_OK || result === tool.TOOLRESULT_NO_MONEY || !tool.size)
       return null;
     return footprintTouchesWater(game.gameMap, tile.x - 1, tile.y - 1, tool.size)
-      ? `${skillLabel(scenario, 'terrain_placement')} · ${strings.terrain_water_refused}`
+      ? strings.terrain_water_refused
       : null;
   };
 
@@ -231,7 +231,7 @@ export function startSession(ctx) {
     if (!story)
       return;
 
-    const printed = vignette({ story, strings, scenario, rules, townName: game.name, year, skillLabel });
+    const printed = vignette({ story, strings, rules, townName: game.name, year });
     if (printed)
       ctx.onNews(printed);
   });

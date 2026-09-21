@@ -88,10 +88,12 @@ describe('year in review', () => {
     expect(review({ taxYield: 1.2 }, { taxesCollected: 0 }).poleLine).toBeNull();
   });
 
-  it('works for both dev-fixture poles', () => {
-    for (const poleId of ['locke', 'rousseau'])
-      expect(yearReview({ previous: PREVIOUS, snapshot: SNAPSHOT, scenario: fixture, poleId, strings }).poleLine)
-        .toMatch(/^Under DEV Pole/);
+  it('works for both dev-fixture poles, naming each one as the student sees it', () => {
+    for (const poleId of ['locke', 'rousseau']) {
+      const line = yearReview({ previous: PREVIOUS, snapshot: SNAPSHOT, scenario: fixture, poleId, strings,
+                                highestClass: 'VILLAGE' }).poleLine;
+      expect(line).toContain(fixture.governance_poles[poleId].label);
+    }
   });
 });
 

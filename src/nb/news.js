@@ -19,8 +19,9 @@ import { fill } from './yearReview.js';
 export const DEFAULT_EVERY_YEARS = 1;
 export const DEFAULT_REPEAT_YEARS = 5;
 
-// The engine's messages the advisor speaks to, each with the mechanic it teaches (for the skill-line chip) and, where
-// the citizens are asking for a thing, the tool that builds it — so an era-locked answer can be said plainly.
+// The engine's messages the advisor speaks to, each with the mechanic it teaches (kept for the desks, never shown to
+// a student) and, where the citizens are asking for a thing, the tool that builds it — so an era-locked answer can be
+// said plainly.
 const STORIES = {
   [Messages.NEED_MORE_RESIDENTIAL]: { key: 'need_residential', mechanic: 'zone_placement' },
   [Messages.NEED_MORE_COMMERCIAL]: { key: 'need_commercial', mechanic: 'zone_placement' },
@@ -77,7 +78,7 @@ export function makeNewsroom({ everyYears = DEFAULT_EVERY_YEARS, repeatYears = D
 
 
 // The vignette itself: what the paper says, and what the advisor says under it.
-export function vignette({ story, strings, scenario, rules, townName, year, skillLabel }) {
+export function vignette({ story, strings, rules, townName, year }) {
   const words = strings.news;
   const item = words.items[story.key];
   if (!item)
@@ -95,6 +96,8 @@ export function vignette({ story, strings, scenario, rules, townName, year, skil
     headline: fill(item.headline, { town: townName, year }),
     counsel,
     byline: words.byline,
-    skillLabel: story.mechanic && skillLabel ? skillLabel(scenario, story.mechanic) : null,
+    // The mechanic the story teaches, for the desks and any teacher-facing view later. Never shown to a student:
+    // internal skill-line codes do not belong on screen.
+    mechanic: story.mechanic || null,
   };
 }
