@@ -121,7 +121,30 @@
         "They're starting to ask whether obedience was ever the same as consent.",
         "This is what every government built on that bargain has looked like, right before it broke."
       ],
-      "_source": "Will spec section 5, default ladder"
+      "_source": "Will spec section 5, default ladder",
+      "choices": [
+        {
+          "id": "meet",
+          "label": "Call a town meeting",
+          "cost": 500,
+          "effect": {
+            "unrest": -14,
+            "tuning": {
+              "taxGrowthDrag": "lower"
+            }
+          },
+          "aftermath": "You spent the week listening. It cost you time and a little money, and people noticed."
+        },
+        {
+          "id": "govern",
+          "label": "Govern on, and let the work speak",
+          "cost": 0,
+          "effect": {
+            "unrest": 4
+          },
+          "aftermath": "You let the record answer for you. It may. It may not."
+        }
+      ]
     },
     {
       "key": "human_rights",
@@ -134,7 +157,33 @@
         "Folks are asking who the guards are actually protecting.",
         "This is what it looks like right before people stop calling it order and start calling it something else."
       ],
-      "_source": "Will spec section 5, Human Rights ladder"
+      "_source": "Will spec section 5, Human Rights ladder",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Put more of the budget on the watch",
+          "cost": 1500,
+          "effect": {
+            "unrest": -12,
+            "tuning": {
+              "policeEffectiveness": "higher"
+            }
+          },
+          "aftermath": "More watch on the streets. The streets are quieter; some of them are quieter than you meant."
+        },
+        {
+          "id": "causes",
+          "label": "Spend it on the blocks the crime comes from",
+          "cost": 2500,
+          "effect": {
+            "unrest": -8,
+            "tuning": {
+              "crimePressure": "lower"
+            }
+          },
+          "aftermath": "Slower, dearer, and it treats the cause. You will not see it work for a while."
+        }
+      ]
     },
     {
       "key": "scarcity",
@@ -148,7 +197,28 @@
         "They're asking who the burden actually falls on.",
         "This is what it looks like right before people decide the cost isn't worth the bargain anymore."
       ],
-      "_source": "Will spec section 5, Scarcity/Inequality ladder"
+      "_source": "Will spec section 5, Scarcity/Inequality ladder",
+      "choices": [
+        {
+          "id": "cut",
+          "label": "Cut the rate",
+          "cost": 0,
+          "effect": {
+            "tax": -2,
+            "unrest": -12
+          },
+          "aftermath": "The rolls come down. So does what you can spend."
+        },
+        {
+          "id": "hold",
+          "label": "Hold the rate and say why",
+          "cost": 0,
+          "effect": {
+            "unrest": 3
+          },
+          "aftermath": "You held. Now the town watches what the money buys."
+        }
+      ]
     },
     {
       "key": "nationalism",
@@ -164,11 +234,35 @@
       "when": {
         "overthrow_candidate": "revolutionary_council"
       },
-      "_source": "Will spec section 5, Nationalism ladder - fires only on the approach to a Revolutionary Council pool"
+      "_source": "Will spec section 5, Nationalism ladder - fires only on the approach to a Revolutionary Council pool",
+      "choices": [
+        {
+          "id": "meet",
+          "label": "Call a town meeting",
+          "cost": 500,
+          "effect": {
+            "unrest": -14,
+            "tuning": {
+              "taxGrowthDrag": "lower"
+            }
+          },
+          "aftermath": "You spent the week listening. It cost you time and a little money, and people noticed."
+        },
+        {
+          "id": "govern",
+          "label": "Govern on, and let the work speak",
+          "cost": 0,
+          "effect": {
+            "unrest": 4
+          },
+          "aftermath": "You let the record answer for you. It may. It may not."
+        }
+      ]
     }
   ],
   "debrief": {
     "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
     "_prompt_source": "Will spec section 6, verbatim - ungraded, nothing saved"
-  }
+  },
+  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one."
 }

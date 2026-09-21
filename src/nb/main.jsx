@@ -59,6 +59,8 @@ export async function startNationBuilder(assets) {
       highestClass: record.teaching.highest_class,
       leadership_state: record.teaching.leadership,
       clue_state: record.teaching.clue_state,
+      advisor_bits: record.teaching.advisor_bits,
+      decision_bends: record.teaching.decision_bends,
     });
   };
 

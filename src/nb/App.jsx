@@ -21,6 +21,9 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
   const [saving, setSaving] = useState(false);
   const [review, setReview] = useState(null);
   const [news, setNews] = useState(null);
+  // An advisor card that has asked something holds the floor until it is answered: no later story may push it
+  // off the screen, or the decision it wanted becomes a notification the student never made.
+  const awaitingAnswer = useRef(false);
 
   // Each dialog pauses the game; Escape closes it through the close function handed to openExternalDialog.
   const openSave = s => {
@@ -39,7 +42,12 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
         s.game.openExternalDialog(() => setReview(null));
       },
       // The news does not pause the game: it is read while the town keeps running.
-      news: story => setNews({ ...story, at: Date.now() }),
+      news: story => setNews(current => {
+        if (awaitingAnswer.current)
+          return current;
+        awaitingAnswer.current = Array.isArray(story.choices) && story.choices.length > 0;
+        return { ...story, at: Date.now() };
+      }),
     });
   }, [bindDialogs]);
 
@@ -57,7 +65,15 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
       <>
         {session && <HeaderBadge session={session} />}
         {session && <MapTools strings={content.strings.map} />}
-        {news && !review && !saving && <NewsVignette story={news} onDismiss={() => setNews(null)} />}
+        {news && !review && !saving && (
+          <NewsVignette story={news}
+                        onDismiss={() => { awaitingAnswer.current = false; setNews(null); }}
+                        onDecide={(ladder, choice) => {
+                          const outcome = session && session.decide(ladder, choice);
+                          awaitingAnswer.current = false;
+                          return outcome;
+                        }} />
+        )}
         {review && session && (
           <YearReview review={review} strings={content.strings.year_review}
                       onClose={() => { setReview(null); session.game.closeExternalDialog(); }}
@@ -399,11 +415,27 @@ function ChangeOfGovernment({ change }) {
 // The advisor's news: a clipping that arrives over the running map and sees itself out.
 const NEWS_SECONDS = 16;
 
-function NewsVignette({ story, onDismiss }) {
+function NewsVignette({ story, onDismiss, onDecide }) {
+  const asks = Array.isArray(story.choices) && story.choices.length > 0;
+  const [aftermath, setAftermath] = useState(null);
+
   useEffect(() => {
+    setAftermath(null);
+  }, [story.key, story.at]);
+
+  useEffect(() => {
+    // A card that asks something waits for its answer; only the news sees itself out.
+    if (asks && !aftermath)
+      return undefined;
+
     const timer = window.setTimeout(onDismiss, NEWS_SECONDS * 1000);
     return () => window.clearTimeout(timer);
-  }, [story.key, story.at, onDismiss]);
+  }, [story.key, story.at, onDismiss, asks, aftermath]);
+
+  const answer = choice => {
+    const outcome = onDecide(story.ladder, choice.id);
+    setAftermath(outcome || { aftermath: '' });
+  };
 
   return (
     <aside className="nb-news" role="status" aria-live="polite">
@@ -421,7 +453,26 @@ function NewsVignette({ story, onDismiss }) {
           </p>
         </div>
       </div>
-      <button className="nb-news-dismiss" onClick={onDismiss}>Noted</button>
+      {asks && !aftermath && (
+        <div className="nb-news-choices">
+          {story.choices.map(choice => (
+            <button key={choice.id} className="nb-news-choice" onClick={() => answer(choice)}>
+              <span className="nb-news-choice-label">{choice.label}</span>
+              {choice.cost > 0 && <span className="nb-news-choice-cost">${choice.cost.toLocaleString('en-US')}</span>}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {aftermath && (
+        <>
+          <p className="nb-news-aftermath">{aftermath.aftermath}</p>
+          {aftermath.shortOfFunds && <p className="nb-news-shortfall">There wasn't the money for it.</p>}
+          <button className="nb-news-dismiss" onClick={onDismiss}>Go on</button>
+        </>
+      )}
+
+      {!asks && <button className="nb-news-dismiss" onClick={onDismiss}>Noted</button>}
     </aside>
   );
 }

@@ -9,6 +9,8 @@ import { bendKnob, BEND_LIMITS, currentTuning } from '../../src/nb/governance.js
 import { changeOfGovernment, nextClue, selectLadder } from '../../src/nb/clues.js';
 import { advance, chooseSuccessor, EVENT_OVERTHROW, EVENT_SUCCESSION, fromSave, leaderById, leadershipRules,
          leaderVoice, rollTenure, startingState, toSave } from '../../src/nb/leadership.js';
+import { DECISION_BITS, decisionsTaken, findChoice, MAX_TAX_EFFECT, MAX_UNREST_EFFECT, recordDecision,
+         resolve } from '../../src/nb/decisions.js';
 import { DEFAULT_TUNING } from '../../src/tuning.js';
 import { dominantTerm, nextUnrest, unrestTerms } from '../../src/nb/unrest.js';
 
@@ -342,3 +344,68 @@ function changeOfGovernmentFor({ event, outgoing, incoming, layer, year = 1930, 
   return changeOfGovernment({ strings, event, outgoing, incoming, year, since, sustainedYears: 3,
                               dominant: 'crime', layer });
 }
+
+
+describe('answering the advisor', () => {
+  const layer = layers.us11r;
+  const ladder = layer.ladders.find(entry => entry.key === 'limited_government');
+
+  it('gives every ladder two real answers, neither of them free of cost', () => {
+    for (const [course, content] of Object.entries(layers)) {
+      for (const entry of content.ladders) {
+        expect(entry.choices, `${course}:${entry.key}`).toHaveLength(2);
+        for (const choice of entry.choices) {
+          expect(choice.label, `${course}:${entry.key}`).toBeTruthy();
+          expect(choice.aftermath, `${course}:${entry.key}`).toBeTruthy();
+        }
+        // The two answers must actually differ — in what they do, or in what they cost, or both. A card whose
+        // options come to the same thing is a notification wearing buttons. At least one of them has to settle
+        // the town, or there is no decision to weigh, only two ways to lose.
+        const [first, second] = entry.choices;
+        const effects = entry.choices.map(choice => (choice.effect || {}).unrest || 0);
+        const costs = entry.choices.map(choice => choice.cost || 0);
+
+        expect(Math.min(...effects), `${course}:${entry.key}`).toBeLessThan(0);
+        expect(JSON.stringify(first.effect) !== JSON.stringify(second.effect) || costs[0] !== costs[1],
+               `${course}:${entry.key}: both answers do the same thing`).toBe(true);
+      }
+    }
+  });
+
+  it('moves the town when the student answers', () => {
+    const cut = resolve({ choice: findChoice(ladder, 'cut'), funds: 10000, tuning: DEFAULT_TUNING });
+    const hold = resolve({ choice: findChoice(ladder, 'hold'), funds: 10000, tuning: DEFAULT_TUNING });
+
+    expect(cut.unrest).toBeLessThan(0);      // acting settles the town
+    expect(cut.tax).toBeLessThan(0);         // and costs it the revenue
+    expect(hold.unrest).toBeGreaterThan(0);  // holding lets the pressure keep climbing
+  });
+
+  it('bounds what any one answer can do', () => {
+    const greedy = { id: 'x', cost: 0, effect: { unrest: -999, tax: -99 } };
+    const outcome = resolve({ choice: greedy, funds: 10000, tuning: DEFAULT_TUNING });
+
+    expect(outcome.unrest).toBe(-MAX_UNREST_EFFECT);
+    expect(outcome.tax).toBe(-MAX_TAX_EFFECT);
+  });
+
+  it('still answers when the town cannot afford the answer', () => {
+    const costly = layers.us11r.ladders.find(entry => entry.key === 'rule_of_law');
+    const outcome = resolve({ choice: findChoice(costly, 'watch'), funds: 10, tuning: DEFAULT_TUNING });
+
+    expect(outcome.shortOfFunds).toBe(true);
+    expect(outcome.paid).toBe(0);
+    // Wanting to act and not affording it is not the same as choosing to do nothing, and it does not settle a town.
+    expect(outcome.unrest).toBeGreaterThan(0);
+  });
+
+  it('remembers the last eight decisions in the bits the save code reserved', () => {
+    let bits = 0;
+    for (let i = 0; i < 10; i++)
+      bits = recordDecision(bits, findChoice(ladder, i % 2 === 0 ? 'cut' : 'hold'));
+
+    expect(bits).toBeLessThan(1 << DECISION_BITS);
+    expect(decisionsTaken(bits)).toBeGreaterThan(0);
+    expect(decisionsTaken(0)).toBe(0);
+  });
+});

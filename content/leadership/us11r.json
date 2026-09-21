@@ -150,7 +150,30 @@
         "They're starting to ask whether you still speak for this town, or just for yourself.",
         "They didn't put you in office to stop asking them, mayor."
       ],
-      "_source": "Sam package section 5, approval-gap dominant"
+      "_source": "Sam package section 5, approval-gap dominant",
+      "choices": [
+        {
+          "id": "meet",
+          "label": "Call a town meeting",
+          "cost": 500,
+          "effect": {
+            "unrest": -14,
+            "tuning": {
+              "taxGrowthDrag": "lower"
+            }
+          },
+          "aftermath": "You spent the week listening. It cost you time and a little money, and people noticed."
+        },
+        {
+          "id": "govern",
+          "label": "Govern on, and let the work speak",
+          "cost": 0,
+          "effect": {
+            "unrest": 4
+          },
+          "aftermath": "You let the record answer for you. It may. It may not."
+        }
+      ]
     },
     {
       "key": "rule_of_law",
@@ -162,7 +185,33 @@
         "They're asking whether the law applies the same on both sides of town.",
         "A town stops believing in the law the moment it sees who it's actually for."
       ],
-      "_source": "Sam package section 5, crime dominant - crime the leader fails to control"
+      "_source": "Sam package section 5, crime dominant - crime the leader fails to control",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Put more of the budget on the watch",
+          "cost": 1500,
+          "effect": {
+            "unrest": -12,
+            "tuning": {
+              "policeEffectiveness": "higher"
+            }
+          },
+          "aftermath": "More watch on the streets. The streets are quieter; some of them are quieter than you meant."
+        },
+        {
+          "id": "causes",
+          "label": "Spend it on the blocks the crime comes from",
+          "cost": 2500,
+          "effect": {
+            "unrest": -8,
+            "tuning": {
+              "crimePressure": "lower"
+            }
+          },
+          "aftermath": "Slower, dearer, and it treats the cause. You will not see it work for a while."
+        }
+      ]
     },
     {
       "key": "due_process",
@@ -174,7 +223,33 @@
         "leader_conduct": true
       },
       "_source": "BK ruling 2026-09-20 number 2: build Rule of Law and Due Process as distinct ladders",
-      "_note": "Crime the leader's own conduct causes - skipping fair procedure - reads as Due Process, not Rule of Law. The selector is built and fires when the sitting leader's militarism disposition is high; Sam's package names the distinction but wrote no lines for it, and this build does not write them in his voice. With no tiers, the engine falls back to rule_of_law. NEEDS-SAM: three lines, same three-tier shape."
+      "_note": "Crime the leader's own conduct causes - skipping fair procedure - reads as Due Process, not Rule of Law. The selector is built and fires when the sitting leader's militarism disposition is high; Sam's package names the distinction but wrote no lines for it, and this build does not write them in his voice. With no tiers, the engine falls back to rule_of_law. NEEDS-SAM: three lines, same three-tier shape.",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Put more of the budget on the watch",
+          "cost": 1500,
+          "effect": {
+            "unrest": -12,
+            "tuning": {
+              "policeEffectiveness": "higher"
+            }
+          },
+          "aftermath": "More watch on the streets. The streets are quieter; some of them are quieter than you meant."
+        },
+        {
+          "id": "causes",
+          "label": "Spend it on the blocks the crime comes from",
+          "cost": 2500,
+          "effect": {
+            "unrest": -8,
+            "tuning": {
+              "crimePressure": "lower"
+            }
+          },
+          "aftermath": "Slower, dearer, and it treats the cause. You will not see it work for a while."
+        }
+      ]
     },
     {
       "key": "limited_government",
@@ -186,7 +261,28 @@
         "They're asking what exactly they're getting for what they're paying.",
         "A government that takes this much and gives this little back doesn't stay a government for long."
       ],
-      "_source": "Sam package section 5, tax-pressure dominant"
+      "_source": "Sam package section 5, tax-pressure dominant",
+      "choices": [
+        {
+          "id": "cut",
+          "label": "Cut the rate",
+          "cost": 0,
+          "effect": {
+            "tax": -2,
+            "unrest": -12
+          },
+          "aftermath": "The rolls come down. So does what you can spend."
+        },
+        {
+          "id": "hold",
+          "label": "Hold the rate and say why",
+          "cost": 0,
+          "effect": {
+            "unrest": 3
+          },
+          "aftermath": "You held. Now the town watches what the money buys."
+        }
+      ]
     },
     {
       "key": "limited_government_depression",
@@ -198,7 +294,30 @@
         "They're asking whether a government that won't help in hard times is a government at all.",
         "A town remembers who it stood in line for, once the hard years are over."
       ],
-      "_source": "Sam package section 5, unemployment-pressure dominant - same principle, different register"
+      "_source": "Sam package section 5, unemployment-pressure dominant - same principle, different register",
+      "choices": [
+        {
+          "id": "works",
+          "label": "Put the town to work on public building",
+          "cost": 3000,
+          "effect": {
+            "unrest": -14,
+            "tuning": {
+              "comDemand": "higher"
+            }
+          },
+          "aftermath": "Wages in pockets by the end of the month, out of the treasury to get there."
+        },
+        {
+          "id": "market",
+          "label": "Leave it to the market to right itself",
+          "cost": 0,
+          "effect": {
+            "unrest": 5
+          },
+          "aftermath": "You waited. Sometimes that is the answer. The winter will say."
+        }
+      ]
     },
     {
       "key": "checks_and_balances",
@@ -210,7 +329,29 @@
         "They're asking who's actually allowed to overrule you, if it comes to that.",
         "Every power this unchecked has met a veto, an impeachment, or a court, mayor — eventually."
       ],
-      "_source": "Sam package section 5, leader disposition militarism dominant"
+      "_source": "Sam package section 5, leader disposition militarism dominant",
+      "choices": [
+        {
+          "id": "checks",
+          "label": "Give the council back its questions",
+          "cost": 0,
+          "effect": {
+            "unrest": -15,
+            "militarism": -0.3
+          },
+          "aftermath": "The council sits again, and can say no to you again."
+        },
+        {
+          "id": "keep",
+          "label": "Keep the emergency powers a while longer",
+          "cost": 0,
+          "effect": {
+            "unrest": 6,
+            "militarism": 0.2
+          },
+          "aftermath": "Quicker decisions. Fewer people able to stop the wrong one."
+        }
+      ]
     },
     {
       "key": "individual_rights",
@@ -228,11 +369,34 @@
         }
       },
       "_source": "Sam package section 5, rights-restriction scenario",
-      "_note": "Wired and selectable, but no US11R leader carries disposition.liberties yet, so it cannot fire as delivered. NEEDS-SAM: which tendency, in which era, restricts liberties under a security justification."
+      "_note": "Wired and selectable, but no US11R leader carries disposition.liberties yet, so it cannot fire as delivered. NEEDS-SAM: which tendency, in which era, restricts liberties under a security justification.",
+      "choices": [
+        {
+          "id": "checks",
+          "label": "Give the council back its questions",
+          "cost": 0,
+          "effect": {
+            "unrest": -15,
+            "militarism": -0.3
+          },
+          "aftermath": "The council sits again, and can say no to you again."
+        },
+        {
+          "id": "keep",
+          "label": "Keep the emergency powers a while longer",
+          "cost": 0,
+          "effect": {
+            "unrest": 6,
+            "militarism": 0.2
+          },
+          "aftermath": "Quicker decisions. Fewer people able to stop the wrong one."
+        }
+      ]
     }
   ],
   "debrief": {
     "prompt": "Identify the issue this change was really about. Explain why it built the way it did.",
     "_prompt_source": "Will spec section 6, reused for both courses - the NYSED task verbs are shared"
-  }
+  },
+  "_choices_note": "Advisor decisions: the buildconcept's conflicting-counsel mechanic (skill line DU), whose 8 save-code bits were reserved from the first format. Every advisor card must be answered before it leaves the screen, and the answer moves the town's numbers. The OPTION WORDING AND AFTERMATH LINES WERE WRITTEN BY THE BUILD SESSION 2026-09-20 as placeholders - the desks own this voice, and neither option should ever be the obviously right one."
 }

@@ -78,7 +78,15 @@ export function nextClue({ layer, dominant, leader, unrestValue, year, state = {
   if (!line)
     return null;
 
-  return { key: ladder.key, rung: nextRung, line, dominant, state: { key: ladder.key, rung: nextRung, year } };
+  return {
+    key: ladder.key,
+    rung: nextRung,
+    line,
+    dominant,
+    // The advisor asks; the card cannot leave the screen until one of these is chosen.
+    choices: (ladder.choices || []).map(choice => ({ id: choice.id, label: choice.label, cost: choice.cost || 0 })),
+    state: { key: ladder.key, rung: nextRung, year },
+  };
 }
 
 

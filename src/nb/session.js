@@ -14,6 +14,7 @@ import { encodeSaveCode } from './saveCode.js';
 import { makeSaveRecord } from './saveFile.js';
 import { applyStartingPressures, simOptionsFor } from './scenario.js';
 import { changeOfGovernment, nextClue, successionVignette } from './clues.js';
+import { findChoice, recordDecision, resolve } from './decisions.js';
 import { currentTuning } from './governance.js';
 import { advance, fromSave, leaderById, leadershipRules, leaderVoice, startingState, toSave } from './leadership.js';
 import { makeNewsroom, vignette } from './news.js';
@@ -115,12 +116,14 @@ export function startSession(ctx) {
       };
     },
 
+    decide,
+
     code() {
       const c = session.checkpoint();
       return encodeSaveCode({
         scenarioIndex,
         poleIndex: poleIds.indexOf(poleId),
-        advisorBits: 0,
+        advisorBits: decisionBits,
         year: c.year,
         population: c.population,
         score: c.score,
@@ -136,7 +139,8 @@ export function startSession(ctx) {
         scenario_index: scenarioIndex,
         pole: poleId,
         town_name: game.name,
-        advisor_bits: 0,
+        advisor_bits: decisionBits,
+        decision_bends: decisionBends,
         code,
         checkpoint: session.checkpoint(),
         last_review: lastReview,
@@ -153,6 +157,10 @@ export function startSession(ctx) {
     ? (ctx.leadership_state ? fromSave(ctx.leadership_state, rules, session.year()) : startingState(rules, session.year()))
     : null;
   let clueState = ctx.clue_state || {};
+  let decisionBits = ctx.advisor_bits || 0;
+  // The knobs the student's own decisions have bent, carried between years and into the save.
+  let decisionBends = ctx.decision_bends || {};
+  let decisionMilitarism = 0;
 
   function leaderBends() {
     if (!leadership)
@@ -164,7 +172,39 @@ export function startSession(ctx) {
 
     const voice = leaderVoice(leader, session.year());
     const byEra = (leader.by_era || []).find(entry => entry.id === voice.era);
-    return { ...(leader.tuning || {}), ...((byEra && byEra.tuning) || {}) };
+    return { ...(leader.tuning || {}), ...((byEra && byEra.tuning) || {}), ...decisionBends };
+  }
+
+
+  // An answer to the advisor. The card stays on screen until this runs, and the town feels it the same year.
+  function decide(ladderKey, choiceId) {
+    const ladder = (layer && (layer.ladders || []).find(entry => entry.key === ladderKey)) || null;
+    const choice = findChoice(ladder, choiceId);
+    if (!choice)
+      return null;
+
+    const outcome = resolve({
+      choice,
+      funds: sim.budget.totalFunds,
+      tuning: currentTuning({ pole: poleTuning, leader: leaderBends() }),
+      militarism: decisionMilitarism,
+    });
+
+    if (outcome.paid)
+      sim.budget.spend(outcome.paid);
+    if (outcome.tax)
+      sim.budget.setTax(Math.max(0, Math.min(20, sim.budget.cityTax + outcome.tax)));
+
+    decisionMilitarism = outcome.militarism;
+    decisionBends = { ...decisionBends, ...(choice.effect && choice.effect.tuning ? choice.effect.tuning : {}) };
+    decisionBits = recordDecision(decisionBits, choice);
+
+    if (leadership)
+      leadership = { ...leadership, unrest: Math.max(0, Math.min(100, leadership.unrest + outcome.unrest)) };
+
+    applyTuning(session.year());
+    writeAutosave(session.saveRecord());
+    return outcome;
   }
 
   function applyTuning(year) {
@@ -294,7 +334,10 @@ export function startSession(ctx) {
         headline: '',
         counsel: clue.line,
         byline: strings.news.byline,
-        mechanic: 'governance_dial',
+        mechanic: 'advisor_conflict',
+        // An advisor card is answered, not dismissed.
+        ladder: clue.key,
+        choices: clue.choices,
       });
     }
 
