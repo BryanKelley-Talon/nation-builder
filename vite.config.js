@@ -32,6 +32,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // Every test starts from the same seeded Math.random: see test/setup-random.js.
+    setupFiles: ['./test/setup-random.js'],
     include: ['test/*.ts', 'test/**/*.test.js'],
   },
 });

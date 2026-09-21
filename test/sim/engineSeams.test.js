@@ -108,13 +108,14 @@ describe('tuning', () => {
   });
 
   it('grows an unwired town when power is universal', () => {
+    // Six years, not three: zone growth is random, and three was close enough to the edge to fail now and then.
     const unpowered = makeSim();
     starterTown(unpowered, { power: false });
-    runYears(unpowered.sim, 3);
+    runYears(unpowered.sim, 6);
 
     const preElectric = makeSim(undefined, { simOptions: { tuning: { universalPower: true } } });
     starterTown(preElectric, { power: false });
-    runYears(preElectric.sim, 3);
+    runYears(preElectric.sim, 6);
 
     expect(unpowered.sim._census.resPop).toBe(0);
     expect(preElectric.sim._census.poweredZoneCount).toBeGreaterThan(0);

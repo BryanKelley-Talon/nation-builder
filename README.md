@@ -70,6 +70,10 @@ year, or, if the file is lost, restarts from the code with the same government.
 - Tiles are drawn straight out of `public/images/tiles.png` (a 512 x 512 atlas of 16px
   tiles) by `src/tileSet.js`. Nothing slices it up, so a tileset is ready as soon as its
   image has loaded.
+- The game plays by the original's rules: every tool is available from the first year and zones need plants and
+  wires, as in Micropolis (BK's ruling, 2026-09-21). A scenario may still withhold a tool until a given year, or
+  grant a pre-electric stretch, with `era_rules.tool_available_from` and `era_rules.universal_power_until` — no
+  scenario does today.
 - Seasonal snow is dormant in the port: the date listener that would switch to the snow
   tileset is commented out upstream (`src/game.js`). The snow image still loads.
 - `test/sim/harness.js` runs the simulation without a DOM or clock:

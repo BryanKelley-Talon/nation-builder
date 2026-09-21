@@ -10,7 +10,9 @@ import { validateScenario } from '../../src/nb/scenario.js';
 const strings = JSON.parse(readFileSync(new URL('../../content/ui/strings.json', import.meta.url)));
 const fixture = validateScenario(
   JSON.parse(readFileSync(new URL('../../content/scenarios/dev-fixture-us11r.json', import.meta.url))));
-const rules = eraRules(fixture);
+// A scenario that deliberately withholds tools: the only case where the advisor says "not until <year>".
+const rules = eraRules({ era_rules: { tool_available_from: { police: 1838, coal: 1882 } } });
+const ungated = eraRules(fixture);
 
 function print(subject, year, options = {}) {
   const story = storyFor(subject);
@@ -80,6 +82,12 @@ describe('a vignette', () => {
   it('asks for electricity only once electricity exists', () => {
     expect(print(Messages.NEED_ELECTRICITY, 1820).counsel).toContain('1882');
     expect(print(Messages.NEED_ELECTRICITY, 1890).counsel).not.toContain('1882');
+  });
+
+  it('never withholds anything in a scenario with no gates, which is the default', () => {
+    const story = storyFor(Messages.NEED_POLICE_STATION);
+    const counsel = vignette({ story, strings, rules: ungated, townName: 'Testville', year: 1789 }).counsel;
+    expect(counsel).not.toMatch(/until \d{4}/);
   });
 
   it('has words for every story the newsroom can pick', () => {

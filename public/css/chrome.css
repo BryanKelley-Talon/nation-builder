@@ -221,6 +221,16 @@ footer .nameLicense, footer #build {
 #controls #nuclearButton { border-left-color: #c4907a; }
 #controls #airportButton { border-left-color: #b57ab5; }
 
+/* "Hide panels": the teaching layer clears the engine's own panels off the map so a student can see the land they
+   are building on. The toggle that sets this class stays on screen, so the way back is always visible. */
+.nb-panels-hidden #infobar,
+.nb-panels-hidden #miscButtons,
+.nb-panels-hidden #RCIContainer,
+.nb-panels-hidden #controls,
+.nb-panels-hidden #debug {
+  display: none !important;
+}
+
 /* ---- The engine's modal windows ------------------------------------------------------------------------- */
 
 #opaque {

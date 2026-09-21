@@ -412,6 +412,74 @@
   margin: 0 0 12px;
 }
 
+/* Moving the map, and clearing the engine's panels off it. */
+.nb-panel-toggle {
+  position: fixed;
+  left: 20px;
+  bottom: 92px;
+  z-index: 40;
+  width: auto;
+  height: auto;
+  padding: 6px 14px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--parchment-dim);
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.nb-panel-toggle:hover {
+  color: var(--amber-bright);
+  border-color: var(--amber-bright);
+}
+
+.nb-panel-toggle:focus-visible {
+  outline: 2px solid var(--amber-bright);
+  outline-offset: 2px;
+}
+
+.nb-map-hint {
+  position: fixed;
+  left: 50%;
+  top: 76px;
+  transform: translateX(-50%);
+  z-index: 45;
+  width: 420px;
+  max-width: calc(100vw - 40px);
+  background: var(--ink-raised);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--amber);
+  border-radius: 3px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.62);
+  padding: 14px 16px 12px;
+  color: var(--parchment);
+  font-family: var(--font-body);
+}
+
+.nb-map-hint-title {
+  font-family: var(--font-label);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber-bright);
+  margin: 0 0 6px;
+}
+
+.nb-map-hint-line {
+  margin: 0 !important;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (max-height: 700px) {
+  .nb-panel-toggle {
+    bottom: 76px;
+  }
+}
+
 /* The advisor's news: a clipping over the running map, bottom right, clear of the tool palette and the engine's own
    message strip. It never pauses the game, so it sits below the overlays (z 100) and above the canvas. */
 .nb-news {

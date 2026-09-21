@@ -56,6 +56,7 @@ export function App({ content, onFound, onContinue, bindDialogs }) {
     return (
       <>
         {session && <HeaderBadge session={session} />}
+        {session && <MapTools strings={content.strings.map} />}
         {news && !review && !saving && <NewsVignette story={news} onDismiss={() => setNews(null)} />}
         {review && session && (
           <YearReview review={review} strings={content.strings.year_review}
@@ -326,6 +327,50 @@ function SaveDialog({ session, onClose }) {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// Moving around the map, and getting the engine's panels out of the way of it. The map is far bigger than the
+// window, and upstream's only way to move it is the arrow keys.
+function MapTools({ strings }) {
+  const [hidden, setHidden] = useState(false);
+  const [hintSeen, setHintSeen] = useState(() => {
+    try {
+      return window.sessionStorage.getItem('nbMapHintSeen') === 'yes';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const dismissHint = () => {
+    setHintSeen(true);
+    try {
+      window.sessionStorage.setItem('nbMapHintSeen', 'yes');
+    } catch (e) {
+      // Private windows and locked-down profiles: the hint simply shows again next visit.
+    }
+  };
+
+  useEffect(() => {
+    document.body.classList.toggle('nb-panels-hidden', hidden);
+    return () => document.body.classList.remove('nb-panels-hidden');
+  }, [hidden]);
+
+  return (
+    <>
+      <button className="nb-panel-toggle" onClick={() => setHidden(!hidden)}
+              title={hidden ? strings.show_panels : strings.hide_panels}>
+        {hidden ? strings.show_panels : strings.hide_panels}
+      </button>
+      {!hintSeen && (
+        <aside className="nb-map-hint" role="status">
+          <h3 className="nb-map-hint-title">{strings.hint_title}</h3>
+          <p className="nb-map-hint-line">{strings.hint}</p>
+          <button className="nb-news-dismiss" onClick={dismissHint}>{strings.hint_dismiss}</button>
+        </aside>
+      )}
+    </>
   );
 }
 

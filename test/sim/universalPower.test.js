@@ -1,7 +1,8 @@
 /* Nation Builder (Flashpoint History), 2026. GNU GPL v3 with additional terms — see LICENSE and NOTICE.md. */
 
-// Before universal_power_until (1900 by default) a town grows with no plant and no wire: water wheels, wood and
-// coal stoves, as era.js puts it. After it, the grid matters exactly as it does in the original game.
+// Power. By default a town needs plants and wires from its first year, exactly as the original game does (BK's
+// ruling, 2026-09-21). A scenario may still ask for a pre-electric stretch with era_rules.universal_power_until,
+// and while that is on, every zone counts as powered with no plant on the map.
 //
 // This is the loop the whole game stands on, and it was reported broken on 2026-09-20 (the power-lock memo). It was
 // not, but it is close enough to the edge of two systems — era rules and the engine's power grid — that it is worth
@@ -39,17 +40,20 @@ function wireUp(world) {
 }
 
 
-// The options the game itself builds when a student founds a town in this year.
-function foundIn(year) {
-  const rules = eraRules(fixture);
-  const options = simOptionsFor(fixture, 'locke', { universalPower: universalPowerIn(rules, year) });
+// The options the game itself builds when a student founds a town in this year, under the given era rules.
+function foundIn(year, scenario = fixture) {
+  const rules = eraRules(scenario);
+  const options = simOptionsFor(scenario, 'locke', { universalPower: universalPowerIn(rules, year) });
   return makeSim(undefined, { simOptions: { ...options, startingYear: year } });
 }
 
+// A scenario that deliberately asks for a pre-electric stretch.
+const preElectric = { ...fixture, era_rules: { universal_power_until: 1900 } };
 
-describe('a town before the grid (1789)', () => {
+
+describe('a scenario that asks for a pre-electric stretch', () => {
   it('counts its zones as powered without a plant', () => {
-    const world = foundIn(1789);
+    const world = foundIn(1789, preElectric);
     expect(world.sim.tuning.universalPower).toBe(true);
     town(world);
     runYears(world.sim, 2);
@@ -59,7 +63,7 @@ describe('a town before the grid (1789)', () => {
   });
 
   it('grows: people move in with no plant anywhere on the map', () => {
-    const world = foundIn(1789);
+    const world = foundIn(1789, preElectric);
     town(world);
     runYears(world.sim, 6);
 
@@ -70,8 +74,8 @@ describe('a town before the grid (1789)', () => {
   });
 });
 
-describe('a town after the grid arrives (1900)', () => {
-  it('needs a plant again, which is the threshold doing its job', () => {
+describe('every other town, including the default', () => {
+  it('needs a plant from the first year, as the original game does', () => {
     const world = foundIn(1900);
     expect(world.sim.tuning.universalPower).toBe(false);
     town(world);
@@ -95,11 +99,14 @@ describe('a town after the grid arrives (1900)', () => {
 });
 
 describe('the threshold itself', () => {
-  it('is the year era.js says, and the scenario can move it', () => {
+  it('is off unless a scenario asks for it', () => {
     const rules = eraRules(fixture);
-    expect(universalPowerIn(rules, 1899)).toBe(true);
+    expect(universalPowerIn(rules, 1789)).toBe(false);
+    expect(universalPowerIn(rules, 1899)).toBe(false);
     expect(universalPowerIn(rules, 1900)).toBe(false);
+  });
 
+  it('is the year the scenario names, when it names one', () => {
     const custom = eraRules({ era_rules: { universal_power_until: 1850 } });
     expect(universalPowerIn(custom, 1849)).toBe(true);
     expect(universalPowerIn(custom, 1850)).toBe(false);

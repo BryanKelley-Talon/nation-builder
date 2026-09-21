@@ -10,6 +10,14 @@
   "beta_notice": "Beta build: the town, the map and the choice below are real and playable. The history written around them is still being written.",
   "reserved_pole_title": "Still being written",
   "reserved_pole_detail": "A third way to govern this town, coming later.",
+  "map": {
+    "_note": "Shown in game, over the map. The hint appears once a visit.",
+    "hint_title": "Finding your way around",
+    "hint": "Your land is bigger than the window. Scroll with two fingers to move the map — the arrow keys work too, and so does dragging with the right mouse button.",
+    "hint_dismiss": "Got it",
+    "hide_panels": "Hide panels",
+    "show_panels": "Show panels"
+  },
   "terrain_water_refused": "Water here. Zones and buildings need dry land.",
   "era": {
     "_note": "Shown when a student reaches for a tool their year doesn't have yet. The years themselves are in src/nb/era.js, for the content desks to review. Working wording from the build session; {braces} are filled in by the game.",

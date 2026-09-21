@@ -49,5 +49,5 @@ repository's git log.
   governance modifiers, hooks in `Game` for tool refusal, tool feedback, saving
   and teaching-layer dialogs.
 - **Teaching layer (new code, `src/nb/`):** scenario loader, terrain loader,
-  era tool gating, governance choice, save code, city file, session wiring,
+  optional era gating (off by default), governance choice, save code, city file, session wiring,
   the year-in-review panel and screens.

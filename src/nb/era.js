@@ -1,25 +1,25 @@
 /* Nation Builder (Flashpoint History), 2026. GNU GPL v3 with additional terms — see LICENSE and NOTICE.md.
  *
- * Era rules: which tools exist in a given year, and whether the city runs without an electric grid. The tile art
- * stays 20th-century whatever the year (ruling 2026-09-19); gating availability is the cheap, honest part.
+ * Era rules: which tools a scenario withholds until a given year, and whether it runs without an electric grid.
  *
- * The years below are defaults for review, not settled content. A scenario may override any of them with
- * era_rules.tool_available_from and era_rules.universal_power_until.
+ * Both are OFF by default, as of BK's ruling on 2026-09-21: "the year needs to go back to the default micropolis
+ * settings...power plants, etc. we need to abandon this timeline of 1750 thing...normal game mechanics." A town
+ * plays by the original game's rules — every tool available, power plants and wires required from year one — and
+ * the history lives in the scenario's framing rather than in locks on the toolbar.
+ *
+ * The mechanism stays, because a scenario may still want a gate that teaches something (a town with no organised
+ * police before 1838 is a governance question, not trivia — see the 2026-09-20 power-lock memo). A scenario turns
+ * one on with era_rules.tool_available_from and era_rules.universal_power_until; nothing is gated unless it does.
  */
 
-export const DEFAULT_TOOL_AVAILABLE_FROM = Object.freeze({
-  rail: 1830,      // Baltimore & Ohio begins scheduled rail service
-  police: 1838,    // Boston forms the first US municipal police department
-  coal: 1882,      // Pearl Street Station, New York: first central power plant
-  wire: 1882,
-  stadium: 1903,   // Harvard Stadium, first large reinforced-concrete stadium in the US
-  airport: 1909,   // College Park Airport, Maryland
-  nuclear: 1957,   // Shippingport, Pennsylvania: first US commercial nuclear plant
-});
+// Nothing is withheld by default. A scenario that wants a gate names the tool and the year itself; the years that
+// used to live here (rail 1830, police 1838, coal and wire 1882, stadium 1903, airport 1909, nuclear 1957) are in
+// the git history and in the handoffs, for whoever brings one back deliberately.
+export const DEFAULT_TOOL_AVAILABLE_FROM = Object.freeze({});
 
-// Until this year every zone counts as powered (water wheels, wood, coal stoves: no grid to build). After it, zones
-// need plants and wires like the original game.
-export const DEFAULT_UNIVERSAL_POWER_UNTIL = 1900;
+// null means "no such period": zones need plants and wires from the first year, as in the original game. A scenario
+// that wants a pre-electric stretch sets era_rules.universal_power_until to the year the grid arrives.
+export const DEFAULT_UNIVERSAL_POWER_UNTIL = null;
 
 
 export function eraRules(scenario) {
@@ -52,5 +52,6 @@ export function lockedToolLabel(label, year) {
 
 
 export function universalPowerIn(rules, year) {
-  return year < rules.universalPowerUntil;
+  return rules.universalPowerUntil !== null && rules.universalPowerUntil !== undefined
+    && year < rules.universalPowerUntil;
 }

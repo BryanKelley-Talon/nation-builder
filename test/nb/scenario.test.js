@@ -144,9 +144,10 @@ describe('terrain-driven placement', () => {
 
 describe('era rules', () => {
   it('gates tools by year, with scenario overrides', () => {
+    // Nothing is gated unless a scenario asks for it: the town plays by the original game's rules.
     const rules = eraRules(fixture());
-    expect(toolLockedUntil(rules, 'nuclear', 1789)).toBe(1957);
-    expect(toolLockedUntil(rules, 'nuclear', 1957)).toBeNull();
+    expect(toolLockedUntil(rules, 'nuclear', 1789)).toBeNull();
+    expect(toolLockedUntil(rules, 'coal', 1789)).toBeNull();
     expect(toolLockedUntil(rules, 'residential', 1789)).toBeNull();
 
     const custom = eraRules({ era_rules: { tool_available_from: { nuclear: 1800 }, universal_power_until: 1850 } });
@@ -157,7 +158,7 @@ describe('era rules', () => {
 });
 
 describe('a dev-fixture city', () => {
-  it('starts in 1789 under the chosen pole and runs', () => {
+  it('starts in its own year under the chosen pole and runs', () => {
     const scenario = fixture();
     const rules = eraRules(scenario);
     const map = buildMap(scenario.terrain);
@@ -165,12 +166,13 @@ describe('a dev-fixture city', () => {
     const sim = new Simulation(map, 0, Simulation.SPEED_FAST, null, options);
     applyStartingPressures(scenario, sim);
 
-    expect(sim.getDate().year).toBe(1789);
+    expect(sim.getDate().year).toBe(scenario.start_year);
     expect(sim.budget.totalFunds).toBe(10000);
     expect(sim.tuning.taxYield).toBe(1.2);
-    expect(sim.tuning.universalPower).toBe(true);
+    // No pre-electric stretch unless a scenario asks for one: the grid matters from the first year.
+    expect(sim.tuning.universalPower).toBe(false);
 
     runYears(sim, 2);
-    expect(sim.getDate().year).toBe(1791);
+    expect(sim.getDate().year).toBe(scenario.start_year + 2);
   });
 });

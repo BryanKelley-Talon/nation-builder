@@ -8,7 +8,8 @@ import * as TileValues from '../../src/tileValues.ts';
 import { build, makeSim, runYears } from './harness.js';
 
 // Hospitals need residents, and residents need somewhere to work: a residential-only town never grows at all, so
-// the town below is mixed, road-served, and powered the way a pre-electric scenario is (universalPower).
+// the town below is mixed and road-served. It is powered by the universalPower knob rather than by a plant and a
+// hand-laid grid, to keep this test about hospitals; whether the grid itself works is test/sim/universalPower.js.
 function mixedTown(world) {
   const rows = [['residential', 20], ['residential', 24], ['residential', 28], ['commercial', 32],
                 ['residential', 36], ['residential', 40], ['industrial', 44], ['residential', 48],
@@ -23,6 +24,7 @@ function mixedTown(world) {
 
   for (let y = 17; y <= 66; y++)
     build(world, 'road', 18, y);
+
 }
 
 
@@ -61,6 +63,9 @@ describe('hospitals', () => {
     const world = grownTown(50);
     const census = world.sim._census;
 
+    // A town that never grew would satisfy the ratio trivially at zero, so say out loud that it grew.
+    expect(census.resPop).toBeGreaterThan(255);
+    expect(census.hospitalPop).toBeGreaterThan(0);
     expect(census.hospitalPop).toBe(hospitalTiles(world.map));
     expect(census.hospitalPop).toBe(census.resPop >> 8);
     // Satisfied: the town stops asking for another until its population passes the next step.

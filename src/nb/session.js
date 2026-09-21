@@ -236,6 +236,73 @@ export function startSession(ctx) {
       ctx.onNews(printed);
   });
 
+  // Moving the map. The engine answers only to the arrow keys, which a student has no reason to discover, and the
+  // map (120 x 100 tiles) is nearly three times the size of a Chromebook's window — so most of the town is off
+  // screen with no obvious way to reach it. Two-finger scroll pans it, and so does dragging with the middle or
+  // right button; the arrow keys still work. Nothing here touches the engine: it drives the canvas's own moves.
+  const mapCanvas = document.getElementById('MicropolisCanvas');
+  const TILE = assets.tileSet.tileWidth || 16;
+
+  function pan(tilesX, tilesY) {
+    const view = game.gameCanvas;
+    for (let i = 0; i < Math.abs(tilesX); i++)
+      tilesX > 0 ? view.moveEast() : view.moveWest();
+    for (let i = 0; i < Math.abs(tilesY); i++)
+      tilesY > 0 ? view.moveSouth() : view.moveNorth();
+  }
+
+  if (mapCanvas) {
+    let scrolledX = 0;
+    let scrolledY = 0;
+
+    mapCanvas.addEventListener('wheel', event => {
+      if (game.dialogOpen)
+        return;
+
+      event.preventDefault();
+      // Some browsers report scrolling in lines rather than pixels.
+      const scale = event.deltaMode === 1 ? TILE : 1;
+      scrolledX += event.deltaX * scale;
+      scrolledY += event.deltaY * scale;
+
+      const tilesX = Math.trunc(scrolledX / TILE);
+      const tilesY = Math.trunc(scrolledY / TILE);
+      scrolledX -= tilesX * TILE;
+      scrolledY -= tilesY * TILE;
+      if (tilesX || tilesY)
+        pan(tilesX, tilesY);
+    }, { passive: false });
+
+    // Drag with a button the tools do not use, so building still works the way it did.
+    let dragFrom = null;
+    mapCanvas.addEventListener('mousedown', event => {
+      if (event.button === 1 || event.button === 2) {
+        dragFrom = { x: event.clientX, y: event.clientY };
+        event.preventDefault();
+      }
+    });
+
+    mapCanvas.addEventListener('contextmenu', event => {
+      if (dragFrom)
+        event.preventDefault();
+    });
+
+    window.addEventListener('mousemove', event => {
+      if (!dragFrom || game.dialogOpen)
+        return;
+
+      // The map follows the hand: drag right, the view moves west.
+      const tilesX = Math.trunc((dragFrom.x - event.clientX) / TILE);
+      const tilesY = Math.trunc((dragFrom.y - event.clientY) / TILE);
+      if (tilesX || tilesY) {
+        pan(tilesX, tilesY);
+        dragFrom = { x: dragFrom.x - tilesX * TILE, y: dragFrom.y - tilesY * TILE };
+      }
+    });
+
+    window.addEventListener('mouseup', () => { dragFrom = null; });
+  }
+
   game.onSaveRequested = () => ctx.onSaveRequested(session);
   $('#saveRequest').prop('disabled', false);
 
